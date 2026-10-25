@@ -1,0 +1,32 @@
+---
+import AstroBreadcrumb from '#components/react/astro-breadcrumb.tsx'
+
+export type Props = {
+  showBreadcrumb?: boolean
+  breadcrumbRoutes?: Array<{
+    name: string
+    url: string
+    path?: string
+  }>
+}
+
+const { showBreadcrumb, breadcrumbRoutes } = Astro.props
+---
+
+<>
+  <slot name="featured" />
+  {
+    /* Skip-link target. tabindex="-1" so activating the link moves focus here,
+      not just the scroll position. */
+  }
+  <main id="main" tabindex="-1">
+    {
+      showBreadcrumb && (
+        <section>
+          <AstroBreadcrumb routes={breadcrumbRoutes || []} client:load />
+        </section>
+      )
+    }
+    <slot />
+  </main>
+</>

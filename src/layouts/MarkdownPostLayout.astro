@@ -1,0 +1,74 @@
+---
+import Layout from './Layout.astro'
+import Youtube from '#components/astro/Youtube.astro'
+import Img from '#components/astro/Img.astro'
+import Toc from '#components/astro/Toc.astro'
+import { sanitizeImageUrl } from '#utils/security'
+const frontmatter = Astro.props.frontmatter
+
+const headings = Astro.props.headings
+const { slug } = Astro.params
+
+// Sanitize image URL to prevent XSS attacks
+const safeImageUrl = frontmatter.image?.url ? sanitizeImageUrl(frontmatter.image.url) : null
+
+type ContentRoute = {
+  name: string
+  url: string
+  path: string | undefined
+}
+
+const contentRoute: ContentRoute[] = [
+  {
+    name: frontmatter.title,
+    url: '', // not necessary for post paths
+    path: slug?.toString(),
+  },
+]
+---
+
+<Layout
+  pageTitle={frontmatter.title}
+  pageDescription={frontmatter.description}
+  breadcrumbRoutes={contentRoute}
+>
+  {
+    safeImageUrl && (
+      <>
+        <Img
+          imgSrc={safeImageUrl}
+          imgAlt={frontmatter.image?.alt}
+          imgCaption={frontmatter.image?.caption}
+        />
+      </>
+    )
+  }
+  {
+    frontmatter.youtube?.id && (
+      <p>
+        <Youtube id={frontmatter.youtube.id} />
+      </p>
+    )
+  }
+
+  <div slot="sidebar">
+    <Toc headings={headings} />
+  </div>
+
+  <slot />
+  {
+    frontmatter.tags && frontmatter.tags.length > 0 && (
+      <div>
+        <ul class="tags" data-list="unstyled inline">
+          {frontmatter.tags.map((tag: string) => (
+            <li class="tag">
+              <a href={`/tags/${tag}`}>
+                <i>{tag}</i>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</Layout>

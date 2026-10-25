@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [primary]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.adapter }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        adapter: [netlify, vercel, node]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          ASTRO_ADAPTER: ${{ matrix.adapter }}
+
+  test:
+    name: Type-check, unit, and e2e tests
+    runs-on: ubuntu-latest
+    env:
+      # astro.config.mjs re-reads this env var per-command, so it must be
+      # set job-wide — a build-step-only env var left `astro preview`
+      # falling back to the netlify adapter, which doesn't support preview.
+      ASTRO_ADAPTER: node
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run pretest
+      # Informational, not blocking: the repo currently carries ~127
+      # pre-existing type errors unrelated to Astro (Supabase type
+      # strictness, exactOptionalPropertyTypes, etc.) — predates this
+      # upgrade. Flip to blocking once that debt is paid down separately.
+      - run: npm run type-check
+        continue-on-error: true
+      # Hard gate: the tests that actually verify this Astro upgrade.
+      - run: npx vitest run tests/content-collections.test.ts tests/compress-html-whitespace.test.ts
+      # Hard gate: the design-direction tests. design-tokens.test.ts lives under
+      # tests/integration/** and would otherwise be swept up by the exclusion
+      # below, but it needs no Supabase credentials -- it only reads the
+      # compiled src/styles/index.css (which `pretest` now rebuilds). It is the
+      # gate proving --card-background and --header-background still have
+      # painting consumers, so excluding it would leave the defect this plan
+      # fixed free to return unnoticed.
+      - run: npx vitest run tests/integration/design-tokens.test.ts tests/components/FeatureCards.astro.test.ts
+      # Hard gate: the email integration. These suites pass today, and they cover
+      # the parts that fail silently in production if they regress — placeholder
+      # config read as "configured", header injection through the contact-form
+      # subject, and an unbounded provider call inside the request path.
+      - run: npx vitest run tests/email.test.ts tests/send-email.test.ts
+      # Informational, not blocking: the rest of the suite carries ~49
+      # pre-existing failures unrelated to Astro (role-validator, csrf,
+      # etc.), plus tests/integration/** needs live
+      # Supabase credentials this workflow doesn't have. Tracked as
+      # separate tech debt, not this upgrade's responsibility.
+      - run: npx vitest run --exclude "tests/integration/**"
+        continue-on-error: true
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run preview &
+      - run: npx wait-on http://localhost:4321 --timeout 60000
+      # Hard gate: only the spec that verifies this upgrade. The rest of
+      # e2e/ (logging-correlation.spec.ts, etc.) needs webhook secrets and
+      # other env this workflow doesn't have — pre-existing, unrelated.
+      # auth-fail-closed needs no env either: this preview build has no Clerk
+      # keys, which is exactly the case it asserts fails closed.
+      - run: npm run test:e2e -- astro-v7-upgrade auth-fail-closed --project=chromium

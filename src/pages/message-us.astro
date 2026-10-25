@@ -1,0 +1,90 @@
+---
+import Auth from '#layouts/Auth.astro'
+
+const { pageTitle, pageDescription, pageImageUrl, hideHeader } = Astro.props
+---
+
+<Auth
+  hideHeader={false}
+  showBreadcrumb={false}
+  pageTitle="Contact Us"
+  pageDescription=""
+  pageImageUrl={pageImageUrl}
+  hideHeader={hideHeader}
+>
+  <section class="message-us">
+    <h1>Contact Us</h1>
+    <p>If you have any questions or feedback, please feel free to reach out to us!</p>
+    <form id="contact-form">
+      {
+        Astro.locals.csrfToken && (
+          <input type="hidden" name="_csrf" value={Astro.locals.csrfToken} />
+        )
+      }
+      <div id="form-message" class="form-message"></div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required maxlength="255" />
+      <p class="error-message" id="name-error">Name is required</p>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <p class="error-message" id="email-error">Email is required</p>
+
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" required name="subject" maxlength="500" />
+      <p class="error-message" id="subject-error">Subject is required</p>
+
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" rows="4" required maxlength="5000"></textarea>
+      <p class="error-message" id="message-error">Message is required</p>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+</Auth>
+
+<style>
+  input + .error-message,
+  textarea + .error-message {
+    display: none;
+  }
+
+  input:user-invalid + .error-message,
+  textarea:user-invalid + .error-message {
+    display: block;
+  }
+
+  .message-us {
+    width: 600px;
+    margin-inline: auto;
+    padding: 1rem;
+  }
+
+  .form-message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    display: none;
+  }
+
+  .form-message.success {
+    display: block;
+    background-color: color-mix(in srgb, var(--color-success) 22%, var(--paper));
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--color-success) 45%, var(--paper));
+  }
+
+  .form-message.error {
+    display: block;
+    background-color: color-mix(in srgb, var(--color-error) 22%, var(--paper));
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--color-error) 45%, var(--paper));
+  }
+
+  button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+
+<script type="module" src="/scripts/init.js"></script>

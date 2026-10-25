@@ -1,0 +1,32 @@
+---
+export type Props = {
+  readonly title?: string
+  readonly className?: string
+  readonly padding?: string
+}
+
+const { title, className = '', padding = '1.5rem' } = Astro.props
+---
+
+<div class={`dashboard-card ${className}`} style={`--card-padding: ${padding}`}>
+  {title && <h2 class="dashboard-card__title">{title}</h2>}
+  <div class="dashboard-card__content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .dashboard-card {
+    background: var(--card-background);
+    padding: var(--card-padding, 1.5rem);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--rule);
+  }
+
+  .dashboard-card__title {
+    margin: 0 0 1rem 0;
+    color: var(--ink);
+    font-size: 1.25rem;
+  }
+</style>

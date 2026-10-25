@@ -1,0 +1,318 @@
+# Supabase Database Migrations
+
+This directory contains PostgreSQL migrations for the Supabase database provider.
+
+> **Note**: An older migration directory exists at `scripts/supabase-migrations/` (Aug 2025) that created a simpler users table. This was superseded by the comprehensive migrations in this directory (Oct 2025) which add roles, organizations, and preferences. For new installations, use the migrations in THIS directory.
+
+---
+
+## Quick Start
+
+### Fresh Database Installation
+
+For **new databases**, run only these three migrations in order:
+
+```bash
+# Set your Supabase connection string
+export DATABASE_URL="postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres"
+
+# Apply core schema
+psql $DATABASE_URL -f scripts/migrations/001_core_schema.sql
+
+# Apply security policies
+psql $DATABASE_URL -f scripts/migrations/002_security_policies.sql
+
+# Grant the API roles access to the tables
+psql $DATABASE_URL -f scripts/migrations/007_data_api_grants.sql
+```
+
+Run 007 on every project. Projects that have "Automatically expose new tables and functions" turned
+off grant the API roles nothing, and every request gets `42501 permission denied`. On projects that
+still grant automatically, 007 swaps those broad grants for the least-privilege set below.
+
+**That's it!** Skip migrations 003 and 004 - they are deprecated/redundant.
+
+---
+
+### Existing Database Upgrade
+
+If you have an **existing database** with older migrations applied, consult the upgrade guide:
+`docs/database/supabase-migration-refactor-plan.md`
+
+If your database has a `messages` table (the contact form used to store submissions there; it now
+only sends a notification email), drop it with migration 006. This is **irreversible** - export the
+table first if you need its contents:
+
+```bash
+psql $DATABASE_URL -c "\copy messages TO 'messages-backup.csv' CSV HEADER"
+psql $DATABASE_URL -f scripts/migrations/006_drop_messages_table.sql
+```
+
+---
+
+## Active Migrations (Current State)
+
+### ✅ Required Migrations
+
+| File                          | Created    | Purpose                                                             | Status     |
+| ----------------------------- | ---------- | ------------------------------------------------------------------- | ---------- |
+| `001_core_schema.sql`         | 2025-10-12 | Core tables, roles, indexes, triggers                               | **ACTIVE** |
+| `002_security_policies.sql`   | 2025-10-06 | Row Level Security (RLS) policies                                   | **ACTIVE** |
+| `006_drop_messages_table.sql` | 2026-09-25 | Drop legacy `messages` table (existing databases only, no rollback) | **ACTIVE** |
+| `007_data_api_grants.sql`     | 2026-09-25 | Table privileges for the API roles                                  | **ACTIVE** |
+
+### ⚠️ Deprecated Migrations
+
+| File                               | Created    | Purpose                     | Status                                 |
+| ---------------------------------- | ---------- | --------------------------- | -------------------------------------- |
+| `003_user_roles.sql`               | 2025-10-10 | Role ENUM creation          | **REDUNDANT** - Duplicates 001         |
+| `004_clerk_email_verification.sql` | 2025-10-11 | Email uniqueness constraint | **DEPRECATED** - Consolidated into 001 |
+
+**Why deprecated?** Migration 001 was refactored on 2025-10-12 to consolidate work from migrations 003 and 004. The numbered prefix (001) doesn't reflect chronological creation order.
+
+---
+
+## Migration Details
+
+### 001_core_schema.sql
+
+**Purpose**: Foundation migration establishing the entire user management system.
+
+**Creates**:
+
+- `user_role` ENUM type (`member`, `admin`, `super_admin`)
+- `users` table (synced from Clerk authentication)
+  - Stores clerk_id, email, username, full_name, avatar_url
+  - Role-based access control (RBAC) with default role 'member'
+  - JSONB app_metadata for application-specific data
+- `organization_memberships` table (Clerk organizations sync)
+- `user_preferences` table (app-specific settings: theme, notifications, language, timezone)
+- 7 performance indexes including partial unique index on email
+- `update_updated_at()` trigger function for automatic timestamp management
+- Extensive documentation via SQL COMMENT statements
+
+**Rollback**: `rollback_001_core_schema.sql`
+
+---
+
+### 002_security_policies.sql
+
+**Purpose**: Implements Row Level Security (RLS) policies for all tables.
+
+**Creates**:
+
+- **Users table policies** (3 policies):
+  - Users can view/update their own profile (Clerk JWT 'sub' claim)
+  - Service role has full access (for webhooks)
+
+- **Organization memberships policies** (3 policies):
+  - Users view their own memberships
+  - Org admins see all org members
+  - Service role has full access
+
+- **User preferences policies** (2 policies):
+  - Users have full CRUD on their own preferences
+  - Service role has full access
+
+**Total**: 8 security policies with comprehensive documentation
+
+**Rollback**: `rollback_002_security_policies.sql`
+
+---
+
+### 007_data_api_grants.sql
+
+**Purpose**: Grants the Data API roles the table privileges the app uses. RLS decides which rows a
+role sees. Grants decide whether it can reach the table at all. Without grants, every role gets
+`42501`, including `service_role`: it bypasses RLS, but it still needs table privileges.
+
+Supabase stopped granting automatically for new projects on 2026-05-30. Existing projects follow on
+2026-10-30. See the
+[changelog entry](https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically).
+
+**Grants**:
+
+| Role            | `users`                                                              | `organization_memberships`     | `user_preferences`                                                                          |
+| --------------- | -------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `service_role`  | select, insert, update, delete                                       | select, insert, update, delete | select, insert, update, delete                                                              |
+| `authenticated` | select; update `username`, `full_name`, `avatar_url`, `app_metadata` | select                         | select; update `theme`, `notifications_email`, `notifications_push`, `language`, `timezone` |
+| `anon`          | none                                                                 | none                           | none                                                                                        |
+
+`service_role` serves the Clerk webhook, user sync and the role guard. `authenticated` serves
+`/api/user/profile` and `/api/user/profile-with-org`, which use the Clerk JWT. No code reads these
+tables as `anon`.
+
+007 revokes all privileges on the three tables before granting, so every project ends with the same
+privileges on them. The automatic grants include table-wide `UPDATE` on `users`, which lets a signed-in user set
+their own `role` through the Data API. `requireRole()` trusts that column. The column-level `UPDATE`
+closes that path.
+
+**Rollback**: `rollback_007_data_api_grants.sql` removes every privilege the API roles have on these
+tables. It does not restore automatic grants. Restoring them means `GRANT ALL`, which reopens the
+`role` hole.
+
+---
+
+## Rollback Procedures
+
+### Rollback All Migrations (Nuclear Option)
+
+```bash
+# Rollback in reverse order
+psql $DATABASE_URL -f scripts/migrations/rollback_007_data_api_grants.sql
+psql $DATABASE_URL -f scripts/migrations/rollback_002_security_policies.sql
+psql $DATABASE_URL -f scripts/migrations/rollback_001_core_schema.sql
+```
+
+**Warning**: This will drop all tables and data! Use with extreme caution.
+
+### Rollback Single Migration
+
+```bash
+# Example: Rollback security policies only
+psql $DATABASE_URL -f scripts/migrations/rollback_002_security_policies.sql
+```
+
+---
+
+## Archived Migrations
+
+The `archived/` directory contains 6 original migrations from 2025-10-03 to 2025-10-04 that were **consolidated and replaced** on 2025-10-06.
+
+**Original migrations had issues**:
+
+- Fragmented role system setup across multiple files
+- Type mismatches (TEXT column vs ENUM type)
+- Complex dependency chains
+- Deprecated 4-tier role system (member, coordinator, admin, super_admin)
+
+**Replaced by**: Consolidated `001_core_schema.sql` + `002_security_policies.sql` with simplified 3-tier role system.
+
+See `archived/README.md` for historical details.
+
+---
+
+## Migration Development Guidelines
+
+### Creating New Migrations
+
+1. **Naming Convention**: `00X_descriptive_name.sql`
+   - Use sequential numbering (005, 006, etc.)
+   - Use snake_case for descriptive names
+   - Be specific: `add_user_avatars` not `update_users`
+
+2. **Migration Structure**:
+
+   ```sql
+   -- Migration: 00X_descriptive_name.sql
+   -- Created: YYYY-MM-DD
+   -- Purpose: Brief description of what this migration does
+   --
+   -- Dependencies: List any migrations this depends on
+   -- Rollback: rollback_00X_descriptive_name.sql
+
+   BEGIN;
+
+   -- Your migration code here
+
+   -- Verification (optional but recommended)
+   DO $$
+   BEGIN
+       -- Check that changes were applied correctly
+   END $$;
+
+   COMMIT;
+   ```
+
+3. **Always Create Rollback Scripts**:
+   - Name: `rollback_00X_descriptive_name.sql`
+   - Test rollback before committing
+   - Document any data loss consequences
+
+4. **Make Migrations Idempotent**:
+   - Use `IF NOT EXISTS` clauses
+   - Check for existing objects before creating
+   - Allow migrations to be safely re-run
+
+5. **Document Your Changes**:
+   - Add SQL COMMENT statements for tables/columns
+   - Explain business logic in migration comments
+   - Update this README with new migration details
+
+### Testing Migrations
+
+```bash
+# Test on local development database first
+psql $DEV_DATABASE_URL -f scripts/migrations/00X_new_migration.sql
+
+# Verify changes
+psql $DEV_DATABASE_URL -c "SELECT * FROM pg_tables WHERE schemaname = 'public';"
+
+# Test rollback
+psql $DEV_DATABASE_URL -f scripts/migrations/rollback_00X_new_migration.sql
+```
+
+---
+
+## Migration Tracking
+
+Currently, migrations must be **manually tracked** and applied in order.
+
+**Planned Enhancement**: Migration tracking table to record applied migrations and prevent duplicate applications.
+
+---
+
+## Troubleshooting
+
+### "relation already exists" error
+
+This typically means you're re-running a migration that's already been applied. Options:
+
+1. Skip the migration (if it's already applied)
+2. Run the rollback script first, then re-apply
+3. Check for idempotent design (migrations should handle this gracefully)
+
+### "type already exists" error
+
+The migration is trying to create an ENUM or type that already exists. Usually safe to ignore if the existing type matches expectations.
+
+### RLS Policy blocking access
+
+If you're getting permission denied errors:
+
+1. `42501 permission denied for table ...` means the role has no table privileges. RLS is not the
+   cause. Run `007_data_api_grants.sql`.
+2. Check that RLS is enabled: `SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public';`
+3. Verify your JWT contains the correct claims (especially 'sub' for user ID)
+4. Test with service role key (bypasses RLS) to isolate issue
+5. Review policies: `SELECT * FROM pg_policies WHERE schemaname = 'public';`
+
+### Migration verification failures
+
+If a migration's built-in verification fails:
+
+1. Read the error message carefully (migrations include helpful verification)
+2. Check that dependencies (other migrations) were applied first
+3. Verify your database version supports required features
+4. Check for data conflicts (duplicate emails, etc.)
+
+---
+
+## Related Documentation
+
+- **Database Overview**: `/project-docs/05-database/README.md`
+- **Clerk Integration**: `/project-docs/04-integrations/clerk-authentication.md`
+- **Migration Refactor Plan**: `/docs/database/supabase-migration-refactor-plan.md`
+
+---
+
+## Questions?
+
+If you're unsure about:
+
+- Which migrations to apply → Start with this README
+- Existing database upgrades → Consult `docs/database/supabase-migration-refactor-plan.md`
+- Migration errors → Check Troubleshooting section above
+- Creating new migrations → Follow Development Guidelines section
+
+For project-specific questions, open an issue in the repository.

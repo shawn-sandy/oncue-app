@@ -1,0 +1,24 @@
+---
+export type Props = {
+  headings?: { depth: number; slug: string; text: string }[]
+  hash?: string
+  title?: string
+}
+const { headings, title } = Astro.props
+---
+
+{
+  headings && headings.length > 1 && (
+    <>
+      <h3>{title || 'On this page'}</h3>
+      <ul data-list="unstyled">
+        {headings.map(heading => (
+          <li>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+      <hr />
+    </>
+  )
+}

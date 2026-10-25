@@ -1,0 +1,24 @@
+---
+import Auth from '#layouts/Auth.astro'
+import { Show } from '@clerk/astro/components'
+import SignedOutMessage from '#/components/astro/SignedOutMessage.astro'
+---
+
+<Auth pageTitle="Admin - Astro Kit">
+  <Show when="signed-in">
+    <div class="admin-container">
+      <h1>Admin Dashboard</h1>
+      <div class="admin-actions">
+        <button class="action-button">Manage Users</button>
+        <button class="action-button">View Reports</button>
+        <button class="action-button">Settings</button>
+      </div>
+    </div>
+  </Show>
+  <Show when="signed-out">
+    <SignedOutMessage
+      title="Admin Access Required"
+      message="Please sign in to access the admin dashboard."
+    />
+  </Show>
+</Auth>

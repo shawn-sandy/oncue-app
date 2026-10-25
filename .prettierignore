@@ -1,0 +1,27 @@
+dist/
+storybook-static/
+node_modules/
+.astro/
+playwright-report/
+test-results/
+*.min.js
+*.min.css
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Plan specs are parsed by build-plan-html.mjs, which does not unescape
+# Prettier's defensive backslashes (e.g. \_navigation.scss)
+docs/plans/*.md
+
+# Files with code snippets that break Prettier
+docs/AUTHENTICATION_DEVELOPER_GUIDE.md
+docs/AUTHENTICATION_REVIEW.md
+docs/LINTING_GUIDE.md
+docs/PRD/authentication-system-prd.md
+src/content/docs/2-customizing.mdx
+src/content/posts/mdx-example.mdx
+
+# Prettier flattens the <FileTree> block to a single line, which stops Starlight
+# parsing it as a nested list and renders the tree as one run-on paragraph.
+src/content/docs/guide/integrations/email.mdx

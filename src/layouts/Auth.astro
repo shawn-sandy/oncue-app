@@ -1,0 +1,18 @@
+---
+import MainSection from '#components/astro/MainSection.astro'
+import Base from './Base.astro'
+
+const { pageTitle, pageDescription, pageImageUrl, hideHeader } = Astro.props
+---
+
+<Base
+  showBreadcrumb={false}
+  pageTitle={pageTitle || 'Authentication'}
+  pageDescription={pageDescription || ''}
+  pageImageUrl={pageImageUrl}
+  hideHeader={hideHeader ?? true}
+>
+  <MainSection showBreadcrumb={false}>
+    <slot />
+  </MainSection>
+</Base>

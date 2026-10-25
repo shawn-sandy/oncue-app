@@ -1,0 +1,111 @@
+---
+import DashboardIcon from '#components/dashboard/DashboardIcon.astro'
+import { isDashboardIcon } from '#components/dashboard/icons'
+
+/**
+ * Shortcut links as full-width rows: icon, label and a trailing chevron.
+ *
+ * `icon` takes a dashboard icon name (`file`, `image`, `book`, `settings`…);
+ * any other string, such as an emoji from an older caller, is shown as text.
+ * `primary` fills a row with the accent for the one action that leads.
+ *
+ * @component QuickActions
+ * @example
+ * ```astro
+ * <QuickActions actions={[{ href: '/admin/posts', icon: 'file', label: 'Manage posts' }]} />
+ * ```
+ */
+export type Props = {
+  readonly actions: readonly {
+    readonly href: string
+    readonly icon: string
+    readonly label: string
+    readonly primary?: boolean
+  }[]
+}
+
+const { actions } = Astro.props
+---
+
+<ul class="action-buttons" role="list">
+  {
+    actions.map(action => (
+      <li>
+        <a href={action.href} class:list={['action-btn', { primary: action.primary }]}>
+          <span class="action-btn__icon" aria-hidden="true">
+            {isDashboardIcon(action.icon) ? <DashboardIcon name={action.icon} /> : action.icon}
+          </span>
+          <span class="action-btn__label">{action.label}</span>
+          <span class="action-btn__chevron" aria-hidden="true">
+            <DashboardIcon name="chevron" size={16} />
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    list-style: none;
+    margin: 0;
+    padding: var(--space-1-5);
+  }
+
+  .action-buttons > li {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* `[href]` lifts the selector to (0,2,0), above the vendor's `a[href]`. */
+  .action-btn[href] {
+    align-items: center;
+    border-radius: var(--radius-md);
+    color: var(--ink);
+    display: flex;
+    font-size: inherit;
+    font-weight: var(--font-weight-normal);
+    gap: var(--space-3);
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    text-decoration: none;
+    transition: background-color var(--transition-duration-150) ease-out;
+  }
+
+  .action-btn[href]:hover {
+    background: var(--paper);
+  }
+
+  .action-btn__icon {
+    color: var(--island);
+    display: inline-flex;
+  }
+
+  .action-btn__label {
+    flex-grow: 1;
+  }
+
+  .action-btn__chevron {
+    color: var(--ink-soft);
+    display: inline-flex;
+  }
+
+  /* Paper on the accent, as in HomeHero: white text fails on the lighter dark-mode accent. */
+  .action-btn.primary[href],
+  .action-btn.primary[href] .action-btn__icon,
+  .action-btn.primary[href] .action-btn__chevron {
+    color: var(--paper);
+  }
+
+  .action-btn.primary[href] {
+    background: var(--island);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .action-btn.primary[href]:hover {
+    background: color-mix(in oklch, var(--island) 88%, var(--ink));
+  }
+</style>

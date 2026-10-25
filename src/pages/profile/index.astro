@@ -1,0 +1,192 @@
+---
+import Dashboard from '#layouts/Dashboard.astro'
+import DashboardPage from '#components/dashboard/DashboardPage.astro'
+import { Show } from '@clerk/astro/components'
+import UserInfo from '#/components/astro/UserInfo.astro'
+import SignedOutMessage from '#/components/astro/SignedOutMessage.astro'
+---
+
+<Dashboard pageTitle="My Profile - Astro Kit" pageDescription="User profile and account settings">
+  <Show when="signed-in">
+    <DashboardPage eyebrow="Profile" title="My Profile">
+      <div class="profile-content">
+        <div class="profile-main">
+          <UserInfo />
+        </div>
+
+        <div class="profile-sidebar">
+          <div class="profile-actions">
+            <h2>Account Actions</h2>
+            <div class="action-links">
+              <a href="/dashboard" class="action-link">
+                <span class="action-icon">📊</span>
+                Back to Dashboard
+              </a>
+              <a href="/settings" class="action-link">
+                <span class="action-icon">⚙️</span>
+                Account Settings
+              </a>
+              <a href="/security" class="action-link">
+                <span class="action-icon">🔒</span>
+                Security Settings
+              </a>
+              <a href="/preferences" class="action-link">
+                <span class="action-icon">🎨</span>
+                Preferences
+              </a>
+            </div>
+          </div>
+
+          <div class="profile-help">
+            <h2>Need Help?</h2>
+            <p>
+              If you need to update your profile information or have questions about your account,
+              please contact support.
+            </p>
+            <a href="/support" class="help-link">Contact Support</a>
+          </div>
+        </div>
+      </div>
+    </DashboardPage>
+  </Show>
+
+  <Show when="signed-out">
+    <SignedOutMessage />
+  </Show>
+</Dashboard>
+
+<style>
+  .profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .profile-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .profile-subtitle {
+    margin: 0;
+    font-size: 1.125rem;
+    color: var(--ink-soft);
+  }
+
+  .profile-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+  }
+
+  .profile-main {
+    min-width: 0; /* Prevents grid overflow */
+  }
+
+  .profile-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .profile-actions,
+  .profile-help {
+    background: var(--card-background);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .profile-actions h2,
+  .profile-help h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .action-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* `[href]` lifts link selectors to (0,2,0), above the vendor's `a[href]`; a bare class loses. */
+  .action-link[href] {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background-color 0.2s ease;
+  }
+
+  .action-link[href]:hover {
+    background: var(--paper);
+    color: var(--island);
+  }
+
+  .action-icon {
+    font-size: 1.125rem;
+    min-width: 20px;
+  }
+
+  .profile-help p {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .help-link[href] {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--island);
+    color: var(--paper);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+
+  .help-link[href]:hover {
+    background: color-mix(in oklch, var(--island) 88%, var(--ink));
+  }
+
+  /* Responsive design */
+  @media (max-width: 1024px) {
+    .profile-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .profile-sidebar {
+      order: -1; /* Move sidebar above main content on mobile */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .profile-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .profile-header h1 {
+      font-size: 2rem;
+    }
+
+    .action-links {
+      gap: 0.25rem;
+    }
+
+    .action-link[href] {
+      padding: 0.5rem;
+    }
+  }
+</style>

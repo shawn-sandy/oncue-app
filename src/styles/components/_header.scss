@@ -1,0 +1,9 @@
+header {
+  grid-template-rows: minmax(300px, auto);
+  min-height: fit-content;
+  padding-block: 2rem;
+
+  > section > p {
+    font-size: var(--fs-7);
+  }
+}

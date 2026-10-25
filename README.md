@@ -1,0 +1,295 @@
+# Astro Basics Website
+
+A production-ready Astro website showcasing modern web development practices with authentication, database
+integration, and interactive features. This project demonstrates Astro's capabilities for building fast, secure,
+content-focused websites with a comprehensive component library, multiple database backends, progressive web app
+functionality, and enterprise-grade security features.
+
+## Project Features
+
+### Component Architecture
+
+- **Astro Components** (`src/components/astro/`): Server-side rendered .astro components
+- **React Components** (`src/components/react/`): Client-side interactive components
+- **Component exports** through `src/components/index.ts` for internal organization
+
+### Content Management
+
+- Three content collections: `posts`, `docs`, and `content`
+- Astro's content collections with shared schema
+- MDX support with remark-toc and rehype-accessible-emojis
+- **Comment System**: Full-featured commenting for blog posts and documentation
+  - Threaded comments with 3-level nesting support
+  - Real-time comment creation, editing, and soft deletion
+  - Rate limiting (5 comments per minute per user) and spam protection
+  - Content sanitization with DOMPurify for XSS prevention
+  - CSRF token validation for secure form submissions
+
+### Authentication & Security
+
+- Clerk integration for user authentication with native Supabase integration (2025 production-ready)
+- Protected routes via middleware (`/dashboard`, `/forum`, `/organization`)
+- **Role-based access control** with hierarchical privilege escalation
+  - Configurable user roles (member, admin, super_admin)
+  - Automatic privilege inheritance (higher roles access lower-level content)
+  - Component-level and page-level role guards
+  - Flexible configuration with `useHierarchy` option for exact matching
+- Environment-based configuration
+- **Security Enhancements**:
+  - CSRF protection for all form submissions
+  - Rate limiting on API endpoints (5 requests/minute)
+  - Input sanitization and XSS prevention
+  - Content Security Policy (CSP) compliance with external scripts
+  - Row-Level Security (RLS) policies for database tables
+
+### Database Integration
+
+- **Supabase (PostgreSQL)** with real-time capabilities and native Clerk integration
+- Comment system with polymorphic database design
+- Row-Level Security (RLS) policies for data protection
+
+### Development Tools
+
+- Comprehensive testing setup (Vitest + Playwright)
+- SCSS compilation with Sass watcher
+- Pre-commit hooks with Husky + lint-staged
+- Complete linting setup (ESLint, StyleLint, Prettier, Markdown)
+- GitHub Copilot integration with project-specific instructions
+- **MCP Server Integration**: Model Context Protocol support for:
+  - Supabase database operations
+  - Chrome DevTools automation
+  - Figma design system integration
+  - Playwright browser testing
+  - Clerk authentication management
+- Automated release management system with security audits
+- Supabase SQL migrations with rollback scripts (`scripts/migrations/`)
+
+### Progressive Web App (PWA)
+
+- Service worker with automatic caching and offline support
+- App manifest with icons and metadata
+- Custom PWA installation prompts
+- Offline page and connection status indicators
+- Auto-update functionality for service worker
+- Standalone mode for full-screen app experience
+
+### User Features
+
+- **Dashboard**: Protected user dashboard with profile management
+- **Organization Management**: Organization creation and management features
+- **User Profiles**: Comprehensive user profile with Clerk integration
+- **Contact Form**: `/message-us` submissions are delivered as a notification email (requires the
+  `EMAIL_*` settings; see the [Email guide](src/content/docs/guide/integrations/email.mdx))
+
+## Quick Start
+
+### 5-Minute Setup
+
+1. **Install and configure**:
+
+   ```bash
+   npm install                    # Install dependencies (~4 minutes)
+   npm run prepare                # Setup pre-commit hooks
+   cp .env.example .env           # Copy environment template
+   ```
+
+   The site runs on a fresh clone with no accounts and no keys — leave the `YOUR_*`
+   placeholders in place. Clerk, Supabase, and Axiom each read an unreplaced
+   placeholder as "not configured" and switch that feature off, so logging falls back to
+   the console and auth-protected routes stay unavailable until you add real keys.
+
+2. **Configure authentication** (optional, needed for sign-in and `/dashboard`):
+   - Get Clerk keys from [clerk.com](https://clerk.com)
+   - Add to `.env`: `PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
+   - Without these, auth-protected routes are unavailable and the rest of the site works
+
+3. **Setup database** (optional, for advanced features):
+
+   > **⚠️ Configure Roles First:** If you plan to customize user roles, configure them BEFORE running database migrations. Role configuration generates database migrations that define your role schema. See [Role Management](#role-management) below, or skip to use the default 3-tier system (member, admin, super_admin).
+
+   ```bash
+   npm run db:wizard              # Interactive Supabase setup wizard
+   # Or manually: apply scripts/migrations/ with psql (see scripts/migrations/README.md)
+   ```
+
+4. **Start developing**:
+
+   ```bash
+   npm run start                  # Dev server + SCSS watcher (port 4321)
+   ```
+
+**For detailed setup instructions**, see [project-docs/01-getting-started/setup-guide.md](project-docs/01-getting-started/setup-guide.md) which includes:
+
+- Complete authentication setup with Clerk
+- Database configuration (Supabase)
+- Role management system setup
+- Security features configuration
+- Troubleshooting common issues
+
+### Development Commands
+
+```bash
+# Development
+npm run dev          # Start Astro development server
+npm run start        # Start dev server with Sass watcher
+npm run sass         # Watch and compile SCSS files
+
+# Build & Deploy
+npm run build        # Build for production
+npm run preview      # Preview production build
+
+# Testing
+npm test             # Run Vitest unit tests
+npm run test:e2e     # Run Playwright e2e tests
+
+# Code Quality
+npm run lint         # Run ESLint with auto-fix
+npm run format       # Format code with Prettier
+npm run type-check   # Run TypeScript type checking
+npm run fix:all      # Fix all auto-fixable issues
+
+# Database Management
+npm run db:wizard         # Interactive database setup wizard (recommended)
+npm run db:status         # Check current Supabase configuration and status
+
+# Data Management
+npm run db:setup-users    # Set up Supabase user sync with Clerk
+npm run db:sync-user      # Sync current user to database
+```
+
+### Role Management
+
+```bash
+# Configure custom roles (edit config/roles.config.ts first)
+npm run setup:roles           # Generate types and migrations
+npm run setup:roles:dry-run   # Preview changes without writing files
+npm run validate:roles        # Validate role configuration
+
+# After setup, apply the generated migration with psql
+psql $DATABASE_URL -f scripts/migrations/<NNN>_user_roles.sql
+```
+
+**Role System Features:**
+
+- Configurable user roles with hierarchical privilege escalation
+- TypeScript type generation for compile-time safety
+- Automatic database migration generation
+- Component-level and page-level role guards
+- Zero runtime overhead
+
+See [project-docs/02-guides/configurable-roles.md](project-docs/02-guides/configurable-roles.md) for complete documentation.
+
+### Component Usage
+
+```astro
+---
+// Using path aliases for internal component imports
+import Header from '#components/astro/Header.astro'
+import { ThemeToggle } from '#components/react/ThemeToggle'
+import { RoleGuard } from '#components/react/RoleGuard'
+import { SITE_TITLE } from '#utils/site-config'
+---
+
+<Header title={SITE_TITLE} />
+<ThemeToggle client:load />
+
+<!-- Role-based access control -->
+<RoleGuard allowedRoles={['admin']} client:load>
+  <AdminPanel />
+</RoleGuard>
+```
+
+## Architecture
+
+### Documentation System
+
+- **Starlight Integration**: Modern documentation framework built on Astro
+  - Interactive component documentation with live examples
+  - API reference documentation with TypeScript integration
+  - MCP Server setup guides and troubleshooting
+  - Searchable documentation with Pagefind
+  - Edit links and last updated timestamps
+  - Custom theming and styling
+
+### Path Aliases
+
+Uses `#*` import alias mapping to `./src/*` for cleaner imports.
+
+### Content Collections
+
+Three main collections defined in `src/content/config.ts`:
+
+- `posts` - Blog posts
+- `docs` - Documentation content
+- `content` - General content articles
+
+### Styling System
+
+- SCSS-based styling in `src/styles/`
+- Component-specific styles in `src/styles/components/`
+- Uses @fpkit/acss for additional CSS utilities
+- Design system spec: [DESIGN.md](DESIGN.md). The
+  [Astro Kit design system](https://claude.ai/artifact/HKxyaqURmUX9WE4G8TiiW4) renders its tokens,
+  type roles and components live in light and dark themes.
+
+### Database Configuration
+
+The project uses Supabase (PostgreSQL) as its only database. Server code reaches it through the
+helpers in `#libs/supabase-native`:
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+Migrations live in `scripts/migrations/` and are applied with `psql` — see
+[scripts/migrations/README.md](scripts/migrations/README.md).
+
+### Deployment
+
+- **Active**: Netlify adapter (`@astrojs/netlify`)
+- **Alternative**: Node.js adapter (`@astrojs/node`) - available but commented out
+
+## Documentation
+
+Comprehensive documentation is available in multiple formats:
+
+- **Interactive Docs**: Visit `/guide` for Starlight-powered documentation with:
+  - Getting started guides and component documentation
+  - API reference with TypeScript integration
+  - MCP Server setup and configuration guides
+  - Role guard system usage
+- **Development Docs**: The `docs/` folder contains detailed implementation guides, PRDs, and technical documentation
+- **Feature Documentation**: See [FEATURES.md](FEATURES.md) for a complete feature overview
+- **Changelog**: Review [CHANGELOG.md](CHANGELOG.md) for release notes and version history
+
+## Dependency Management
+
+Dependabot is configured but currently disabled. To enable/disable:
+
+- **Enable**: Set `open-pull-requests-limit: 5` in `.github/dependabot.yml`
+- **Disable**: Set `open-pull-requests-limit: 0` in `.github/dependabot.yml`
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on:
+
+- Development workflow and setup
+- Code style guidelines and conventions
+- Testing requirements and procedures
+- Pull request process and requirements
+- Component development standards
+
+Quick start for contributors:
+
+1. Fork the repository
+2. Run `npm install && npm run prepare`
+3. Create a feature branch
+4. Make changes following our guidelines
+5. Run `npm run fix:all` before committing
+6. Submit a pull request
+
+## License
+
+MIT

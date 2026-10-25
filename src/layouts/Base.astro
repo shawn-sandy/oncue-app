@@ -1,0 +1,157 @@
+---
+// import { ClientOnly } from "astro:transitions";
+import Navigation from '#components/astro/Navigation.astro'
+import Footer from '#components/astro/Footer.astro'
+import Header from '#components/astro/Header.astro'
+import ThemeToggle from '#components/astro/ThemeToggle.astro'
+// import PWAInstallPrompt from '#components/astro/PWAInstallPrompt.astro'
+// import OfflineIndicator from '#components/astro/OfflineIndicator.astro'
+
+import { SITE_DESCRIPTION, SITE_TITLE } from '#utils/site-config'
+import '@fpkit/acss/styles'
+import '../styles/index.css'
+import { Show, UserButton, SignInButton } from '@clerk/astro/components'
+const isPWAEnabled = import.meta.env.PWA_ENABLED === 'true' || false
+// types
+type routeItem = {
+  name: string
+  url: string
+  path?: string
+}
+type Props = {
+  pageTitle?: string
+  pageDescription?: string
+  pageImageUrl?: string
+  showBreadcrumb?: boolean
+  breadcrumbRoutes?: routeItem[]
+  hideHeader?: boolean
+  /** Omit the site navigation and footer, for layouts that bring their own (e.g. `Dashboard.astro`). */
+  hideSiteChrome?: boolean
+}
+
+const showBreadcrumb = Astro.props.showBreadcrumb === undefined ? true : Astro.props.showBreadcrumb
+
+// Get authentication state from locals
+const { userId } = Astro.locals
+
+const { pageTitle, pageDescription, pageImageUrl, hideHeader, hideSiteChrome } = Astro.props
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <!--
+      Restores the visitor's theme choice before first paint. `ThemeToggle`
+      writes it under Starlight's `starlight-theme` key so the docs and the site
+      share one preference; Starlight stores `''` for "auto", which leaves the
+      attribute unset and `prefers-color-scheme` in charge. `is:inline` keeps it
+      out of the bundle -- a deferred module would run after the first paint
+      and flash the OS theme. `try` because storage access can throw.
+    -->
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('starlight-theme')
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
+      } catch {}
+    </script>
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      Self-hosted display face. One request, and only one: `@font-face` in
+      `src/styles/_design-tokens.scss` points at this same file, and the
+      display role is applied to h1-h6 at a single weight, so no second
+      subset or weight is ever fetched. `crossorigin` is required even
+      same-origin — fonts are fetched in CORS mode, and without it the
+      preload is discarded and the request happens twice.
+    -->
+    <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content={pageDescription || SITE_DESCRIPTION} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1e293b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="AstroKit" />
+    <meta name="application-name" content="AstroKit" />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle || SITE_TITLE}</title>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Offline Status Indicator -->
+    <!-- <OfflineIndicator /> -->
+
+    {
+      !hideSiteChrome && (
+        <Navigation>
+          {
+            /*
+             * Authenticated-only links render into the default slot, which sits
+             * inside the navigation popover panel. The `userId` check is what
+             * keeps them out of an anonymous response — the popover is
+             * presentational and never an access-control mechanism (CWE-602).
+             */
+            userId && (
+              <ul data-nav-account>
+                <li>
+                  <a href="/dashboard">Dashboard</a>
+                </li>
+                <li>
+                  <a href="/profile">Profile</a>
+                </li>
+              </ul>
+            )
+          }
+
+          <ul slot="login">
+            <li>
+              <ThemeToggle />
+            </li>
+            <li class="clerk-user-button">
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+              <Show when="signed-out">
+                <SignInButton mode="modal" />
+              </Show>
+            </li>
+          </ul>
+        </Navigation>
+      )
+    }
+
+    {
+      !hideHeader && (
+        <>
+          {Astro.slots.has('header') ? (
+            <slot name="header" />
+          ) : (
+            <Header
+              headerTitle={pageTitle || ''}
+              headerDescription={pageDescription || ''}
+              headerImageUrl={pageImageUrl || ''}
+              headerImageAlt={pageTitle || ''}
+            />
+          )}
+        </>
+      )
+    }
+    <slot />
+    {!hideSiteChrome && <Footer />}
+
+    <!-- PWA Install Prompt -->
+    <!-- {isPWAEnabled && <PWAInstallPrompt />} -->
+  </body>
+</html>

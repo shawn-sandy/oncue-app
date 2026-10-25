@@ -1,0 +1,37 @@
+---
+import Dashboard from '#layouts/Dashboard.astro'
+import DashboardPage from '#components/dashboard/DashboardPage.astro'
+import { Show, UserProfile } from '@clerk/astro/components'
+---
+
+<Dashboard pageTitle="User Management - Astro Basics" pageDescription="Manage users and profiles">
+  <Show when="signed-in">
+    <DashboardPage eyebrow="Users" title="User Management">
+      <div class="user-actions">
+        <h2>Manage Users</h2>
+        <UserProfile />
+      </div>
+    </DashboardPage>
+  </Show>
+
+  <Show when="signed-out">
+    <div class="alert alert--info">
+      <p>Please sign in to access the user management dashboard.</p>
+      <a href="/login" class="btn btn--primary">Sign In</a>
+    </div>
+  </Show>
+</Dashboard>
+
+<style>
+  .user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .user-actions h2 {
+    font-size: var(--font-size-lg);
+    margin: 0;
+  }
+</style>

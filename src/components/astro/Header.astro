@@ -1,0 +1,21 @@
+---
+export type Props = {
+  headerTitle?: string
+  headerDescription?: string
+  headerImageUrl?: string
+  headerImageAlt?: string
+}
+const { headerTitle, headerDescription } = Astro.props
+---
+
+<header>
+  <section id="header">
+    <h1 data-ui="display">{headerTitle}</h1>
+    <div>
+      <p>{headerDescription}</p>
+    </div>
+  </section>
+</header>
+<section id="features">
+  <slot />
+</section>

@@ -1,0 +1,44 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+.env.backup
+.env*.local
+
+# macOS-specific files
+.DS_Store
+.netlify
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.vercel/
+.mcp.json
+backup-docs/
+# Impeccable live mode session state (machine-specific: pids, tokens, absolute paths).
+# Only .impeccable/live/config.json is durable project config and stays tracked.
+.impeccable/live/*
+!.impeccable/live/config.json
+# Design-hook cache: per-session edit counts keyed by absolute file paths.
+.impeccable/hook.cache.json
+
+# Storybook
+storybook-static/
