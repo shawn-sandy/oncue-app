@@ -35,13 +35,13 @@ Rebrand the site around #185c53 and make the corners sharper.
 
 The skill asks five questions in one message:
 
-| Question | What it decides                                                                                  |
-| -------- | ------------------------------------------------------------------------------------------------ |
-| Scope    | The whole site (Path A, the default) or a brand layer on a few sections (Path B)                 |
-| Colour   | One brand colour is enough, and the skill derives the rest. A logo works too: it reads the fills |
-| Fonts    | Keep Inter, or name a display face you can self-host. Body and labels stay on system stacks      |
-| Corners  | Keep 8px, go sharper, or go rounder                                                              |
-| Name     | What the design system is called in `DESIGN.md`. The site title is separate, in `site-config.ts` |
+| Question | What it decides                                                                                   |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| Scope    | The whole site (Path A, the default) or a brand layer on a few sections (Path B)                  |
+| Colour   | One brand colour is enough, and the skill derives the rest. A logo works too: it reads the fills  |
+| Fonts    | Keep Georgia, DM Sans and DM Mono, or name a display face you can self-host. Body and labels stay |
+| Corners  | Keep 8px, go sharper, or go rounder                                                               |
+| Name     | What the design system is called in `DESIGN.md`. The site title is separate, in `site-config.ts`  |
 
 ## Where the Design Lives
 
@@ -121,8 +121,8 @@ the rebrand:
    search is not exhaustive, so it reads the remaining values in `DESIGN.md` too:
 
    ```bash
-   grep -nE '#[0-9a-fA-F]{6}\b|[0-9]+\.[0-9]+:1|Harbour|petrol|blue-green|teal' DESIGN.md
-   grep -nw Inter DESIGN.md
+   grep -nE '#[0-9a-fA-F]{6}\b|[0-9]+\.[0-9]+:1|Rust|rust|Clay|salmon' DESIGN.md
+   grep -nwE 'Georgia|DM Sans|DM Mono' DESIGN.md
    ```
 
    The same changes go into `src/content/docs/guide/design-direction.mdx` and
@@ -241,7 +241,7 @@ Behaviour worth knowing:
   not apply that allowance, so judge those cases separately.
 
 - Ratios are floored to two decimals, so 4.499 never prints as a passing 4.50. Older figures in `DESIGN.md` were
-  rounded and can read 0.01 higher (6.77 there, 6.76 here).
+  rounded and can read 0.01 higher.
 - Comments are stripped before the mixins are read, so a commented-out declaration cannot override a real one.
 - A Sass expression such as `#{$var}` reports "cannot measure" rather than "missing".
 - The token file is found relative to the script, so it works from any working directory.

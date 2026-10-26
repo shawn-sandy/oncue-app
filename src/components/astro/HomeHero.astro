@@ -260,7 +260,7 @@ const specimenCode = [
 
     /*
      * Paper, not a literal white. The accent lightens in dark mode, so white
-     * label text would drop to about 2.5:1 there; inverting to the paper token
+     * label text would drop to 2.57:1 there; inverting to the paper token
      * measures 5.31:1 in light and 7.32:1 in dark.
      */
     color: var(--hero-paper);
@@ -338,9 +338,11 @@ const specimenCode = [
     padding-block-start: 1rem;
   }
 
+  /* Ink, not weight, carries the emphasis: DM Mono ships 400 only, so a bold
+     weight here would be synthesized by the browser. */
   .home-hero .home-hero__legend b {
     color: var(--hero-ink);
-    font-weight: 650;
+    font-weight: var(--font-weight-normal, 400);
   }
 
   .home-hero .home-hero__specimen {

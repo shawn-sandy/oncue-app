@@ -128,7 +128,7 @@ Known constraints:
   "Astro-Basics Guide"; the two names coexist today and no consolidation has been decided.
 - Owner and author: Shawn Sandy. Repository: `github.com/shawn-sandy/astro-basics`. Licence: MIT.
 - Tagline in use: "A simple, easy to use multipurpose starter theme for Astro."
-- The `--island` accent is a deep petrol, chosen specifically so the page does not read as a
+- The `--island` accent is OnCue rust (`#c7342b`), chosen specifically so the page does not read as a
   framework default. It is not to drift toward the sky-blue or violet/indigo families.
 - The existing token vocabulary (`ink`, `ink-soft`, `paper`, `paper-sunk`, `island`, `island-bg`,
   `rule`) is the public styling contract for consumers and its names are stable.

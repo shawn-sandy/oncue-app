@@ -73,8 +73,9 @@ Ask in one message:
    only (Path B).
 2. **Colour.** One brand colour is enough; you derive the rest. A logo works too: read
    its fills.
-3. **Fonts.** Keep Inter, or name a display face they may self-host (Google Fonts' OFL
-   fonts can be). Body and labels stay on system stacks unless they ask.
+3. **Fonts.** Keep the current faces (Georgia headings, self-hosted DM Sans body and DM
+   Mono labels), or name a display face they may self-host (Google Fonts' OFL fonts can
+   be). Body and labels keep their faces unless they ask.
 4. **Corners.** Keep 8px, go sharper, or go rounder.
 5. **Name.** What the design system is called in `DESIGN.md`. The site title is
    separate, in `site-config.ts`.
@@ -154,7 +155,7 @@ Optionally, point Starlight's accent at the new hue so the docs at `/guide/` mat
    `src`, and put the new family first in `--font-family-display`.
 3. In `src/layouts/Base.astro`, change the preload `href` to match the `src` exactly. A
    mismatch downloads the font twice.
-4. Headings render at `--font-weight-semibold` (600; set in `src/styles/_base.scss`). A
+4. Headings render at `--font-weight-normal` (400; set in `src/styles/_base.scss`). A
    file in another weight needs that line changed too, or the browser fakes the weight.
 
 Each extra weight is another network request: make that choice with the user, not for
@@ -213,16 +214,16 @@ warning, error, info) alone. They signal state, not brand.
 - **Frontmatter:** `name`, `description`, the seven `colors` (light values), each
   `typography.*.fontFamily`, `rounded`, and any component value that hardcodes a colour
   (`button-primary-hover.backgroundColor`).
-- **`## Colors`:** new names for the colours (Harbour Teal and Harbour Wash are the
-  current ones), how the accent is described ("low-chroma blue-green"), light and dark
+- **`## Colors`:** new names for the colours (OnCue Rust and Clay Wash are the current
+  ones), how the accent is described ("warm rust red"), light and dark
   hex, and the script's ratios.
 - **`## Typography`** if the display font changed, **`## Shapes`** if the corners did.
 - **Every other hex, ratio and colour word.** Ratios also appear outside `## Colors`, for
   example under `### Buttons`. List them all and decide each one:
 
   ```bash
-  grep -nE '#[0-9a-fA-F]{6}\b|[0-9]+\.[0-9]+:1|Harbour|petrol|blue-green|teal' DESIGN.md
-  grep -nw Inter DESIGN.md
+  grep -nE '#[0-9a-fA-F]{6}\b|[0-9]+\.[0-9]+:1|Rust|rust|Clay|salmon' DESIGN.md
+  grep -nwE 'Georgia|DM Sans|DM Mono' DESIGN.md
   ```
 
 Then make the same changes in the two published copies:

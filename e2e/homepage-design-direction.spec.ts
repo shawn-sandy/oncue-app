@@ -74,6 +74,47 @@ test.describe('Homepage design direction', () => {
     ).toBe(3)
   })
 
+  // A self-hosted face ships only the weights its `@font-face` declares, so a
+  // rule that asks it for a heavier one gets a browser-synthesized bold. Before
+  // the OnCue rebrand the mono role was a system stack with a real bold, and the
+  // hero legend's `b` (weight 650) relied on it; DM Mono ships 400 only.
+  test('no text asks a self-hosted face for a bold weight it does not ship', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+
+    const { families, synthesized } = await page.evaluate(() => {
+      // Heaviest weight each loaded family ships: "400" -> 400, "400 700" -> 700.
+      const heaviest = new Map<string, number>()
+      document.fonts.forEach(face => {
+        if (face.status !== 'loaded') return
+        const family = face.family.replace(/['"]/g, '')
+        const max = Math.max(...face.weight.split(' ').map(Number))
+        heaviest.set(family, Math.max(heaviest.get(family) ?? 0, max))
+      })
+
+      const offenders = Array.from(document.querySelectorAll('body *')).flatMap(el => {
+        const text = (el.textContent ?? '').trim()
+        if (!text) return []
+        const style = getComputedStyle(el)
+        const family = style.fontFamily.split(',')[0].trim().replace(/['"]/g, '')
+        const weight = Number(style.fontWeight)
+        const max = heaviest.get(family)
+        // Browsers synthesize bold when 600+ is asked of a face lighter than 600.
+        return max !== undefined && weight >= 600 && max < 600
+          ? [`${el.tagName.toLowerCase()} "${text.slice(0, 30)}" asks ${family} for ${weight}`]
+          : []
+      })
+
+      return { families: [...heaviest.keys()], synthesized: offenders }
+    })
+
+    // Guards against a vacuous pass: with no self-hosted face loaded there is
+    // nothing to check.
+    expect(families.length, 'no self-hosted font face loaded on the homepage').toBeGreaterThan(0)
+    expect(synthesized, synthesized.join('\n')).toEqual([])
+  })
+
   // Review baseline: 78.4px headline over a 48px deck = 1.63. The deck was
   // painted by a vendor descendant rule, not by the 2rem the stylesheet
   // declared. Checked at two widths because a desktop-only clamp would satisfy
