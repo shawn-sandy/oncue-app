@@ -18,8 +18,9 @@ walks the rendered homepage and asserts that **no non-interactive element comput
 
 Three supporting decisions are already settled:
 
-- **One self-hosted display face.** A latin-subset, single-weight `inter-600.woff2` in `public/fonts/`, not a
-  CDN and not a system stack alone. It is preloaded from `src/layouts/Base.astro` and declared with `font-display: swap`.
+- **Self-hosted body and mono faces, a system display face.** Headings use Georgia, a system serif. Body and labels
+  use latin-subset woff2 files in `public/fonts/`, not a CDN: `dm-sans-variable.woff2` (400-700 in one file, preloaded
+  from `src/layouts/Base.astro`) and `dm-mono-400.woff2`. Both are declared with `font-display: swap`.
 - **The token layer applies sitewide.** Body background and text colour are global, so there is no way to scope them.
   The homepage hero and the card tiering are homepage-only.
 - **Component prop signatures stay stable.** `Card` and `FeatureCards` are package exports via `src/components/index.ts`,
@@ -31,21 +32,22 @@ Source of truth: `src/styles/_design-tokens.scss` (definitions) and `src/styles/
 
 | Token          | Light     | Dark      | Role                                                           |
 | -------------- | --------- | --------- | -------------------------------------------------------------- |
-| `--ink`        | `#101418` | `#e8eaed` | Primary text; the default `color` on `body`                    |
-| `--ink-soft`   | `#5a6472` | `#99a2ad` | Secondary text: decks, eyebrows, labels, captions, inline code |
-| `--paper`      | `#fcfcfd` | `#0d1014` | Page background                                                |
-| `--paper-sunk` | `#f1f3f5` | `#151a20` | Recessed surfaces: the header band, card backgrounds           |
-| `--island`     | `#0b6070` | `#6bb9c9` | The accent. Interactive only                                   |
-| `--island-bg`  | `#e6f2f6` | `#102a33` | Accent wash behind interactive affordances and `::selection`   |
-| `--rule`       | `#dde1e6` | `#262c33` | Hairlines and dividers                                         |
+| `--ink`        | `#000000` | `#f2f2f2` | Primary text; the default `color` on `body`                    |
+| `--ink-soft`   | `#606060` | `#a3a3a3` | Secondary text: decks, eyebrows, labels, captions, inline code |
+| `--paper`      | `#ffffff` | `#111111` | Page background                                                |
+| `--paper-sunk` | `#f0f0f0` | `#1c1c1c` | Recessed surfaces: the header band, card backgrounds           |
+| `--island`     | `#c7342b` | `#ef827b` | The accent. Interactive only                                   |
+| `--island-bg`  | `#fcebe9` | `#3a1714` | Accent wash behind interactive affordances and `::selection`   |
+| `--rule`       | `#dedede` | `#2e2e2e` | Hairlines and dividers                                         |
 
-The accent is a deep petrol — a low-chroma blue-green, deliberately not Tailwind sky-500 and not the violet/indigo
-family that generated palettes converge on, so the palette does not read as a framework default. Low chroma is the
-point: the accent sits beside ink as a second voice rather than shouting over it, and it darkens cleanly under the
-`color-mix` hover states instead of going muddy. Every pair clears WCAG 2.1 AA. Measured against the running page
-rather than estimated: in light, ink on paper is 18.04:1, ink-soft on paper 5.85:1, island on paper 7.01:1, and the
-lowest pair of all — ink-soft on paper-sunk — 5.39:1; in dark, island on paper is 8.54:1 and the lowest pair — again
-ink-soft on paper-sunk — is 6.77:1. `e2e/home-accessibility.spec.ts` asserts the 4.5:1 AA floor against the tokens the
+The accent is OnCue rust, the brand's primary-button red, on an otherwise colourless black-and-white ground —
+deliberately not Tailwind sky-500 and not the violet/indigo family that generated palettes converge on, so the palette
+does not read as a framework default. With no other hue on the page, one warm colour is enough to mark what can be
+pressed, and it darkens under the `color-mix` hover states without going brown. The wash is paler than the brand's
+`#f5d5d2` clay, which held rust at only 3.87:1. Every pair clears WCAG 2.1 AA. Measured with the contrast script
+rather than estimated: in light, ink on paper is 21.00:1, ink-soft on paper 6.28:1, island on paper 5.31:1, and the
+lowest pair of all — island on island-bg — 4.60:1; in dark, island on paper is 7.32:1 and the lowest pair — again
+island on island-bg — is 6.20:1. `e2e/home-accessibility.spec.ts` asserts the 4.5:1 AA floor against the tokens the
 page actually resolves, so no repoint can drop a pair below AA without failing the build. The exact figures above are
 not themselves asserted — they record the current budget, and re-measuring is part of changing a token.
 
@@ -115,22 +117,22 @@ converging.
 One typeface used to render across every heading, paragraph, link and button, so elements differed only by size. Three
 roles is the smallest set that reads as deliberate.
 
-| Role        | Token                   | Applies to                                                        | Treatment                                  |
-| ----------- | ----------------------- | ----------------------------------------------------------------- | ------------------------------------------ |
-| **Display** | `--font-family-display` | `h1` through `h6`                                                 | Inter 600, negative tracking               |
-| **Body**    | `--font-family-sans`    | `body`, `p`, `li`, and everything inheriting from `body`          | System sans stack                          |
-| **Mono**    | `--font-family-mono`    | `code`, `kbd`, `samp`, `[data-ui="eyebrow"]`, `[data-ui="label"]` | Uppercase, `0.12em` tracking, `--ink-soft` |
+| Role        | Token                   | Applies to                                                        | Treatment                                           |
+| ----------- | ----------------------- | ----------------------------------------------------------------- | --------------------------------------------------- |
+| **Display** | `--font-family-display` | `h1` through `h6`                                                 | Georgia 400, negative tracking                      |
+| **Body**    | `--font-family-sans`    | `body`, `p`, `li`, and everything inheriting from `body`          | DM Sans                                             |
+| **Mono**    | `--font-family-mono`    | `code`, `kbd`, `samp`, `[data-ui="eyebrow"]`, `[data-ui="label"]` | DM Mono, uppercase, `0.12em` tracking, `--ink-soft` |
 
 Details worth knowing:
 
-- **Display covers every heading level.** `h1` through `h6` all render at weight 600, which is the single weight the
-  self-hosted woff2 ships - so the full range costs no additional font request.
+- **Display covers every heading level.** `h1` through `h6` all render Georgia at weight 400. Georgia is a system
+  serif, so the full range costs no font request.
 - **Casing is not part of the role.** `text-transform: capitalize` stays on `h1`-`h3`, which are titles. `h4`-`h6` are
   used for UI labels - the contact form renders its error summary as an `h6` - and capitalizing a sentence would
   produce "Please Correct The Following Errors".
 - **Tracking is negative on display.** `-0.015em` on `h1`-`h6`, tightened to `-0.02em` on `h1`.
-- **The display stack falls back through the system sans**, so a failed font request degrades to the body face rather
-  than to a serif.
+- **The display stack falls back through other serifs** (Cambria, Times New Roman), so a system without Georgia still
+  gets a serif rather than the body face.
 - **Body is declared on `body`, not `html`.** @fpkit/acss sets `font-family` on `html`, which is why one face used to
   render everywhere. Declaring the body role on `body` beats that by inheritance and leaves the headings free.
 - **Mono is opt-in for non-code.** Code semantics get it by element. Everything else opts in through
@@ -203,7 +205,7 @@ resolve through `var()`, so redefining the variables repaints every surface that
 ```css
 :root {
   /* Swap the display face. Keep a fallback chain - the kit's @font-face rule
-     and Base.astro preload still reference the bundled Inter file. */
+     and Base.astro preload still reference the bundled DM Sans file. */
   --font-family-display: 'Söhne Breit', ui-sans-serif, system-ui, sans-serif;
   --font-family-sans: 'Söhne', ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: 'Berkeley Mono', ui-monospace, monospace;
