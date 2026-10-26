@@ -35,13 +35,13 @@ Rebrand the site around #185c53 and make the corners sharper.
 
 The skill asks five questions in one message:
 
-| Question | What it decides                                                                                   |
-| -------- | ------------------------------------------------------------------------------------------------- |
-| Scope    | The whole site (Path A, the default) or a brand layer on a few sections (Path B)                  |
-| Colour   | One brand colour is enough, and the skill derives the rest. A logo works too: it reads the fills  |
-| Fonts    | Keep Georgia, DM Sans and DM Mono, or name a display face you can self-host. Body and labels stay |
-| Corners  | Keep 8px, go sharper, or go rounder                                                               |
-| Name     | What the design system is called in `DESIGN.md`. The site title is separate, in `site-config.ts`  |
+| Question | What it decides                                                                                                              |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Scope    | The whole site (Path A, the default) or a brand layer on a few sections (Path B)                                             |
+| Colour   | One brand colour is enough, and the skill derives the rest. A logo works too: it reads the fills                             |
+| Fonts    | Keep Georgia, DM Sans and DM Mono, or name a display face you can self-host. Body and labels keep their faces unless you ask |
+| Corners  | Keep 8px, go sharper, or go rounder                                                                                          |
+| Name     | What the design system is called in `DESIGN.md`. The site title is separate, in `site-config.ts`                             |
 
 ## Where the Design Lives
 
@@ -106,7 +106,7 @@ the rebrand:
    `--sl-color-bg` and `--sl-color-bg-sidebar` in each block, since no test covers the docs.
 3. **Fonts, only if asked.** One woff2 in `public/fonts/` (one weight, latin subset, licence checked), the
    `@font-face` and `--font-family-display` updated, and the preload `href` in `src/layouts/Base.astro` changed to
-   match the `src` exactly. Headings render at weight 600 (`src/styles/_base.scss`), so a file in another weight
+   match the `src` exactly. Headings render at weight 400 (`src/styles/_base.scss`), so a file in another weight
    needs that line changed too. `--font-family-sans` and `--font-family-mono` must stay different from the display
    family and from each other.
 4. **Corners, only if asked.** See [Corners](#corners).
