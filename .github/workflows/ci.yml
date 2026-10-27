@@ -34,7 +34,9 @@ jobs:
 
   test:
     name: Type-check, unit, and e2e tests
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest is now 26.04, where Playwright 1.59 refuses to
+    # install Chromium. Return to ubuntu-latest once Playwright supports it.
+    runs-on: ubuntu-24.04
     env:
       # astro.config.mjs re-reads this env var per-command, so it must be
       # set job-wide — a build-step-only env var left `astro preview`
