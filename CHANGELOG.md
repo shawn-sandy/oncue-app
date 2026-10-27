@@ -164,6 +164,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Design system rebranded to OnCue** (`src/styles/_design-tokens.scss`, `src/styles/_base.scss`,
+  `src/styles/starlight-custom.scss`, `src/layouts/Base.astro`, `DESIGN.md`): the palette, fonts and
+  docs accent now match the OnCue brand site
+  - Black ink on white paper with OnCue rust (`#c7342b`) as the one accent; the dark theme uses
+    near-black paper and a salmon tint (`#ef827b`). The accent wash is `#fcebe9`, paler than the
+    brand's `#f5d5d2` clay, which held the rust at only 3.87:1. Every text pair still clears 4.5:1
+    in both themes; the lowest is now rust on its wash, 4.60:1 light and 6.20:1 dark
+  - Headings use Georgia at weight 400 (a system font, so no download); body text is DM Sans and
+    labels and code are DM Mono, both self-hosted latin-subset woff2 files. DM Sans is one variable
+    file covering 400-700 and is preloaded. `public/fonts/inter-600.woff2` is removed
+  - The `/guide/` docs accent follows the rust; dark-mode docs links use a lighter tint
+    (`#f4a09a`) because the salmon is only 4.01:1 on the docs' slate sidebar
+  - Corner radii are unchanged
 - **E2E tests follow one base URL** (`playwright.config.ts`, `e2e/`): specs navigate with relative
   paths instead of a hard-coded `http://localhost:4321`, and `use.baseURL` reads
   `PLAYWRIGHT_BASE_URL` (default `http://localhost:4321`). The dev server Playwright starts uses the

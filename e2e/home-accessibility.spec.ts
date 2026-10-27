@@ -37,13 +37,13 @@ test.describe('Home Page Accessibility', () => {
    * the numbers written in the docs.
    *
    * The floor is WCAG 2.1 SC 1.4.3 Level AA for normal-size text (4.5:1); the
-   * documented values sit well above it, so a drop to AA-failing means a token
+   * documented values sit above it, so a drop to AA-failing means a token
    * changed without the budget being rechecked.
    *
-   * Measured on the running page after the accent moved from violet to petrol
-   * -- light: ink/paper 18.04, ink-soft/paper 5.85, island/paper 7.01,
-   * ink/paper-sunk 16.63, ink-soft/paper-sunk 5.39; dark: 15.82, 7.38, 8.54,
-   * 14.51, 6.77. The gate stays at the falsifiable standard (4.5) rather than
+   * Measured with the contrast script after the accent moved from petrol to
+   * OnCue rust -- light: ink/paper 21.00, ink-soft/paper 6.28, island/paper
+   * 5.31, ink/paper-sunk 18.42, ink-soft/paper-sunk 5.51; dark: 16.86, 7.48,
+   * 7.32, 15.22, 6.75. The gate stays at the falsifiable standard (4.5) rather than
    * at any of these figures, so repointing a token is not a test edit.
    */
   for (const colorScheme of ['light', 'dark'] as const) {

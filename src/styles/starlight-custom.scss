@@ -11,13 +11,14 @@
 
 :root {
   // Brand Colors - Map to Starlight color variables
-  --sl-color-accent: #3b82f6; // Primary blue
-  --sl-color-accent-high: #2563eb; // Darker blue for high contrast
-  --sl-color-accent-low: #dbeafe; // Light blue for backgrounds
+  --sl-color-accent: #c7342b; // OnCue rust
+  --sl-color-accent-high: #a92b23; // Darker rust for high contrast
+  --sl-color-accent-low: #fcebe9; // Pale clay for backgrounds
 
   // Text Colors
   --sl-color-text: #1e293b; // Primary text color
-  --sl-color-text-accent: #3b82f6; // Accent text color (links, etc.)
+  // Accent text color (links, etc.): 5.31:1 on bg, 4.84:1 on bg-sidebar
+  --sl-color-text-accent: #c7342b;
   --sl-color-text-invert: #f8fafc; // Inverted text for dark backgrounds
 
   // Background Colors
@@ -32,10 +33,11 @@
   --sl-color-border-high: #cbd5e1; // High contrast border
 
   // Typography
-  --sl-font: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue",
-    arial, sans-serif;
-  --sl-font-mono: "SF Mono", monaco, "Cascadia Code", "Roboto Mono", consolas, "Courier New",
-    monospace;
+  --sl-font:
+    system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial,
+    sans-serif;
+  --sl-font-mono:
+    "SF Mono", monaco, "Cascadia Code", "Roboto Mono", consolas, "Courier New", monospace;
 
   // Layout
   --sl-content-width: 72rem; // Maximum content width
@@ -55,11 +57,14 @@
 
 // Dark mode color scheme
 :root[data-theme="dark"] {
-  --sl-color-accent: #60a5fa; // Lighter blue for dark mode
-  --sl-color-accent-high: #3b82f6;
-  --sl-color-accent-low: #1e3a8a;
+  --sl-color-accent: #ef827b; // Salmon tint of the rust for dark mode
+  --sl-color-accent-high: #c7342b;
+  --sl-color-accent-low: #3a1714;
   --sl-color-text: #f1f5f9;
-  --sl-color-text-accent: #60a5fa;
+
+  // Lighter than --sl-color-accent: the salmon is 4.01:1 on the slate sidebar.
+  // This tint is 8.79:1 on bg, 5.09:1 on bg-sidebar.
+  --sl-color-text-accent: #f4a09a;
   --sl-color-text-invert: #1e293b;
   --sl-color-bg: #0f172a;
   --sl-color-bg-nav: #1e293b;

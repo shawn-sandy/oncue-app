@@ -1,17 +1,25 @@
 // Design Tokens - Figma Integration Ready
 // Generated for astro-basics-website design system
 
-// Self-hosted display face. One latin subset, one weight, no CDN and no
-// second request: `--font-family-display` is applied to h1-h6, and every one
-// of those renders at weight 600, so a second woff2 would download bytes
-// nothing on the site asks for. Licensed SIL OFL 1.1; the file lives at
-// `public/fonts/inter-600.woff2` and is preloaded from `Base.astro`.
+// Self-hosted body and label faces, latin subset only, no CDN. Headings use
+// Georgia, a system serif, so they cost no request. DM Sans is the variable
+// file and covers 400-700 in one request. DM Mono ships 400 only, the one
+// weight the labels use. Both are licensed SIL OFL 1.1, live in
+// `public/fonts/`, and DM Sans is preloaded from `Base.astro`.
 @font-face {
   font-display: swap;
-  font-family: Inter;
+  font-family: "DM Sans";
   font-style: normal;
-  font-weight: 600;
-  src: url("/fonts/inter-600.woff2") format("woff2");
+  font-weight: 400 700;
+  src: url("/fonts/dm-sans-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "DM Mono";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/dm-mono-400.woff2") format("woff2");
 }
 
 // The direction: colour marks hydration.
@@ -21,36 +29,37 @@
 // focus rings, the interactive-specimen badge). Never reach for `--island`
 // for a decorative border, a heading or a card surface: an e2e test asserts
 // that no non-interactive element computes to the accent.
-// The accent is a deep petrol -- a low-chroma blue-green, deliberately neither
-// the violet/indigo every generated palette reaches for nor stock Tailwind
-// sky-500. Low chroma is the point: it sits next to ink as a considered second
-// voice rather than shouting over it, and it darkens cleanly under the
-// `color-mix` hover states instead of going muddy.
-// Contrast, measured not estimated -- light: ink/paper 18.04:1,
-// ink-soft/paper 5.85:1, island/paper 7.01:1, ink-soft/paper-sunk 5.39:1
-// (the lowest pair). Dark: island/paper 8.54:1, ink-soft/paper-sunk 6.77:1
+// The accent is OnCue rust, the brand's primary-button red, set against pure
+// black ink on white paper. The palette is otherwise colourless, so the one
+// warm hue does the work of saying "you can press this". The wash is a pale
+// clay, lighter than the brand's #f5d5d2, which held rust at only 3.87:1.
+// The dark theme is taken from the brand's dark film card: near-black paper,
+// a salmon tint of the rust.
+// Contrast, measured not estimated -- light: ink/paper 21.00:1,
+// ink-soft/paper 6.28:1, island/paper 5.31:1, island/island-bg 4.60:1
+// (the lowest pair). Dark: island/paper 7.32:1, island/island-bg 6.20:1
 // (the lowest pair).
 @mixin direction-light {
-  --ink: #101418;
-  --ink-soft: #5a6472;
-  --island: #0b6070;
-  --island-bg: #e6f2f6;
-  --paper: #fcfcfd;
-  --paper-sunk: #f1f3f5;
-  --rule: #dde1e6;
+  --ink: #000;
+  --ink-soft: #606060;
+  --island: #c7342b;
+  --island-bg: #fcebe9;
+  --paper: #fff;
+  --paper-sunk: #f0f0f0;
+  --rule: #dedede;
 
   // Lets the UA paint native controls, scrollbars and form widgets to match.
   color-scheme: light;
 }
 
 @mixin direction-dark {
-  --ink: #e8eaed;
-  --ink-soft: #99a2ad;
-  --island: #6bb9c9;
-  --island-bg: #102a33;
-  --paper: #0d1014;
-  --paper-sunk: #151a20;
-  --rule: #262c33;
+  --ink: #f2f2f2;
+  --ink-soft: #a3a3a3;
+  --island: #ef827b;
+  --island-bg: #3a1714;
+  --paper: #111;
+  --paper-sunk: #1c1c1c;
+  --rule: #2e2e2e;
 
   color-scheme: dark;
 }
@@ -154,19 +163,17 @@
 
   // Typography Tokens
   // Three roles, and only three: display for h1-h6, sans for body copy, mono
-  // for code and for the eyebrow/label opt-ins. The display stack falls all
-  // the way back through the system sans, so a failed font request degrades
-  // to the body face rather than to a serif.
-  --font-family-display:
-    "Inter", ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
-    "Helvetica Neue", arial, sans-serif;
+  // for code and for the eyebrow/label opt-ins. Display is a system serif, so
+  // it never waits on a download; a system without Georgia falls to the next
+  // serif rather than to the body sans.
+  --font-family-display: georgia, cambria, "Times New Roman", times, serif;
   --font-family-sans:
-    ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
+    "DM Sans", ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
     "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
   --font-family-mono:
-    ui-monospace, sfmono-regular, "SF Mono", menlo, monaco, consolas, "Liberation Mono",
+    "DM Mono", ui-monospace, sfmono-regular, "SF Mono", menlo, monaco, consolas, "Liberation Mono",
     "Courier New", monospace;
 
   // Font Size Tokens (Type Scale)
