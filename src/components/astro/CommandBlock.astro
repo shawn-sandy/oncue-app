@@ -1,0 +1,147 @@
+---
+/**
+ * Commands to paste, with a Copy button that falls back to selecting them.
+ *
+ * Without JavaScript the commands are plain selectable text and the button
+ * stays `hidden`, so the page never shows a control that does nothing. The
+ * script reveals the button. When the clipboard refuses (insecure contexts,
+ * embedded browsers, a denied permission), it selects the commands instead
+ * and says how to copy them: the reference design's "Select text" fallback
+ * relabelled the button and selected nothing.
+ *
+ * Inside a `dialog`, closing the dialog resets the button and the message.
+ *
+ * Styled from DESIGN.md's `code-block` tokens, so it follows the theme.
+ *
+ * @component CommandBlock
+ * @example
+ * ```astro
+ * <CommandBlock commands={['/plugin marketplace add shawn-sandy/oncue', '/plugin install oncue@oncue']} />
+ * ```
+ */
+export type Props = {
+  /** One command per line, in the order they are run. */
+  commands: string[]
+}
+
+const { commands } = Astro.props
+---
+
+<div class="command-block" data-command-block-root>
+  <pre class="command-block__code" data-command-block><code>{commands.join('\n')}</code></pre>
+  <div class="command-block__bar">
+    <p class="command-block__status" role="status"></p>
+    <button class="command-block__copy" type="button" hidden data-command-copy>Copy</button>
+  </div>
+</div>
+
+<script>
+  const COPIED = 'Commands copied.'
+  const SELECTED = 'Commands selected. Press Ctrl+C or Cmd+C to copy.'
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-command-block-root]')) {
+    const code = root.querySelector('code')
+    const button = root.querySelector<HTMLButtonElement>('[data-command-copy]')
+    const status = root.querySelector('[role="status"]')
+    if (!code || !button || !status) continue
+
+    const show = (label: string, message: string) => {
+      button.textContent = label
+      status.textContent = message
+    }
+
+    button.hidden = false
+    button.addEventListener('click', async () => {
+      try {
+        // No optional chaining: where `navigator.clipboard` is undefined the
+        // call must throw into the fallback, not resolve to nothing.
+        await navigator.clipboard.writeText(code.textContent ?? '')
+        show('Copied', COPIED)
+      } catch {
+        const range = document.createRange()
+        range.selectNodeContents(code)
+        const selection = getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+        show('Selected', SELECTED)
+      }
+    })
+
+    root.closest('dialog')?.addEventListener('close', () => show('Copy', ''))
+  }
+</script>
+
+<style>
+  .command-block {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .command-block .command-block__code {
+    background: var(--paper-sunk);
+    border-radius: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    margin: 0;
+    padding: 1rem 1.25rem;
+
+    /* Wraps instead of scrolling, so the block never needs its own tab stop
+       and never widens a 320px viewport. */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .command-block .command-block__code code {
+    background: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+  }
+
+  .command-block__bar {
+    align-items: center;
+    border-block-start: 1px solid var(--rule);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem 0.25rem 1.25rem;
+  }
+
+  .command-block .command-block__status {
+    color: var(--ink-soft);
+    font-size: 0.8125rem;
+    margin: 0;
+  }
+
+  /* Qualified by the root: Astro scopes with `:where()`, which adds no
+     specificity, and the vendor's `button[type]` (0,1,1) would win. */
+  .command-block .command-block__copy {
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    color: var(--island);
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+  }
+
+  .command-block .command-block__copy[hidden] {
+    display: none;
+  }
+
+  .command-block .command-block__copy:hover {
+    background: var(--island-bg);
+    border-color: var(--island);
+  }
+
+  .command-block .command-block__copy:focus-visible {
+    outline: 2px solid var(--island);
+    outline-offset: 2px;
+  }
+</style>

@@ -28,4 +28,4 @@ const { description, title, url, image, type, twitterUsername, imgHeight, imgWid
 <meta property="og:image:height" content={imgHeight || '640'} />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content={image} />
-<meta property="twitter:site" content={twitterUsername} />
+{twitterUsername && <meta property="twitter:site" content={twitterUsername} />}

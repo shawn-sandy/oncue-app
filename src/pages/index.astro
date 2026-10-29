@@ -1,84 +1,81 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import CollectionList from '#components/astro/CollectionList.astro'
-import FeatureCards from '#components/astro/FeatureCards.astro'
-import Featured from '#components/astro/Featured.astro'
+import Base from '#layouts/Base.astro'
+import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureBrand from '#components/astro/FeatureBrand.astro'
+import FeatureCheckIns from '#components/astro/FeatureCheckIns.astro'
+import FeatureFactsPictures from '#components/astro/FeatureFactsPictures.astro'
+import FeatureFrameSizes from '#components/astro/FeatureFrameSizes.astro'
+import FeatureOneFile from '#components/astro/FeatureOneFile.astro'
+import FeatureRequirements from '#components/astro/FeatureRequirements.astro'
+import FeatureSkills from '#components/astro/FeatureSkills.astro'
+import FeatureWordSync from '#components/astro/FeatureWordSync.astro'
 import HomeHero from '#components/astro/HomeHero.astro'
-import { SITE_DESCRIPTION, SITE_TITLE } from '#utils/site-config.js'
+import InstallDialog from '#components/astro/InstallDialog.astro'
+import MainSection from '#components/astro/MainSection.astro'
+import WorkflowStrip from '#components/astro/WorkflowStrip.astro'
+import { SITE_DESCRIPTION, SITE_TITLE } from '#utils/site-config'
+
+// The OnCue plugin page. `Base` + `MainSection` rather than `Layout`, which
+// always renders the blog sidebar; `MainSection` keeps the skip-link target.
+const README = 'https://github.com/shawn-sandy/oncue'
+const INSTALL_HREF = `${README}#install`
+const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install oncue@oncue']
 ---
 
-<Layout
-  pageTitle={SITE_TITLE}
-  pageDescription={SITE_DESCRIPTION}
-  showBreadcrumb={false}
-  pageImageUrl="/images/astro-kit-cover.webp"
->
-  <HomeHero slot="header" />
-  <div slot="featured">
-    <!-- <section>
-      <Featured />
-    </section> -->
-    <section class="home-features" aria-labelledby="home-features-title">
-      <h2 class="home-section-title" id="home-features-title">What's in the kit</h2>
-      <FeatureCards promoted={2} />
-    </section>
-  </div>
-  <section class="home-latest" aria-labelledby="home-latest-title">
-    <h2 class="home-section-title" id="home-latest-title">Latest posts</h2>
-    <CollectionList pageSize={2} />
-  </section>
-</Layout>
+<Base pageTitle={SITE_TITLE} pageDescription={SITE_DESCRIPTION} hideHeader>
+  <MainSection showBreadcrumb={false}>
+    <HomeHero installHref={INSTALL_HREF} />
+    <WorkflowStrip
+      eyebrow="One idea. One connected workflow."
+      title="From your first beat to the final frame."
+      phases={['Storyboard', 'Voiceover', 'Editable deck', 'Finished video']}
+    />
+    <FeatureOneFile />
+    <FeatureWordSync />
+    <FeatureFrameSizes />
+    <FeatureCheckIns />
+    <FeatureFactsPictures />
+    <FeatureBrand />
+    <FeatureSkills />
+    <FeatureRequirements commands={COMMANDS} requirementsHref={`${README}#requirements`} />
+    <p class="home-closing" data-ui="label">
+      <span>Made for Shorts, Reels, TikTok and YouTube.</span>
+      <ExternalLink href={`${README}#usage`}>You direct. Claude brings it together.</ExternalLink>
+    </p>
+    <InstallDialog id="install" commands={COMMANDS} fallbackHref={INSTALL_HREF} />
+  </MainSection>
+</Base>
 
 <style>
-  /* The hero's own padding sits inside its background band, so it buys no
-     separation from the cards below it. Spacing between the two belongs here,
-     where they are composed -- FeatureCards is exported for reuse and must not
-     carry homepage-specific margin. */
-  .home-features {
-    /* 2rem below, plus main's own 2rem block padding, gives the features the
-       same 4rem of air on both sides. */
-    margin-block: var(--space-16) var(--space-8);
+  /* The composition owns the spacing between its parts (DESIGN.md). */
+  :global(main:has([data-home-hero])) {
+    padding-block: 0;
   }
 
-  /* Both section headings share the title role and the hairline the compact
-     feature rows use. */
-  .home-section-title {
-    border-block-end: 1px solid var(--rule);
-    font-size: var(--font-size-3xl);
-    margin-block: 0 var(--space-7);
-    padding-block-end: var(--space-3);
+  :global(main:has([data-home-hero]) > :is([data-workflow-strip], [data-feature-section])) {
+    margin-block-start: 0;
+    margin-inline: 1.25rem;
+    padding-inline: 0;
+
+    /* The vendor fixes `main > section` to the content width, which the
+       margins would push past the viewport. */
+    width: auto;
   }
 
-  /* Margin, not padding, so the hairline stops at the content edge instead of
-     running into the gutters. Same measure as the hero and FeatureCards. */
-  .home-features .home-section-title {
-    margin-inline: max(1.25rem, calc((100% - var(--max-content-width, 80rem)) / 2));
+  .home-closing {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    line-height: 1.7;
+    margin: 0;
+    max-width: none;
+    padding: 1.25rem 1.25rem 2rem;
+    text-transform: none;
   }
 
-  /* Post titles come from BlogPosts, whose links take the vendor --h3 scale
-     (48px at desktop) and outranked everything below the hero. On the
-     homepage they are list items, so they take the size of the card titles. */
-  .home-latest :global(h2 a[href]) {
-    font-size: var(--font-size-xl);
-  }
-
-  /* `main > section` carries 2rem of inline padding, which set the post list
-     32px in from the hero and features above it. This keeps the post list and
-     the sidebar beside it on the shared gutter, so their outer edges meet the
-     features' edges: 1.25rem while the viewport is narrower than the measure,
-     easing to 0 once main is centred with room to spare. Scoped through :has
-     so it cannot reach another page's main. */
-  :global(main:has(.home-latest) > section) {
-    padding-inline: clamp(
-      0rem,
-      calc((var(--max-content-width, 80rem) + 2.5rem - 100vw) / 2),
-      1.25rem
-    );
-  }
-
-  @media (max-width: 60rem) {
-    .home-section-title {
-      font-size: var(--font-size-2xl);
-    }
+  /* The vendor sizes every link at 1rem; here the link is part of the label line. */
+  .home-closing :global(a) {
+    font-size: inherit;
   }
 </style>

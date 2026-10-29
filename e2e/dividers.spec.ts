@@ -20,7 +20,9 @@ test.describe('Dividers', () => {
       })
 
       test('paint in the --rule token', async ({ page }) => {
-        for (const path of ['/', '/posts/1']) {
+        // Not `/`: the OnCue homepage lists no posts and draws its hairlines
+        // as borders, so it renders no <hr>.
+        for (const path of ['/posts/1']) {
           await page.goto(path)
 
           const measured = await page.evaluate(() => {

@@ -39,7 +39,9 @@ list of links to navigate through the paginated content.
 This component provides the main navigation menu for the website. It renders a
 `<nav aria-label="Primary">` bar containing a brand link on the left and a
 hamburger button. The five site links (Home, Articles, Blog, About, Contact)
-live inside a native HTML popover panel that the button opens.
+and a second list of OnCue project links (How it works, Documentation, GitHub)
+live inside a native HTML popover panel that the button opens. The project
+links are `ExternalLink`s: same tab, with the arrow hidden from screen readers.
 
 Open, close, Esc-to-close and outside-click dismissal ("light dismiss") are
 provided by the browser through the `popover="auto"` and `popovertarget`
@@ -59,6 +61,7 @@ the styles cannot reach a consumer's own popover navigation on the same page.
 | `brandHref`  | `string`  | `'/'`                | Destination of the brand link.                                       |
 | `menuId`     | `string`  | `'site-nav-popover'` | id of the popover panel, wired to the button's `popovertarget`.      |
 | `showBrand`  | `boolean` | `true`               | Render the brand link. Set `false` when a consumer supplies its own. |
+| `brandLogo`  | `string`  | none                 | Logo image URL. Replaces the brand text; its `alt` is `brandTitle`.  |
 
 **Slots:**
 

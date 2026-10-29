@@ -1,0 +1,365 @@
+---
+/**
+ * The homepage's silent timing demo: the film card on a stage, plus a player.
+ *
+ * Without JavaScript, and before it loads, this is a still of the finished
+ * frame and the transport stays `hidden`. The script reveals the transport and
+ * paints `frameAt()` from a `requestAnimationFrame` loop. Play starts from
+ * 00:00, Pause holds the playhead, and Replay restarts once it ends. A hidden
+ * tab pauses it. Links carrying `data-demo-start` and `href="#demo"` start it
+ * from 00:00 and move focus to the play button, scrolling only when the demo
+ * sits below the hero (narrow layouts).
+ *
+ * The root carries `data-accent="brand"`: the stage depicts OnCue's brand, so
+ * it is one of the two places the Hydration Rule lets the accent paint
+ * something a visitor cannot operate (see DESIGN.md).
+ *
+ * @component TimingDemo
+ * @example
+ * ```astro
+ * <a href="#demo" data-demo-start>See it in motion</a>
+ * <TimingDemo />
+ * ```
+ */
+import FilmCard from '#components/astro/FilmCard.astro'
+import { DEMO_DURATION_MS, frameAt } from '#utils/timing-demo'
+
+export type Props = {
+  /**
+   * Root id, and the fragment its start links point at (`href="#<id>"`).
+   * Give each demo on a page its own.
+   */
+  id?: string
+}
+
+const { id = 'demo' } = Astro.props
+
+const startLabel = frameAt(0).elapsedLabel
+const totalLabel = frameAt(DEMO_DURATION_MS).elapsedLabel
+---
+
+<div class="timing-demo" id={id} data-accent="brand" data-timing-demo>
+  <div class="timing-demo__stage">
+    <div class="timing-demo__ghost" aria-hidden="true" data-demo-ghost></div>
+    <div class="timing-demo__ghost timing-demo__ghost--accent" aria-hidden="true"></div>
+    <p
+      class="timing-demo__annotation timing-demo__annotation--top"
+      aria-hidden="true"
+      data-ui="label"
+      data-demo-annotation
+    >
+      A little direction.<br />A finished video.
+    </p>
+    <p
+      class="timing-demo__annotation timing-demo__annotation--side"
+      aria-hidden="true"
+      data-ui="label"
+      data-demo-annotation
+    >
+      The word lands.<br /><strong>The visual follows.</strong>
+    </p>
+    <FilmCard />
+  </div>
+
+  <div class="timing-demo__transport" hidden data-demo-transport>
+    <button class="timing-demo__play" type="button" aria-label="Play timing demo" data-demo-play>
+      <span aria-hidden="true" data-demo-glyph>▶</span>
+    </button>
+    <div class="timing-demo__track" aria-hidden="true">
+      <span class="timing-demo__progress" data-demo-progress></span>
+    </div>
+    <p class="timing-demo__time" data-ui="label">
+      <span data-demo-elapsed>{startLabel}</span> / {totalLabel}
+    </p>
+  </div>
+  <p class="timing-demo__caption" data-ui="label">
+    Illustrative preview · silent · word-synced animation
+  </p>
+</div>
+
+<script>
+  import { DEMO_DURATION_MS, frameAt } from '#utils/timing-demo'
+
+  /** Longest step one frame may advance, so a throttled tab cannot skip the run. */
+  const MAX_FRAME_MS = 100
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-timing-demo]')) {
+    const transport = root.querySelector<HTMLElement>('[data-demo-transport]')
+    const play = root.querySelector<HTMLButtonElement>('[data-demo-play]')
+    const glyph = root.querySelector('[data-demo-glyph]')
+    const progress = root.querySelector<HTMLElement>('[data-demo-progress]')
+    const elapsed = root.querySelector('[data-demo-elapsed]')
+    if (!transport || !play || !glyph || !progress || !elapsed) continue
+
+    const words = Array.from(root.querySelectorAll<HTMLElement>('[data-word]'))
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'))
+
+    // Starts at the end, so the first Play resets to 00:00 like a Replay; the
+    // server markup already shows the finished frame and the 00:00 readout.
+    let position = DEMO_DURATION_MS
+    let running = false
+    let last = 0
+    let frame = 0
+
+    const paint = () => {
+      const {
+        wordIndex,
+        revealedSteps,
+        elapsedLabel,
+        progress: ratio,
+        ended,
+      } = frameAt(position, words.length)
+      words.forEach((word, i) => {
+        word.dataset.state =
+          ended || i < wordIndex ? 'said' : i === wordIndex ? 'current' : 'upcoming'
+      })
+      steps.forEach((step, i) => {
+        const current = !ended && i === revealedSteps - 1
+        step.dataset.state = current ? 'current' : i < revealedSteps ? 'revealed' : 'upcoming'
+      })
+      progress.style.transform = `scaleX(${ratio})`
+      elapsed.textContent = elapsedLabel
+    }
+
+    const label = () => {
+      const [action, symbol] = running
+        ? ['Pause', 'Ⅱ']
+        : position >= DEMO_DURATION_MS
+          ? ['Replay', '↻']
+          : ['Play', '▶']
+      play.setAttribute('aria-label', `${action} timing demo`)
+      glyph.textContent = symbol
+    }
+
+    const tick = (now: number) => {
+      if (!running) return
+      if (last) position += Math.min(now - last, MAX_FRAME_MS)
+      last = now
+      if (position >= DEMO_DURATION_MS) {
+        position = DEMO_DURATION_MS
+        running = false
+        label()
+      }
+      paint()
+      if (running) frame = requestAnimationFrame(tick)
+    }
+
+    const start = () => {
+      if (position >= DEMO_DURATION_MS) position = 0
+      running = true
+      last = 0
+      paint()
+      label()
+      frame = requestAnimationFrame(tick)
+    }
+
+    const pause = () => {
+      running = false
+      cancelAnimationFrame(frame)
+      label()
+    }
+
+    transport.hidden = false
+    play.addEventListener('click', () => (running ? pause() : start()))
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && running) pause()
+    })
+
+    for (const link of document.querySelectorAll(`a[data-demo-start][href="#${root.id}"]`)) {
+      link.addEventListener('click', event => {
+        event.preventDefault()
+        position = DEMO_DURATION_MS
+        pause()
+        start()
+        // Beside the hero the demo is already on screen; below it, bring it up.
+        if (matchMedia('(max-width: 47.5rem)').matches) {
+          const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+          root.scrollIntoView({ behavior: reduce ? 'instant' : 'smooth', block: 'center' })
+        }
+        play.focus({ preventScroll: true })
+      })
+    }
+  }
+</script>
+
+<style>
+  .timing-demo {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .timing-demo__stage {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    /* The rotated ghost cards lean past the column; clip them sideways only. */
+    overflow-x: clip;
+    padding-block: 2.5rem 1rem;
+    position: relative;
+    width: 100%;
+    container-type: inline-size;
+  }
+
+  /* Two rings behind the film, from the reference stage. */
+  .timing-demo__stage::before,
+  .timing-demo__stage::after {
+    aspect-ratio: 1;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    content: '';
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    translate: -50% -50%;
+    width: min(25rem, 85%);
+  }
+
+  /* Never wider than the stage, so the rings cannot widen a phone viewport. */
+  .timing-demo__stage::after {
+    opacity: 0.5;
+    width: min(30rem, 100%);
+  }
+
+  .timing-demo__ghost {
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 0.8125rem;
+    height: 27rem;
+    left: 50%;
+    position: absolute;
+    rotate: -9deg;
+    top: 3.5rem;
+    translate: -60% 0;
+    width: 16.5rem;
+  }
+
+  .timing-demo__ghost--accent {
+    background: var(--island);
+    border-color: var(--island);
+    rotate: 7deg;
+    top: 2.75rem;
+    translate: -42% 0;
+  }
+
+  /*
+   * Shown only when the stage leaves room beside the film (see the container
+   * query below). The film is 17.25rem wide and centred, so each annotation
+   * starts just past its edge rather than at the stage edge.
+   */
+  .timing-demo__annotation {
+    display: none;
+    line-height: 1.6;
+    margin: 0;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .timing-demo__annotation--top {
+    right: calc(50% + 8.875rem);
+    rotate: -5deg;
+    top: 0.5rem;
+  }
+
+  .timing-demo__annotation--side {
+    background: var(--paper);
+    border-inline-start: 2px solid var(--island);
+    bottom: 30%;
+    left: calc(50% + 8.875rem);
+    padding: 0.5rem 0 0.5rem 0.75rem;
+  }
+
+  .timing-demo__annotation strong {
+    color: var(--island);
+    font-weight: 400;
+  }
+
+  /* Above the rings and ghost cards. `:global` because the film is
+     FilmCard's element, outside this component's style scope. */
+  .timing-demo :global(.film) {
+    z-index: 1;
+  }
+
+  .timing-demo__transport {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    width: min(20.625rem, 100%);
+  }
+
+  .timing-demo__transport[hidden] {
+    display: none;
+  }
+
+  /* Qualified by the root to beat the vendor's `button[type]` (0,1,1). */
+  .timing-demo .timing-demo__play {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    color: var(--ink);
+    cursor: pointer;
+    display: grid;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    height: 2.75rem;
+    padding: 0;
+    place-items: center;
+    width: 2.75rem;
+  }
+
+  .timing-demo .timing-demo__play:hover {
+    background: var(--paper-sunk);
+  }
+
+  .timing-demo .timing-demo__play:focus-visible {
+    outline: 2px solid var(--island);
+    outline-offset: 2px;
+  }
+
+  .timing-demo__track {
+    background: var(--rule);
+    border-radius: 3px;
+    flex: 1;
+    height: 3px;
+    overflow: hidden;
+  }
+
+  .timing-demo__progress {
+    background: var(--island);
+    display: block;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .timing-demo .timing-demo__time {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .timing-demo .timing-demo__caption {
+    margin: 0;
+    text-align: center;
+  }
+
+  /* Half the stage less half the film leaves the widest annotation room. */
+  @container (min-width: 40rem) {
+    .timing-demo__annotation {
+      display: block;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .timing-demo__ghost {
+      translate: -56% 0;
+    }
+
+    .timing-demo__ghost--accent {
+      translate: -46% 0;
+    }
+  }
+</style>

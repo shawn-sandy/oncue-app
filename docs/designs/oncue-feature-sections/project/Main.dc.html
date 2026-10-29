@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OnCue feature sections, in page order</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+          a {
+            color: #c7342b;
+          }
+          a:hover {
+            color: #a82a23;
+          }
+        </style>
+      </helmet>
+      <main
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <dc-import name="one-file-every-output" hint-size="100%,1000px"></dc-import>
+        <dc-import name="lands-on-the-word" hint-size="100%,1000px"></dc-import>
+        <dc-import name="any-frame-size" hint-size="100%,1000px"></dc-import>
+        <dc-import name="you-direct-two-check-ins" hint-size="100%,1000px"></dc-import>
+        <dc-import name="real-facts-real-pictures" hint-size="100%,1000px"></dc-import>
+        <dc-import name="your-brand-your-look" hint-size="100%,1000px"></dc-import>
+        <dc-import name="one-stage-at-a-time" hint-size="100%,1000px"></dc-import>
+        <dc-import name="start-small-add-as-you-go" hint-size="100%,1000px"></dc-import>
+      </main>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":8000}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

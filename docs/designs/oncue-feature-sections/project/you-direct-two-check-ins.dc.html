@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>You direct: two check-ins</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="check-ins-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                You direct
+              </p>
+              <h2
+                id="check-ins-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                You approve the beats and the voice.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              Claude writes the storyboard, records the voiceover and renders the video. It stops
+              twice on the way, so you can steer before anything is recorded or rendered.
+            </p>
+          </header>
+
+          <ol
+            style="
+              list-style: none;
+              margin: 0;
+              padding: 0;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+              gap: 16px;
+              align-items: stretch;
+            "
+          >
+            <li
+              style="
+                box-sizing: border-box;
+                padding: 24px 20px;
+                border-top: 1px solid #000000;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <span
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+                >Step 1</span
+              >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Storyboard
+              </h3>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Claude writes the beats into
+                <code
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 0.875em;
+                    background: #f0f0f0;
+                    color: #000000;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                  "
+                  >short.json</code
+                >.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                padding: 24px 20px;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-top: 1px solid #000000;
+                border-radius: 0 0 8px 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <span
+                style="
+                  align-self: flex-start;
+                  padding: 3px 8px;
+                  background: #ffffff;
+                  border: 1px solid #dedede;
+                  border-radius: 4px;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #000000;
+                "
+                >Check-in 1</span
+              >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                The beats
+              </h3>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                See the beat list with preview stills. Change, cut or reorder beats now: once the
+                voiceover is recorded, a wording change means paying for a new recording.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                padding: 24px 20px;
+                border-top: 1px solid #000000;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <span
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+                >Step 2</span
+              >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Voiceover
+              </h3>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                ElevenLabs reads the whole script in one take, then transcribes it with word
+                timestamps.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                padding: 24px 20px;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-top: 1px solid #000000;
+                border-radius: 0 0 8px 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <span
+                style="
+                  align-self: flex-start;
+                  padding: 3px 8px;
+                  background: #ffffff;
+                  border: 1px solid #dedede;
+                  border-radius: 4px;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #000000;
+                "
+                >Check-in 2</span
+              >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                The voice
+              </h3>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Claude names the voice it picked and gives you two takes. Pick one, or ask for
+                another voice.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                padding: 24px 20px;
+                border-top: 1px solid #000000;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <span
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+                >Step 3</span
+              >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Render
+              </h3>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Claude builds the deck if you asked for one, checks stills against the real word
+                timings, and renders the video.
+              </p>
+            </li>
+          </ol>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+              gap: 24px;
+            "
+          >
+            <div
+              style="
+                box-sizing: border-box;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+              "
+            >
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                At the end you get
+              </p>
+              <ul
+                style="
+                  margin: 0;
+                  padding: 0 0 0 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 6px;
+                "
+              >
+                <li>The finished MP4</li>
+                <li>The deck, if you asked for one</li>
+                <li>The take and the voice used</li>
+                <li>The ElevenLabs credits spent</li>
+              </ul>
+            </div>
+            <div
+              style="
+                box-sizing: border-box;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+              "
+            >
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                In a hurry?
+              </p>
+              <p
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-size: 24px;
+                  line-height: 1.25;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Say “go ahead without stopping” to skip both check-ins.
+              </p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                For scale: a 75-second script cost about 1,100 ElevenLabs credits per take, and
+                about 600 to transcribe. That is why the beats come first.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":860}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

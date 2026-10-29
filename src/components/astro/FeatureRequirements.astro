@@ -1,0 +1,236 @@
+---
+/**
+ * Feature section: what each output needs, from Node.js alone for a
+ * storyboard to every tool for the final voiced video, then the install
+ * commands and how to work without ElevenLabs.
+ *
+ * A dot or a dash alone tells a screen reader nothing, so every cell also
+ * carries its state in visually hidden text. The table is wider than a phone,
+ * so it scrolls inside a focusable, labelled region; that region is
+ * positioned, or the hidden text (absolutely positioned) would escape its clip
+ * and widen the page.
+ *
+ * @component FeatureRequirements
+ * @example
+ * ```astro
+ * <FeatureRequirements
+ *   commands={['/plugin marketplace add shawn-sandy/oncue', '/plugin install oncue@oncue']}
+ *   requirementsHref="https://github.com/shawn-sandy/oncue#requirements"
+ * />
+ * ```
+ */
+import CommandBlock from '#components/astro/CommandBlock.astro'
+import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = {
+  /** Install commands, one per line, in the order they are run. */
+  commands: string[]
+  /** The README's requirements section. */
+  requirementsHref: string
+}
+
+const { commands, requirementsHref } = Astro.props
+
+const TOOLS = ['Node.js 22+', 'Playwright + Chromium', 'ffmpeg + ffprobe', 'Voiceover files']
+
+/** `true` needed, `false` not needed, a string for a partial need. */
+type Need = boolean | string
+
+const OUTPUTS: { output: string; detail: string; needs: Need[] }[] = [
+  {
+    output: 'A storyboard',
+    detail: 'short.json and a beat list',
+    needs: [true, false, false, false],
+  },
+  {
+    output: 'The deck',
+    detail: 'An editable 9:16 or 16:9 .pptx',
+    needs: [true, false, false, false],
+  },
+  {
+    output: 'A silent preview',
+    detail: 'Stills or a video, timed from an estimate',
+    needs: [true, true, 'Video only', false],
+  },
+  {
+    output: 'The voiceover',
+    detail: 'voiceover.mp3 and words.json',
+    needs: [false, false, false, 'ElevenLabs, or your own'],
+  },
+  {
+    output: 'Stills timed to the voice',
+    detail: 'Checked against the real word timings',
+    needs: [true, true, 'ffprobe only', true],
+  },
+  {
+    output: 'The final voiced MP4',
+    detail: 'Ready for Shorts, Reels, TikTok or YouTube',
+    needs: [true, true, true, true],
+  },
+]
+---
+
+<FeatureSection
+  id="requirements-title"
+  eyebrow="What you need"
+  title="Start with Node. Add tools as you go further."
+>
+  <Fragment slot="deck">
+    What you need depends on how far you go. A storyboard needs only Node.js. The finished, voiced
+    video needs every tool in the table.
+  </Fragment>
+
+  <div
+    class="feature-scroll requirements__scroll"
+    tabindex="0"
+    role="region"
+    aria-label="Tools needed for each output"
+  >
+    <table class="requirements__table">
+      <thead>
+        <tr>
+          <th scope="col" data-ui="label">To make</th>
+          {
+            TOOLS.map(tool => (
+              <th scope="col" data-ui="label">
+                {tool}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          OUTPUTS.map(({ output, detail, needs }) => (
+            <tr>
+              <th scope="row">
+                <span class="requirements__output">{output}</span>
+                <span class="feature-muted requirements__detail">{detail}</span>
+              </th>
+              {needs.map(need =>
+                typeof need === 'string' ? (
+                  <td>{need}</td>
+                ) : (
+                  <td>
+                    <span
+                      aria-hidden="true"
+                      class:list={need ? 'requirements__dot' : 'requirements__dash'}
+                    >
+                      {need ? '' : '—'}
+                    </span>
+                    <span class="requirements__hidden">{need ? 'Needed' : 'Not needed'}</span>
+                  </td>
+                )
+              )}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="feature-grid" style="--feature-min: 28rem">
+    <div class="feature-stack" style="gap: 0.75rem">
+      <p data-ui="label">Install in Claude Code</p>
+      <CommandBlock commands={commands} />
+    </div>
+    <div class="feature-stack" style="gap: 1.25rem; max-width: 60ch">
+      <div class="feature-stack" style="gap: 0.5rem">
+        <p data-ui="label">Then</p>
+        <p>
+          Ask Claude to “set up OnCue”. It checks each tool, installs what it can, and tells you
+          which outputs are ready.
+        </p>
+      </div>
+      <div class="feature-stack" style="gap: 0.5rem">
+        <p data-ui="label">No ElevenLabs?</p>
+        <p class="feature-muted">
+          Record the narration yourself and attach the MP3, with a <code>words.json</code> from any word-level
+          transcriber. With neither, you still get the storyboard, the deck and a silent preview.
+        </p>
+      </div>
+      <ExternalLink class="feature-link" href={requirementsHref}
+        >Full requirements in the README</ExternalLink
+      >
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .requirements__scroll {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+  }
+
+  /* Styled in full here rather than on the shared `.feature-table`: every
+     cell is centred and padded differently, so overriding would fight it. */
+  .requirements__table {
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    min-width: 46rem;
+    width: 100%;
+  }
+
+  .requirements__table :is(th, td) {
+    border-block-end: 1px solid var(--rule);
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .requirements__table :is(th, td):first-child {
+    padding-inline-start: 1.25rem;
+    text-align: start;
+  }
+
+  .requirements__table :is(th, td):last-child {
+    padding-inline-end: 1.25rem;
+  }
+
+  .requirements__table tbody tr:last-child :is(th, td) {
+    border-block-end: 0;
+  }
+
+  /* DM Mono, in the header labels, ships 400 only. */
+  .requirements__table th {
+    font-weight: var(--font-weight-normal);
+  }
+
+  .requirements__table thead th {
+    background: var(--paper-sunk);
+  }
+
+  .requirements__output {
+    display: block;
+    font-weight: 600;
+  }
+
+  .requirements__detail {
+    font-size: 0.875rem;
+  }
+
+  .requirements__dot {
+    background: currentColor;
+    border-radius: 9999px;
+    display: inline-block;
+    height: 0.625rem;
+    width: 0.625rem;
+  }
+
+  .requirements__dash {
+    color: var(--ink-soft);
+  }
+
+  .requirements__hidden {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+</style>

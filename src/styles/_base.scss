@@ -107,9 +107,9 @@ header > section#header p {
   font-size: var(--header-deck-font-size);
 }
 
-// Type role one of three: display, on every heading level. All six render at
-// --font-weight-semibold (600), which is the one weight the self-hosted woff2
-// ships -- so covering h4-h6 costs no additional font request.
+// Type role one of three: display, on every heading level. All six render
+// Georgia at --font-weight-normal (400), the brand's weight: the serif carries
+// the contrast, so headings need no bold.
 h1,
 h2,
 h3,
@@ -117,7 +117,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-family-display);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-normal);
   letter-spacing: -0.015em;
 }
 

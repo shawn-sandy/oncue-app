@@ -1,0 +1,212 @@
+---
+/**
+ * Feature section: one spec renders vertical, widescreen or a custom size.
+ * Draws the same list scene in a 9:16 and a 16:9 frame, with the strip the
+ * portrait layout keeps clear for the Shorts buttons, beside an outline for a
+ * custom size; then the format line, the fit guard and how the deck follows.
+ *
+ * The frames are depictions, so they are `aria-hidden`; each caption names
+ * the size it shows.
+ *
+ * @component FeatureFrameSizes
+ * @example
+ * ```astro
+ * <FeatureFrameSizes />
+ * ```
+ */
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+const SCENE = {
+  kicker: 'The problem',
+  title: 'Saving things is easy. Finding them isn’t.',
+  rows: ['Too many tabs', 'Dead bookmarks', 'Messy notes'],
+}
+---
+
+<FeatureSection
+  id="frame-sizes-title"
+  eyebrow="Any frame"
+  title="Vertical for Shorts. Widescreen for YouTube."
+>
+  <Fragment slot="deck">
+    One <code>format</code> line sets the size. Frames wider than tall get the landscape layout, the rest
+    get the portrait one, and the same spec renders either way.
+  </Fragment>
+
+  <div class="frame-sizes__frames">
+    <figure class="frame-sizes__figure frame-sizes__figure--portrait">
+      <div class="feature-frame frame-sizes__portrait" aria-hidden="true">
+        <span class="feature-frame__kicker">{SCENE.kicker}</span>
+        <span class="feature-frame__title">{SCENE.title}</span>
+        {SCENE.rows.map(row => <span class="feature-frame__row">{row}</span>)}
+        <span class="frame-sizes__clear">Kept clear</span>
+      </div>
+      <figcaption class="feature-frame-caption">
+        <span>1080 × 1920</span>
+        <span>YouTube Shorts, Reels, TikTok</span>
+      </figcaption>
+    </figure>
+
+    <figure class="frame-sizes__figure frame-sizes__figure--landscape">
+      <div class="feature-frame frame-sizes__landscape" aria-hidden="true">
+        <div class="frame-sizes__lede">
+          <span class="feature-frame__kicker">{SCENE.kicker}</span>
+          <span class="feature-frame__title">{SCENE.title}</span>
+        </div>
+        <div class="frame-sizes__rows">
+          {SCENE.rows.map(row => <span class="feature-frame__row">{row}</span>)}
+        </div>
+      </div>
+      <figcaption class="feature-frame-caption">
+        <span>1920 × 1080</span>
+        <span>A YouTube video or a landscape deck</span>
+      </figcaption>
+    </figure>
+
+    <figure class="frame-sizes__figure frame-sizes__figure--custom">
+      <div class="frame-sizes__custom" aria-hidden="true">W × H</div>
+      <figcaption class="feature-frame-caption">
+        <span>Custom</span>
+        <span>Even sides from 320 to 4096 px, the long side at most 2.4× the short one</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3 class="feature-title">One line in the spec</h3>
+      <pre
+        class="feature-code frame-sizes__inset"><code>"format": &#123; "width": <span class="feature-ink">1920</span>, "height": <span class="feature-ink">1080</span> &#125;</code></pre>
+      <p class="feature-muted">
+        Portrait layouts keep content out of the bottom of the frame, clear of the Shorts buttons
+        and captions.
+      </p>
+    </div>
+    <div class="feature-card">
+      <h3 class="feature-title">Shrunk, never cut off</h3>
+      <p class="feature-muted">
+        A scene with more than fits its frame is scaled down to fit. You get a warning naming it,
+        and every scene’s scale is recorded in <code>build/fit.json</code>.
+      </p>
+    </div>
+    <div class="feature-card">
+      <h3 class="feature-title">The deck follows</h3>
+      <p class="feature-muted">
+        The deck is drawn at 9:16 or 16:9. Landscape specs get 16:9, portrait and square ones 9:16,
+        and the video keeps the exact size.
+      </p>
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .frame-sizes__frames {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem 3.5rem;
+  }
+
+  .frame-sizes__figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .frame-sizes__figure--portrait {
+    width: 12.5rem;
+  }
+
+  .frame-sizes__figure--landscape {
+    width: 32.5rem;
+  }
+
+  .frame-sizes__figure--custom {
+    width: 15rem;
+  }
+
+  .frame-sizes__portrait {
+    aspect-ratio: 9 / 16;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.125rem 1rem;
+  }
+
+  .frame-sizes__portrait .feature-frame__title {
+    font-size: 1rem;
+  }
+
+  /* About 350 of 1920 px: the strip the portrait layout leaves empty. */
+  .frame-sizes__clear {
+    align-items: center;
+    border-block-start: 1px dashed #a3a3a3;
+    bottom: 0;
+    color: #a3a3a3;
+    display: flex;
+    font-family: var(--font-family-mono);
+    font-size: 0.625rem;
+    height: 18.2%;
+    justify-content: center;
+    left: 0;
+    letter-spacing: 0.08em;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+  }
+
+  .frame-sizes__landscape {
+    align-items: center;
+    aspect-ratio: 16 / 9;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 1.75rem;
+  }
+
+  .frame-sizes__lede,
+  .frame-sizes__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .frame-sizes__lede {
+    gap: 0.625rem;
+  }
+
+  .frame-sizes__landscape .feature-frame__title {
+    font-size: clamp(0.9375rem, 1.9vw, 1.375rem);
+  }
+
+  .frame-sizes__landscape .feature-frame__row {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .frame-sizes__custom {
+    align-items: center;
+    aspect-ratio: 4 / 5;
+    background: var(--paper-sunk);
+    border: 1px dashed var(--rule);
+    border-radius: 0.75rem;
+    color: var(--ink-soft);
+    display: flex;
+    font-family: var(--font-family-mono);
+    font-size: 0.875rem;
+    justify-content: center;
+  }
+
+  /* Edge to edge inside the card (DESIGN.md Squared-Insert Rule). */
+  .feature-code.frame-sizes__inset {
+    background: var(--paper);
+    border-block: 1px solid var(--rule);
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+  }
+</style>

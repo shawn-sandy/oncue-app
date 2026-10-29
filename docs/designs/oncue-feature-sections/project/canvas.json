@@ -1,0 +1,96 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-29T01:42:10Z" },
+  "title": "OnCue Feature Sections",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 8000,
+      "title": "Full page · all sections in order",
+      "expand": "fill"
+    },
+    "one-file-every-output.dc.html": {
+      "x": 1360,
+      "y": 0,
+      "w": 1280,
+      "h": 1040,
+      "title": "01 · One file, every output",
+      "expand": "fill"
+    },
+    "lands-on-the-word.dc.html": {
+      "x": 2720,
+      "y": 0,
+      "w": 1280,
+      "h": 1080,
+      "title": "02 · Lands on the word",
+      "expand": "fill"
+    },
+    "any-frame-size.dc.html": {
+      "x": 1360,
+      "y": 1200,
+      "w": 1280,
+      "h": 1060,
+      "title": "03 · Any frame size",
+      "expand": "fill"
+    },
+    "you-direct-two-check-ins.dc.html": {
+      "x": 2720,
+      "y": 1200,
+      "w": 1280,
+      "h": 860,
+      "title": "04 · You direct: two check-ins",
+      "expand": "fill"
+    },
+    "real-facts-real-pictures.dc.html": {
+      "x": 1360,
+      "y": 2380,
+      "w": 1280,
+      "h": 780,
+      "title": "05 · Real facts, real pictures",
+      "expand": "fill"
+    },
+    "your-brand-your-look.dc.html": {
+      "x": 2720,
+      "y": 2380,
+      "w": 1280,
+      "h": 1060,
+      "title": "06 · Your brand, your look",
+      "expand": "fill"
+    },
+    "one-stage-at-a-time.dc.html": {
+      "x": 1360,
+      "y": 3560,
+      "w": 1280,
+      "h": 1000,
+      "title": "07 · One stage at a time",
+      "expand": "fill"
+    },
+    "start-small-add-as-you-go.dc.html": {
+      "x": 2720,
+      "y": 3560,
+      "w": 1280,
+      "h": 1140,
+      "title": "08 · Start small, add as you go",
+      "expand": "fill"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "one-file-every-output.dc.html",
+    "lands-on-the-word.dc.html",
+    "any-frame-size.dc.html",
+    "you-direct-two-check-ins.dc.html",
+    "real-facts-real-pictures.dc.html",
+    "your-brand-your-look.dc.html",
+    "one-stage-at-a-time.dc.html",
+    "start-small-add-as-you-go.dc.html"
+  ],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "OnCue feature sections", "kind": "title1", "maxW": 4000 }
+  },
+  "designSystems": []
+}

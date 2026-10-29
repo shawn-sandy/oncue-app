@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Your brand, your look</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="brand-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Your brand
+              </p>
+              <h2
+                id="brand-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                Bring your look. Every frame and slide wears it.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              Claude maps what you give it to colours, fonts and a
+              <code
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 0.875em;
+                  background: #f0f0f0;
+                  color: #000000;
+                  padding: 1px 5px;
+                  border-radius: 4px;
+                "
+                >theme</code
+              >. The same theme drives the video and the deck.
+            </p>
+          </header>
+
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <p
+              style="
+                margin: 0;
+                font-family: 'DM Mono', ui-monospace, monospace;
+                font-size: 12px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #606060;
+              "
+            >
+              Claude can work from
+            </p>
+            <ul
+              style="
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+              "
+            >
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A few words, like “light, playful, rounded”
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A DESIGN.md
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                Design tokens
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A Figma file
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A reference image
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A reference site
+              </li>
+              <li
+                style="
+                  padding: 8px 12px;
+                  border: 1px solid #dedede;
+                  border-radius: 8px;
+                  font-size: 15px;
+                "
+              >
+                A square PNG logo
+              </li>
+            </ul>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+              gap: 32px 48px;
+              align-items: start;
+            "
+          >
+            <figure
+              style="
+                margin: 0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                overflow: hidden;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <figcaption
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  gap: 8px 16px;
+                  flex-wrap: wrap;
+                  padding: 10px 16px;
+                  background: #f0f0f0;
+                  border-bottom: 1px solid #dedede;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 11px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                <span>The five theme tokens</span>
+                <span>Optional · in short.json</span>
+              </figcaption>
+              <div style="overflow-x: auto; padding: 4px 20px 12px">
+                <table
+                  style="width: 100%; min-width: 24rem; border-collapse: collapse; font-size: 15px"
+                >
+                  <thead>
+                    <tr>
+                      <th
+                        scope="col"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 600;
+                          border-bottom: 1px solid #dedede;
+                        "
+                      >
+                        Token
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          text-align: left;
+                          padding: 12px 0 12px 16px;
+                          font-weight: 600;
+                          border-bottom: 1px solid #dedede;
+                        "
+                      >
+                        Choices
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th
+                        scope="row"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 400;
+                          border-bottom: 1px solid #dedede;
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                        "
+                      >
+                        radius
+                      </th>
+                      <td
+                        style="
+                          padding: 12px 0 12px 16px;
+                          border-bottom: 1px solid #dedede;
+                          color: #606060;
+                        "
+                      >
+                        sharp · soft · round
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        scope="row"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 400;
+                          border-bottom: 1px solid #dedede;
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                        "
+                      >
+                        type
+                      </th>
+                      <td
+                        style="
+                          padding: 12px 0 12px 16px;
+                          border-bottom: 1px solid #dedede;
+                          color: #606060;
+                        "
+                      >
+                        small · regular · large
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        scope="row"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 400;
+                          border-bottom: 1px solid #dedede;
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                        "
+                      >
+                        density
+                      </th>
+                      <td
+                        style="
+                          padding: 12px 0 12px 16px;
+                          border-bottom: 1px solid #dedede;
+                          color: #606060;
+                        "
+                      >
+                        compact · regular · airy
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        scope="row"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 400;
+                          border-bottom: 1px solid #dedede;
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                        "
+                      >
+                        background
+                      </th>
+                      <td
+                        style="
+                          padding: 12px 0 12px 16px;
+                          border-bottom: 1px solid #dedede;
+                          color: #606060;
+                        "
+                      >
+                        glow · subtle · flat <span style="font-size: 13px">(video only)</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        scope="row"
+                        style="
+                          text-align: left;
+                          padding: 12px 16px 12px 0;
+                          font-weight: 400;
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                        "
+                      >
+                        header
+                      </th>
+                      <td style="padding: 12px 0 12px 16px; color: #606060">brand · logo · none</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </figure>
+
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Same beat, two themes
+              </p>
+              <div style="display: flex; flex-wrap: wrap; gap: 24px">
+                <figure
+                  style="
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 180px;
+                    max-width: 100%;
+                  "
+                >
+                  <div
+                    aria-hidden="true"
+                    style="
+                      box-sizing: border-box;
+                      width: 100%;
+                      aspect-ratio: 9 / 16;
+                      background: #111111;
+                      color: #f2f2f2;
+                      border-radius: 4px;
+                      overflow: hidden;
+                      padding: 12px;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 4px;
+                    "
+                  >
+                    <span
+                      style="
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                        font-size: 10px;
+                        letter-spacing: 0.12em;
+                        text-transform: uppercase;
+                        color: #a3a3a3;
+                      "
+                      >The problem</span
+                    >
+                    <span
+                      style="
+                        font-family: Georgia, Cambria, 'Times New Roman', serif;
+                        font-size: 19px;
+                        line-height: 1.1;
+                        margin-bottom: 6px;
+                      "
+                      >Saving things is easy. Finding them isn’t.</span
+                    >
+                    <span style="padding: 6px 8px; background: #1c1c1c; font-size: 12px"
+                      >Too many tabs</span
+                    >
+                    <span style="padding: 6px 8px; background: #1c1c1c; font-size: 12px"
+                      >Dead bookmarks</span
+                    >
+                    <span style="padding: 6px 8px; background: #1c1c1c; font-size: 12px"
+                      >Messy notes</span
+                    >
+                  </div>
+                  <figcaption
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 12px;
+                      line-height: 1.6;
+                      color: #606060;
+                    "
+                  >
+                    sharp · large · compact
+                  </figcaption>
+                </figure>
+                <figure
+                  style="
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 180px;
+                    max-width: 100%;
+                  "
+                >
+                  <div
+                    aria-hidden="true"
+                    style="
+                      box-sizing: border-box;
+                      width: 100%;
+                      aspect-ratio: 9 / 16;
+                      background: #111111;
+                      color: #f2f2f2;
+                      border-radius: 20px;
+                      overflow: hidden;
+                      padding: 20px 16px;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 12px;
+                    "
+                  >
+                    <span
+                      style="
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                        font-size: 10px;
+                        letter-spacing: 0.12em;
+                        text-transform: uppercase;
+                        color: #a3a3a3;
+                      "
+                      >The problem</span
+                    >
+                    <span
+                      style="
+                        font-family: Georgia, Cambria, 'Times New Roman', serif;
+                        font-size: 15px;
+                        line-height: 1.2;
+                      "
+                      >Saving things is easy. Finding them isn’t.</span
+                    >
+                    <span
+                      style="
+                        padding: 7px 10px;
+                        background: #1c1c1c;
+                        border-radius: 12px;
+                        font-size: 11px;
+                      "
+                      >Too many tabs</span
+                    >
+                    <span
+                      style="
+                        padding: 7px 10px;
+                        background: #1c1c1c;
+                        border-radius: 12px;
+                        font-size: 11px;
+                      "
+                      >Dead bookmarks</span
+                    >
+                    <span
+                      style="
+                        padding: 7px 10px;
+                        background: #1c1c1c;
+                        border-radius: 12px;
+                        font-size: 11px;
+                      "
+                      >Messy notes</span
+                    >
+                  </div>
+                  <figcaption
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 12px;
+                      line-height: 1.6;
+                      color: #606060;
+                    "
+                  >
+                    round · regular · airy
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+              gap: 24px;
+            "
+          >
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                No brand to hand?
+              </h3>
+              <p style="margin: 0; color: #606060">
+                Claude uses the product’s logo and site. With neither, it picks a dark ground, one
+                accent and one highlight from the subject, and tells you.
+              </p>
+            </div>
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Contrast is checked
+              </h3>
+              <p style="margin: 0; color: #606060">
+                The
+                <code
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 0.875em;
+                    background: #ffffff;
+                    color: #000000;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                  "
+                  >check</code
+                >
+                command warns when a text colour and its fill fall under 4.5:1, and names both keys.
+              </p>
+            </div>
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Restyle any time
+              </h3>
+              <p style="margin: 0; color: #606060">
+                A theme changes no narration. Restyling after the voiceover means rendering again,
+                not recording again.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1060}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

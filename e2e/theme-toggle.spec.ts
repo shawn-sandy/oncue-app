@@ -12,7 +12,7 @@ import { test, expect, type Page } from '@playwright/test'
  */
 
 /** `--paper` in each direction, as `getComputedStyle` reports it. */
-const PAPER = { light: 'rgb(252, 252, 253)', dark: 'rgb(13, 16, 20)' } as const
+const PAPER = { light: 'rgb(255, 255, 255)', dark: 'rgb(17, 17, 17)' } as const
 
 const toggle = (page: Page) => page.locator('[data-theme-toggle]')
 const bodyBackground = (page: Page) =>

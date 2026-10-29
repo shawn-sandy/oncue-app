@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Any frame size</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="frame-size-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Any frame
+              </p>
+              <h2
+                id="frame-size-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                Vertical for Shorts. Widescreen for YouTube.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              One
+              <code
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 0.875em;
+                  background: #f0f0f0;
+                  color: #000000;
+                  padding: 1px 5px;
+                  border-radius: 4px;
+                "
+                >format</code
+              >
+              line sets the size. Frames wider than tall get the landscape layout, the rest get the
+              portrait one, and the same spec renders either way.
+            </p>
+          </header>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: flex-end">
+            <figure
+              style="
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 200px;
+                max-width: 100%;
+              "
+            >
+              <div
+                aria-hidden="true"
+                style="
+                  position: relative;
+                  box-sizing: border-box;
+                  width: 100%;
+                  aspect-ratio: 9 / 16;
+                  background: #111111;
+                  color: #f2f2f2;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  padding: 18px 16px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <span
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 10px;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    color: #a3a3a3;
+                  "
+                  >The problem</span
+                >
+                <span
+                  style="
+                    font-family: Georgia, Cambria, 'Times New Roman', serif;
+                    font-size: 16px;
+                    line-height: 1.15;
+                  "
+                  >Saving things is easy. Finding them isn’t.</span
+                >
+                <span
+                  style="padding: 6px 8px; background: #1c1c1c; border-radius: 6px; font-size: 11px"
+                  >Too many tabs</span
+                >
+                <span
+                  style="padding: 6px 8px; background: #1c1c1c; border-radius: 6px; font-size: 11px"
+                  >Dead bookmarks</span
+                >
+                <span
+                  style="padding: 6px 8px; background: #1c1c1c; border-radius: 6px; font-size: 11px"
+                  >Messy notes</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: 18.2%;
+                    border-top: 1px dashed #a3a3a3;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 10px;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    color: #a3a3a3;
+                    text-align: center;
+                    padding: 0 8px;
+                  "
+                  >Kept clear</span
+                >
+              </div>
+              <figcaption style="display: flex; flex-direction: column; gap: 2px">
+                <span style="font-family: 'DM Mono', ui-monospace, monospace; font-size: 14px"
+                  >1080 × 1920</span
+                >
+                <span style="color: #606060; font-size: 15px">YouTube Shorts, Reels, TikTok</span>
+              </figcaption>
+            </figure>
+
+            <figure
+              style="
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 520px;
+                max-width: 100%;
+              "
+            >
+              <div
+                aria-hidden="true"
+                style="
+                  box-sizing: border-box;
+                  width: 100%;
+                  aspect-ratio: 16 / 9;
+                  background: #111111;
+                  color: #f2f2f2;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  padding: 28px;
+                  display: grid;
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                  gap: 24px;
+                  align-items: center;
+                "
+              >
+                <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+                  <span
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 10px;
+                      letter-spacing: 0.12em;
+                      text-transform: uppercase;
+                      color: #a3a3a3;
+                    "
+                    >The problem</span
+                  >
+                  <span
+                    style="
+                      font-family: Georgia, Cambria, 'Times New Roman', serif;
+                      font-size: clamp(15px, 1.9vw, 22px);
+                      line-height: 1.15;
+                    "
+                    >Saving things is easy. Finding them isn’t.</span
+                  >
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                  <span
+                    style="
+                      padding: 8px 10px;
+                      background: #1c1c1c;
+                      border-radius: 6px;
+                      font-size: 12px;
+                    "
+                    >Too many tabs</span
+                  >
+                  <span
+                    style="
+                      padding: 8px 10px;
+                      background: #1c1c1c;
+                      border-radius: 6px;
+                      font-size: 12px;
+                    "
+                    >Dead bookmarks</span
+                  >
+                  <span
+                    style="
+                      padding: 8px 10px;
+                      background: #1c1c1c;
+                      border-radius: 6px;
+                      font-size: 12px;
+                    "
+                    >Messy notes</span
+                  >
+                </div>
+              </div>
+              <figcaption style="display: flex; flex-direction: column; gap: 2px">
+                <span style="font-family: 'DM Mono', ui-monospace, monospace; font-size: 14px"
+                  >1920 × 1080</span
+                >
+                <span style="color: #606060; font-size: 15px"
+                  >A YouTube video or a landscape deck</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure
+              style="
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 240px;
+                max-width: 100%;
+              "
+            >
+              <div
+                aria-hidden="true"
+                style="
+                  box-sizing: border-box;
+                  width: 100%;
+                  aspect-ratio: 4 / 5;
+                  background: #f0f0f0;
+                  border: 1px dashed #606060;
+                  border-radius: 12px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 14px;
+                  color: #606060;
+                "
+              >
+                W × H
+              </div>
+              <figcaption style="display: flex; flex-direction: column; gap: 2px">
+                <span style="font-family: 'DM Mono', ui-monospace, monospace; font-size: 14px"
+                  >Custom</span
+                >
+                <span style="color: #606060; font-size: 15px"
+                  >Even sides from 320 to 4096 px, the long side at most 2.4× the short one</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+              gap: 24px;
+            "
+          >
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                One line in the spec
+              </h3>
+              <pre
+                style="
+                  margin: 0 -24px;
+                  padding: 14px 24px;
+                  background: #ffffff;
+                  border-top: 1px solid #dedede;
+                  border-bottom: 1px solid #dedede;
+                  color: #606060;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 13px;
+                  line-height: 1.7;
+                  overflow-x: auto;
+                  white-space: pre;
+                "
+              ><code>"format": { "width": <span style="color: #000000">1920</span>, "height": <span style="color: #000000">1080</span> }</code></pre>
+              <p style="margin: 0; color: #606060">
+                Portrait layouts keep content out of the bottom of the frame, clear of the Shorts
+                buttons and captions.
+              </p>
+            </div>
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Shrunk, never cut off
+              </h3>
+              <p style="margin: 0; color: #606060">
+                A scene with more than fits its frame is scaled down to fit. You get a warning
+                naming it, and every scene’s scale is recorded in
+                <code
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 0.875em;
+                    background: #ffffff;
+                    color: #000000;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                  "
+                  >build/fit.json</code
+                >.
+              </p>
+            </div>
+            <div
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                The deck follows
+              </h3>
+              <p style="margin: 0; color: #606060">
+                The deck is drawn at 9:16 or 16:9. Landscape specs get 16:9, portrait and square
+                ones 9:16, and the video keeps the exact size.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1060}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

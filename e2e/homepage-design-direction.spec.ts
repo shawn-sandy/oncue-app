@@ -25,6 +25,14 @@ const WIDTHS = [320, 390, 768, 1280] as const
  */
 const INTERACTIVE = 'a[href], button, [role="button"], summary, input, select, textarea'
 
+/**
+ * The one scoped exception to the Hydration Rule (DESIGN.md). The headline's
+ * accent phrase and the timing demo depict the brand, so they and their
+ * descendants may paint the accent. The audit skips them, and a separate test
+ * pins the marker to exactly those two elements so the exception cannot spread.
+ */
+const BRAND_ACCENT = '[data-accent="brand"]'
+
 test.describe('Homepage design direction', () => {
   // Review baseline: exactly ONE family (-apple-system) rendered across every
   // h1, h2, h3, p, a and button, so headings and body copy differed only by
@@ -72,6 +80,47 @@ test.describe('Homepage design direction', () => {
       distinct.size,
       `expected 3 distinct font-family values, got ${distinct.size}: ${JSON.stringify(roles)}`
     ).toBe(3)
+  })
+
+  // A self-hosted face ships only the weights its `@font-face` declares, so a
+  // rule that asks it for a heavier one gets a browser-synthesized bold. Before
+  // the OnCue rebrand the mono role was a system stack with a real bold, and the
+  // hero legend's `b` (weight 650) relied on it; DM Mono ships 400 only.
+  test('no text asks a self-hosted face for a bold weight it does not ship', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+
+    const { families, synthesized } = await page.evaluate(() => {
+      // Heaviest weight each loaded family ships: "400" -> 400, "400 700" -> 700.
+      const heaviest = new Map<string, number>()
+      document.fonts.forEach(face => {
+        if (face.status !== 'loaded') return
+        const family = face.family.replace(/['"]/g, '')
+        const max = Math.max(...face.weight.split(' ').map(Number))
+        heaviest.set(family, Math.max(heaviest.get(family) ?? 0, max))
+      })
+
+      const offenders = Array.from(document.querySelectorAll('body *')).flatMap(el => {
+        const text = (el.textContent ?? '').trim()
+        if (!text) return []
+        const style = getComputedStyle(el)
+        const family = style.fontFamily.split(',')[0].trim().replace(/['"]/g, '')
+        const weight = Number(style.fontWeight)
+        const max = heaviest.get(family)
+        // Browsers synthesize bold when 600+ is asked of a face lighter than 600.
+        return max !== undefined && weight >= 600 && max < 600
+          ? [`${el.tagName.toLowerCase()} "${text.slice(0, 30)}" asks ${family} for ${weight}`]
+          : []
+      })
+
+      return { families: [...heaviest.keys()], synthesized: offenders }
+    })
+
+    // Guards against a vacuous pass: with no self-hosted face loaded there is
+    // nothing to check.
+    expect(families.length, 'no self-hosted font face loaded on the homepage').toBeGreaterThan(0)
+    expect(synthesized, synthesized.join('\n')).toEqual([])
   })
 
   // Review baseline: 78.4px headline over a 48px deck = 1.63. The deck was
@@ -195,8 +244,7 @@ test.describe('Homepage design direction', () => {
         return {
           body: getComputedStyle(document.body).backgroundColor,
           bodyText: getComputedStyle(document.body).color,
-          header: bg('body > header'),
-          card: bg('[data-card]'),
+          ghost: bg('[data-demo-ghost]'),
         }
       })
 
@@ -225,28 +273,20 @@ test.describe('Homepage design direction', () => {
       luminance(light.body)
     )
 
-    // Prove both probes actually matched before filtering on them. `bg()`
-    // returns null for a missing element and the filter below drops nulls, so
-    // a selector that stops matching -- e.g. if `Base.astro` ever wraps the
-    // header slot in a container, breaking `body > header` -- would silently
-    // remove that surface from the check while the test still passed on
-    // `[data-card]` alone.
-    expect(light.header, 'body > header matched nothing; update the selector').not.toBeNull()
-    expect(light.card, '[data-card] matched nothing; update the selector').not.toBeNull()
-    expect(dark.header, 'body > header matched nothing in dark; update the selector').not.toBeNull()
-    expect(dark.card, '[data-card] matched nothing in dark; update the selector').not.toBeNull()
-
-    // At least one *painted element* — not just a `:root` variable — has to
-    // respond, which is what the baseline failed to do.
-    const painted = [
-      ['body > header', light.header, dark.header],
-      ['[data-card]', light.card, dark.card],
-    ].filter(([, l, d]) => l !== null && d !== null && l !== d)
-
+    // Prove the probe matched before comparing it. `bg()` returns null for a
+    // missing element, and two nulls compare equal, so a selector that stops
+    // matching would fail here with a message that names it rather than as a
+    // confusing "did not repaint".
+    expect(light.ghost, '[data-demo-ghost] matched nothing; update the selector').not.toBeNull()
     expect(
-      painted.length,
-      `no painted surface repainted. header ${light.header} -> ${dark.header}, card ${light.card} -> ${dark.card}`
-    ).toBeGreaterThanOrEqual(1)
+      dark.ghost,
+      '[data-demo-ghost] matched nothing in dark; update the selector'
+    ).not.toBeNull()
+
+    // A painted element -- not just a `:root` variable -- has to respond,
+    // which is what the baseline failed to do. The ghost card behind the demo
+    // film sits on `--paper-sunk`.
+    expect(dark.ghost, `the demo ghost card did not repaint (${light.ghost})`).not.toBe(light.ghost)
 
     // The explicit toggle must beat the OS preference, otherwise a theme
     // switch cannot win over `prefers-color-scheme`.
@@ -271,67 +311,73 @@ test.describe('Homepage design direction', () => {
       await page.setViewportSize({ width: 1280, height: 900 })
       await page.goto('/')
 
-      const result = await page.evaluate(interactive => {
-        const accentToken = getComputedStyle(document.documentElement)
-          .getPropertyValue('--island')
-          .trim()
-        if (!accentToken) return { accent: '', offenders: [] as string[] }
+      const result = await page.evaluate(
+        ([interactive, brandAccent]) => {
+          const accentToken = getComputedStyle(document.documentElement)
+            .getPropertyValue('--island')
+            .trim()
+          if (!accentToken) return { accent: '', offenders: [] as string[] }
 
-        // Resolve the author-level token, whatever notation it is written in
-        // (hex, `oklch()`, a named colour), to the `rgb(...)` form
-        // getComputedStyle returns, using the browser's own colour parser so
-        // the comparison cannot drift from how the page actually paints.
-        const probe = document.createElement('span')
-        probe.style.display = 'none'
-        probe.style.color = accentToken
-        document.body.appendChild(probe)
-        const accent = getComputedStyle(probe).color
-        probe.remove()
+          // Resolve the author-level token, whatever notation it is written in
+          // (hex, `oklch()`, a named colour), to the `rgb(...)` form
+          // getComputedStyle returns, using the browser's own colour parser so
+          // the comparison cannot drift from how the page actually paints.
+          const probe = document.createElement('span')
+          probe.style.display = 'none'
+          probe.style.color = accentToken
+          document.body.appendChild(probe)
+          const accent = getComputedStyle(probe).color
+          probe.remove()
 
-        const offenders: string[] = []
+          const offenders: string[] = []
 
-        for (const el of Array.from(document.body.querySelectorAll('*'))) {
-          // The element itself is operable, or it sits inside something that
-          // is and merely inherits the accent.
-          if (el.closest(interactive)) continue
+          for (const el of Array.from(document.body.querySelectorAll('*'))) {
+            // The element itself is operable, or it sits inside something that
+            // is and merely inherits the accent.
+            if (el.closest(interactive)) continue
 
-          const style = getComputedStyle(el)
-          const hits: string[] = []
+            // The scoped brand exception, checked separately below.
+            if (el.closest(brandAccent)) continue
 
-          if (style.color === accent) hits.push('color')
-          if (style.backgroundColor === accent) hits.push('background-color')
+            const style = getComputedStyle(el)
+            const hits: string[] = []
 
-          for (const side of ['top', 'right', 'bottom', 'left'] as const) {
-            // Only a border that actually paints counts: an unset border still
-            // reports a colour.
-            const width = parseFloat(style.getPropertyValue(`border-${side}-width`))
-            const borderStyle = style.getPropertyValue(`border-${side}-style`)
-            const color = style.getPropertyValue(`border-${side}-color`)
-            if (width > 0 && borderStyle !== 'none' && color === accent) {
-              hits.push(`border-${side}-color`)
+            if (style.color === accent) hits.push('color')
+            if (style.backgroundColor === accent) hits.push('background-color')
+
+            for (const side of ['top', 'right', 'bottom', 'left'] as const) {
+              // Only a border that actually paints counts: an unset border still
+              // reports a colour.
+              const width = parseFloat(style.getPropertyValue(`border-${side}-width`))
+              const borderStyle = style.getPropertyValue(`border-${side}-style`)
+              const color = style.getPropertyValue(`border-${side}-color`)
+              if (width > 0 && borderStyle !== 'none' && color === accent) {
+                hits.push(`border-${side}-color`)
+              }
+            }
+
+            if (
+              parseFloat(style.outlineWidth) > 0 &&
+              style.outlineStyle !== 'none' &&
+              style.outlineColor === accent
+            ) {
+              hits.push('outline-color')
+            }
+
+            if (hits.length > 0) {
+              const classes =
+                typeof el.className === 'string' && el.className.trim()
+                  ? `.${el.className.trim().split(/\s+/).join('.')}`
+                  : ''
+              const id = `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}${classes}`
+              offenders.push(`${id} [${hits.join(', ')}]`)
             }
           }
 
-          if (
-            parseFloat(style.outlineWidth) > 0 &&
-            style.outlineStyle !== 'none' &&
-            style.outlineColor === accent
-          ) {
-            hits.push('outline-color')
-          }
-
-          if (hits.length > 0) {
-            const classes =
-              typeof el.className === 'string' && el.className.trim()
-                ? `.${el.className.trim().split(/\s+/).join('.')}`
-                : ''
-            const id = `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}${classes}`
-            offenders.push(`${id} [${hits.join(', ')}]`)
-          }
-        }
-
-        return { accent, offenders }
-      }, INTERACTIVE)
+          return { accent, offenders }
+        },
+        [INTERACTIVE, BRAND_ACCENT] as const
+      )
 
       // If the accent token vanished the audit would pass trivially.
       expect(result.accent, '--island did not resolve to a colour').not.toBe('')
@@ -342,6 +388,31 @@ test.describe('Homepage design direction', () => {
       ).toEqual([])
     })
   }
+
+  // The exception above is only safe while it stays this narrow: the
+  // headline's accent phrase and the timing demo, nothing else.
+  test('the brand accent exception covers exactly the headline accent and the demo', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    const marked = await page.locator(BRAND_ACCENT).evaluateAll(nodes =>
+      nodes.map(node => ({
+        inHeadline: node.closest('h1') !== null,
+        isDemo: node.id === 'demo',
+      }))
+    )
+
+    expect(marked, `${BRAND_ACCENT} should mark exactly two elements`).toHaveLength(2)
+    expect(
+      marked.filter(m => m.inHeadline),
+      'one marker inside the h1'
+    ).toHaveLength(1)
+    expect(
+      marked.filter(m => m.isDemo),
+      'one marker on the #demo root'
+    ).toHaveLength(1)
+  })
 
   // Commit 254278a fixed a 320px reflow regression; step 4 repaints global
   // surfaces, so the gate is restated here at every width the plan names.
@@ -367,32 +438,33 @@ test.describe('Homepage design direction', () => {
   })
 
   /**
-   * Follows the hero's calls to action instead of only loading the homepage.
+   * The hero's calls to action must land somewhere real.
    *
-   * The hero previously pointed "Browse components" at `/docs`, which answers
-   * 500 because `src/pages/docs/index.astro` looks up a `docs/0-welcome` entry
-   * the collection does not contain and passes the `undefined` into `render()`.
-   * Every check in this file passed while that was true: measuring the homepage
-   * says nothing about where its links land. These assert the response status
-   * of the destination, so a CTA pointed at a broken or missing route fails
-   * here rather than in front of a visitor.
+   * The Astro Kit hero once pointed "Browse components" at `/docs`, which
+   * answered 500 while every other check here passed. The OnCue hero links
+   * only to fragments on this page and to the OnCue repository, so the
+   * contract is: each fragment resolves to an element, and everything else is
+   * an OnCue repo URL. A link to anywhere else is a regression to investigate,
+   * not a destination to fetch.
    */
-  test('every hero call to action lands on a page that renders', async ({ page }) => {
+  test('every hero link is a resolving fragment or an OnCue repo URL', async ({ page }) => {
     await page.goto('/')
 
-    const hrefs = await page
-      .locator('[data-home-hero] a[href^="/"]')
-      .evaluateAll(nodes => [...new Set(nodes.map(node => node.getAttribute('href') ?? ''))])
+    const links = await page.locator('[data-home-hero] a[href]').evaluateAll(nodes =>
+      nodes.map(node => {
+        const href = node.getAttribute('href') ?? ''
+        return {
+          href,
+          resolves: href.startsWith('#') && document.getElementById(href.slice(1)) !== null,
+        }
+      })
+    )
 
-    expect(hrefs.length, 'hero should link somewhere').toBeGreaterThan(0)
+    expect(links.length, 'hero should link somewhere').toBeGreaterThan(0)
 
-    for (const href of hrefs) {
-      const response = await page.goto(href)
-      expect(response?.status(), `${href} should not be an error page`).toBeLessThan(400)
-
-      // A 200 that rendered an error body would still pass a status check, so
-      // confirm the destination actually produced a document with content.
-      await expect(page.locator('body')).not.toBeEmpty()
+    for (const { href, resolves } of links) {
+      const ok = resolves || /^https:\/\/github\.com\/shawn-sandy\/oncue([#/].*)?$/.test(href)
+      expect(ok, `${href} is neither a resolving fragment nor an OnCue repo URL`).toBe(true)
     }
   })
 })
