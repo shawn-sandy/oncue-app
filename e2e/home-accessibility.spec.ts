@@ -149,7 +149,7 @@ test.describe('Home Page Accessibility', () => {
       const film = page.locator('[data-film]')
       await expect(film, 'no [data-film] on the homepage').toHaveCount(1)
 
-      const measured = await film.evaluate(root => {
+      const measured = await film.evaluate(async root => {
         const set = (selector: string, index: number, state: string) => {
           const el = root.querySelectorAll<HTMLElement>(selector)[index]
           if (el) el.dataset.state = state
@@ -158,6 +158,14 @@ test.describe('Home Page Accessibility', () => {
         set('[data-word]', 5, 'upcoming')
         set('[data-step]', 1, 'current')
         set('[data-step]', 2, 'upcoming')
+
+        // The states animate in over 250ms. Flush the style change so the
+        // transitions exist, then wait them out: read at once, getComputedStyle
+        // returns the colours the elements are leaving, not the new state's.
+        root.querySelectorAll('[data-state]').forEach(el => getComputedStyle(el).color)
+        await Promise.all(
+          root.getAnimations({ subtree: true }).map(animation => animation.finished)
+        )
 
         const rgb = (value: string) => (value.match(/[\d.]+/g) ?? []).map(Number)
         const luminance = ([r, g, b]: number[]) => {
@@ -198,6 +206,19 @@ test.describe('Home Page Accessibility', () => {
       // The film holds a header, a title, three steps, six caption words and
       // a footer; far fewer measurements means the walk missed them.
       expect(measured.length, 'too few text elements measured in the film').toBeGreaterThan(10)
+
+      // The forced states must actually be painted when they are measured, or
+      // the walk only ever sees the finished frame's palette: the rust fill of
+      // the current step and word, and the dark fill of the upcoming step.
+      const pairs = measured.map(m => m.pair)
+      expect(
+        pairs.some(p => p.endsWith('on rgb(199, 52, 43)')),
+        'no text measured on the rust fill'
+      ).toBe(true)
+      expect(
+        pairs.some(p => p.endsWith('on rgb(28, 28, 28)')),
+        'no text measured on the upcoming fill'
+      ).toBe(true)
 
       for (const { text, pair, ratio } of measured) {
         expect(

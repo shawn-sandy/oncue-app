@@ -95,9 +95,18 @@ test.describe('OnCue homepage', () => {
 
       expect(meta.title, `${path} og:title`).toBeTruthy()
       expect(meta.description, `${path} og:description`).toBeTruthy()
+      // Layout's fallback copy for auth pages must not become every page's preview.
+      expect(meta.description, `${path} og:description`).not.toMatch(/sign in to your account/i)
       expect(meta.card, `${path} twitter:card`).toBe('summary_large_image')
       expect(meta.image, `${path} og:image`).toMatch(/^https?:\/\/.+\/images\/oncue-og\.png$/)
       expect([meta.width, meta.height], `${path} og:image size`).toEqual(['1200', '630'])
+
+      const empty = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('meta[property^="og:"], meta[property^="twitter:"]'))
+          .filter(tag => !tag.getAttribute('content'))
+          .map(tag => tag.getAttribute('property'))
+      )
+      expect(empty, `${path} preview tags with no content`).toEqual([])
     }
   })
 })
@@ -161,7 +170,8 @@ test.describe('OnCue homepage edge cases', () => {
       await expect(page.locator('[data-demo-transport]'), 'no demo transport').toHaveCount(1)
       await expect(page.locator('[data-demo-transport]')).toBeHidden()
       await expect(page.locator('[data-command-copy]'), 'no copy button').toHaveCount(1)
-      await expect(page.locator('[data-command-copy]')).toBeHidden()
+      // The attribute itself: the closed dialog would hide the button anyway.
+      await expect(page.locator('[data-command-copy]')).toHaveAttribute('hidden', '')
       await expect(page.locator('[data-step][data-state="revealed"]')).toHaveCount(3)
 
       await expect(installLink(page)).toHaveCount(1)

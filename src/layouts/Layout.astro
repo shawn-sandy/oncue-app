@@ -9,6 +9,9 @@ const { pageTitle, pageDescription, pageImageUrl, hideHeader, showBreadcrumb, br
 // Resolved once so the fallback `Header` below is rendered from exactly the
 // same values that are handed to `Base`, keeping every non-homepage route
 // byte-identical to the header it rendered before the slot was forwarded.
+// The description is the exception: `Base` gets only the page's own, so its
+// meta and link-preview description fall back to `SITE_DESCRIPTION` rather
+// than to this sign-in copy, which only the visible header keeps.
 const resolvedTitle = pageTitle || 'Authentication'
 const resolvedDescription = pageDescription || 'Sign in to your account'
 ---
@@ -16,7 +19,7 @@ const resolvedDescription = pageDescription || 'Sign in to your account'
 <Base
   hideHeader={hideHeader || false}
   pageTitle={resolvedTitle}
-  pageDescription={resolvedDescription}
+  pageDescription={pageDescription}
   pageImageUrl={pageImageUrl}
 >
   {

@@ -30,6 +30,29 @@ let output = ''
 server.stdout.on('data', chunk => (output += chunk))
 server.stderr.on('data', chunk => (output += chunk))
 
+/**
+ * Stops the server this script started, and only that one. A server that
+ * already exited, by code or by signal, has no group left to signal, and
+ * signalling it would replace the real error with ESRCH.
+ */
+function stopServer() {
+  if (server.exitCode !== null || server.signalCode !== null) return
+  try {
+    process.kill(-server.pid, 'SIGTERM')
+  } catch {
+    // The group ended between the check and the kill.
+  }
+}
+
+// The server runs in its own process group, so Ctrl-C in the terminal never
+// reaches it, and Node's default exit on a signal skips `finally`.
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.once(signal, () => {
+    stopServer()
+    process.exit(signal === 'SIGINT' ? 130 : 143)
+  })
+}
+
 /** Resolves the homepage URL once it answers 200, from our server or the one already running. */
 async function waitForHomepage() {
   const deadline = Date.now() + TIMEOUT_MS
@@ -77,5 +100,5 @@ try {
     await browser.close()
   }
 } finally {
-  if (server.exitCode === null) process.kill(-server.pid, 'SIGTERM')
+  stopServer()
 }

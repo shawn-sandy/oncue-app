@@ -79,6 +79,7 @@ Known risks and mitigations:
 - GREEN settled: the copy fallback says "Press Ctrl+C or Cmd+C" (step 7) rather than the preview's "Ctrl+C", so macOS users are told the right key.
 - VERIFY settled: `e2e/dividers.spec.ts` no longer checks `/`, which renders no `<hr>` now that it lists no posts; `e2e/astro-v7-upgrade.spec.ts` ignores the dev toolbar's own "Use the Image component" audit error, which the new `<img>` logo triggers only when the test leaves a page before that dev-only audit finishes.
 - VERIFY settled: the footer's social links (`src/components/astro/Social.astro`) lose `target="_blank"` too (the user approved widening the scope on 2026-10-28), so the arrow and new-tab check in `e2e/home-oncue-hero.spec.ts` covers the whole page; it failed on the three old footer links before the fix.
+- PR review settled: the film contrast test waits for the 250ms state transitions before reading colours (it had been measuring only the finished frame), `TimingDemo` takes an `id` prop so two demos never share `#demo`, and `scripts/capture-og-image.mjs` stops the server it started on Ctrl-C as well as on exit. Each fix has a test that failed first, except the script's signal path, which cannot run while another dev server holds the project's lock.
 
 ## Files
 
@@ -118,6 +119,9 @@ Known risks and mitigations:
 - e2e/dividers.spec.ts (modified) — no longer checks `/`, which renders no `<hr>`
 - e2e/astro-v7-upgrade.spec.ts (modified) — ignores the dev toolbar's aborted image audit
 - .impeccable/config.json (new) — design-hook ignore for regex literals in a unit test
+- src/layouts/Layout.astro (modified) — hands Base only a page's own description, so previews never say "Sign in to your account"
+- src/components/astro/OpenGraph.astro (modified) — emits twitter:site only when a username is passed
+- src/components/astro/README.md (modified) — Navigation's project links and brandLogo prop
 
 ## Steps
 

@@ -267,8 +267,8 @@ element.
 Vertical rhythm runs on an 8pt grid (`--space-*`). `main` carries 2rem block padding; sections take
 2rem inline padding; sibling sections separate by 2rem; elements inside an `article` separate by
 1.5rem. Composed pages own the space between their own regions — a reusable component never carries
-page-specific margin, which is why the homepage sets `.home-features { margin-block-start: 4rem }`
-at the call site rather than inside `FeatureCards`.
+page-specific margin, which is why `src/pages/index.astro` sets the workflow strip's margins at the
+call site rather than inside `WorkflowStrip`.
 
 The homepage hero is a two-column grid (`minmax(0, 1fr)` copy beside a `minmax(0, 1.15fr)` timing
 demo) with a 2rem gutter, collapsing to a single column at 47.5rem. Interactive controls hold a 44px minimum

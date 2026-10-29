@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { experimental_AstroContainer as AstroContainer } from 'astro/container'
 import TimingDemo from '#components/astro/TimingDemo.astro'
 
-const render = async (): Promise<string> => {
+const render = async (props?: Record<string, unknown>): Promise<string> => {
   const container = await AstroContainer.create()
-  return container.renderToString(TimingDemo)
+  return container.renderToString(TimingDemo, props ? { props } : {})
 }
 
 /** Every opening tag carrying the attribute `name`. */
@@ -45,6 +45,12 @@ describe('TimingDemo.astro', () => {
     expect(tagsWith(html, 'data-demo-annotation')).toHaveLength(2)
     expect(tagsWith(html, 'data-demo-ghost')).toHaveLength(1)
     expect(decorative.every(tag => tag.includes('aria-hidden="true"'))).toBe(true)
+  })
+
+  it('takes its id from a prop, so a second demo does not duplicate #demo', async () => {
+    const root = tagsWith(await render({ id: 'demo-2' }), 'data-timing-demo')
+
+    expect(root[0]).toMatch(/\sid="demo-2"/)
   })
 
   it('holds the film card', async () => {

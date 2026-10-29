@@ -24,13 +24,21 @@
 import FilmCard from '#components/astro/FilmCard.astro'
 import { DEMO_DURATION_MS, frameAt } from '#utils/timing-demo'
 
-export type Props = Record<string, never>
+export type Props = {
+  /**
+   * Root id, and the fragment its start links point at (`href="#<id>"`).
+   * Give each demo on a page its own.
+   */
+  id?: string
+}
+
+const { id = 'demo' } = Astro.props
 
 const startLabel = frameAt(0).elapsedLabel
 const totalLabel = frameAt(DEMO_DURATION_MS).elapsedLabel
 ---
 
-<div class="timing-demo" id="demo" data-accent="brand" data-timing-demo>
+<div class="timing-demo" id={id} data-accent="brand" data-timing-demo>
   <div class="timing-demo__stage">
     <div class="timing-demo__ghost" aria-hidden="true" data-demo-ghost></div>
     <div class="timing-demo__ghost timing-demo__ghost--accent" aria-hidden="true"></div>

@@ -316,7 +316,7 @@ The film's server markup is its finished frame: every step revealed and no curre
 | `CommandBlock`  | `commands: string[]`                                               | `pre > code` from the `code-block` tokens, a `hidden` Copy button and a `role="status"` region |
 | `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`   |
 | `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame        |
-| `TimingDemo`    | none                                                               | `#demo`: the stage, the player and its script. Upgrades `a[data-demo-start][href="#demo"]`     |
+| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`        |
 | `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content            |
 | `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                      |
 
