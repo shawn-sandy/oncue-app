@@ -27,7 +27,7 @@ describe('FeatureSection.astro', () => {
     expect(await render()).toMatch(/<p\b[^>]*\sdata-ui="eyebrow"[^>]*>\s*Sample eyebrow\s*<\/p>/)
   })
 
-  it('renders the deck beside the title and the body after it', async () => {
+  it('renders the deck under the title and the body after it', async () => {
     const html = await render()
 
     expect(html.indexOf('Sample deck')).toBeGreaterThan(html.indexOf(PROPS.title))
