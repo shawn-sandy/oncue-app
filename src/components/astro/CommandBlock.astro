@@ -1,15 +1,16 @@
 ---
 /**
- * Commands to paste, with a Copy button that falls back to selecting them.
+ * Commands to paste, one per row, each with its own copy button that falls
+ * back to selecting that command.
  *
- * Without JavaScript the commands are plain selectable text and the button
- * stays `hidden`, so the page never shows a control that does nothing. The
- * script reveals the button. When the clipboard refuses (insecure contexts,
- * embedded browsers, a denied permission), it selects the commands instead
- * and says how to copy them: the reference design's "Select text" fallback
- * relabelled the button and selected nothing.
+ * Without JavaScript the commands are plain selectable text and the buttons
+ * stay `hidden`, so the page never shows a control that does nothing. The
+ * script reveals them. When the clipboard refuses (insecure contexts,
+ * embedded browsers, a denied permission), it selects the command instead
+ * and says how to copy it. One shared `role="status"` region announces the
+ * result, so the block adds one live region however many rows it has.
  *
- * Inside a `dialog`, closing the dialog resets the button and the message.
+ * Inside a `dialog`, closing the dialog resets the buttons and the message.
  *
  * Styled from DESIGN.md's `code-block` tokens, so it follows the theme.
  *
@@ -28,107 +29,187 @@ const { commands } = Astro.props
 ---
 
 <div class="command-block" data-command-block-root>
-  <pre class="command-block__code" data-command-block><code>{commands.join('\n')}</code></pre>
-  <div class="command-block__bar">
-    <p class="command-block__status" role="status"></p>
-    <button class="command-block__copy" type="button" hidden data-command-copy>Copy</button>
-  </div>
+  {
+    commands.map(command => (
+      <div class="command-block__row">
+        <code class="command-block__text">{command}</code>
+        <button
+          class="command-block__copy"
+          type="button"
+          hidden
+          data-command-copy
+          data-copy={command}
+          aria-label={`Copy ${command}`}
+        >
+          <svg
+            class="command-block__icon command-block__icon--copy"
+            aria-hidden="true"
+            focusable="false"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15V6a2 2 0 0 1 2-2h8" />
+          </svg>
+          <svg
+            class="command-block__icon command-block__icon--done"
+            aria-hidden="true"
+            focusable="false"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </button>
+      </div>
+    ))
+  }
+  <p class="command-block__status" role="status"></p>
 </div>
 
 <script>
-  const COPIED = 'Commands copied.'
-  const SELECTED = 'Commands selected. Press Ctrl+C or Cmd+C to copy.'
-
+  const COPIED = 'Command copied.'
+  const SELECTED = 'Command selected. Press Ctrl+C or Cmd+C to copy.'
   for (const root of document.querySelectorAll<HTMLElement>('[data-command-block-root]')) {
-    const code = root.querySelector('code')
-    const button = root.querySelector<HTMLButtonElement>('[data-command-copy]')
-    const status = root.querySelector('[role="status"]')
-    if (!code || !button || !status) continue
+    const status = root.querySelector<HTMLElement>('[role="status"]')
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-command-copy]')
+    if (!status) continue
 
-    const show = (label: string, message: string) => {
-      button.textContent = label
-      status.textContent = message
+    // One timer per block, not per button: the status region is shared, so an
+    // earlier button's timer must not blank a later button's result.
+    let timer: number | undefined
+    // Bumped on every reset, so a clipboard write that settles after a newer
+    // click or a dialog close cannot restore stale state.
+    let generation = 0
+    const reset = () => {
+      generation += 1
+      clearTimeout(timer)
+      for (const button of buttons) delete button.dataset.state
+      delete status.dataset.state
+      status.textContent = ''
     }
 
-    button.hidden = false
-    button.addEventListener('click', async () => {
-      try {
-        // No optional chaining: where `navigator.clipboard` is undefined the
-        // call must throw into the fallback, not resolve to nothing.
-        await navigator.clipboard.writeText(code.textContent ?? '')
-        show('Copied', COPIED)
-      } catch {
-        const range = document.createRange()
-        range.selectNodeContents(code)
-        const selection = getSelection()
-        selection?.removeAllRanges()
-        selection?.addRange(range)
-        show('Selected', SELECTED)
-      }
-    })
+    for (const button of buttons) {
+      const code = button.parentElement?.querySelector('code')
+      if (!code) continue
 
-    root.closest('dialog')?.addEventListener('close', () => show('Copy', ''))
+      button.hidden = false
+      button.addEventListener('click', async () => {
+        // Emptying the region first lets a repeat click on the same button
+        // be announced again; an unchanged live region is not re-read.
+        reset()
+        const current = generation
+        let copied = true
+        try {
+          // No optional chaining: where `navigator.clipboard` is undefined the
+          // call must throw into the fallback, not resolve to nothing.
+          await navigator.clipboard.writeText(button.dataset.copy ?? '')
+        } catch {
+          copied = false
+        }
+        if (current !== generation) return
+
+        if (copied) {
+          button.dataset.state = 'copied'
+          status.textContent = COPIED
+        } else {
+          const range = document.createRange()
+          range.selectNodeContents(code)
+          const selection = getSelection()
+          selection?.removeAllRanges()
+          selection?.addRange(range)
+          status.dataset.state = 'selected'
+          status.textContent = SELECTED
+        }
+        timer = window.setTimeout(reset, 2000)
+      })
+    }
+
+    root.closest('dialog')?.addEventListener('close', reset)
   }
 </script>
 
 <style>
   .command-block {
+    background: var(--paper-sunk);
     border: 1px solid var(--rule);
     border-radius: var(--radius, 0.5rem);
-    overflow: hidden;
+    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
   }
 
-  .command-block .command-block__code {
-    background: var(--paper-sunk);
-    border-radius: 0;
+  .command-block__row {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-height: 2.5rem;
+  }
+
+  /* Wraps instead of scrolling, so a row never needs its own tab stop and
+     never widens a 320px viewport. */
+  .command-block .command-block__text {
+    background: none;
     color: var(--ink-soft);
     font-family: var(--font-family-mono);
     font-size: 0.8125rem;
     line-height: 1.7;
-    margin: 0;
-    padding: 1rem 1.25rem;
-
-    /* Wraps instead of scrolling, so the block never needs its own tab stop
-       and never widens a 320px viewport. */
-    white-space: pre-wrap;
     overflow-wrap: anywhere;
-  }
-
-  .command-block .command-block__code code {
-    background: none;
-    color: inherit;
-    font: inherit;
     padding: 0;
+    white-space: pre-wrap;
   }
 
-  .command-block__bar {
-    align-items: center;
-    border-block-start: 1px solid var(--rule);
-    display: flex;
-    gap: 0.75rem;
-    justify-content: space-between;
-    padding: 0.25rem 0.5rem 0.25rem 1.25rem;
-  }
-
+  /* A successful copy needs only screen readers to hear it: the check icon
+     shows it to everyone else. */
   .command-block .command-block__status {
+    block-size: 1px;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  /* The fallback has no icon change, so its Ctrl+C hint shows to everyone. */
+  .command-block .command-block__status[data-state='selected'] {
+    block-size: auto;
+    clip-path: none;
     color: var(--ink-soft);
     font-size: 0.8125rem;
-    margin: 0;
+    inline-size: auto;
+    margin-block: 0.25rem;
+    overflow: visible;
+    position: static;
+    white-space: normal;
   }
 
   /* Qualified by the root: Astro scopes with `:where()`, which adds no
      specificity, and the vendor's `button[type]` (0,1,1) would win. */
   .command-block .command-block__copy {
+    align-items: center;
     background: transparent;
-    border: 1px solid var(--rule);
+    border: 1px solid transparent;
     border-radius: var(--radius, 0.5rem);
-    color: var(--island);
+    color: var(--ink-soft);
     cursor: pointer;
+    display: inline-flex;
     flex-shrink: 0;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    min-height: 2.75rem;
-    padding: 0 1rem;
+    justify-content: center;
+    min-height: 2.5rem;
+    min-width: 2.5rem;
+    padding: 0;
   }
 
   .command-block .command-block__copy[hidden] {
@@ -137,11 +218,24 @@ const { commands } = Astro.props
 
   .command-block .command-block__copy:hover {
     background: var(--island-bg);
-    border-color: var(--island);
+    color: var(--island);
   }
 
   .command-block .command-block__copy:focus-visible {
     outline: 2px solid var(--island);
     outline-offset: 2px;
+  }
+
+  .command-block__icon--done,
+  .command-block__copy[data-state='copied'] .command-block__icon--copy {
+    display: none;
+  }
+
+  .command-block__copy[data-state='copied'] .command-block__icon--done {
+    display: block;
+  }
+
+  .command-block__copy[data-state='copied'] {
+    color: var(--island);
   }
 </style>

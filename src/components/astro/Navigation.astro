@@ -126,7 +126,7 @@ const projectLinks = [
   {
     showBrand && (
       <a href={brandHref} data-nav-brand>
-        {brandLogo ? <img src={brandLogo} alt={brandTitle} width="44" height="44" /> : brandTitle}
+        {brandLogo ? <img src={brandLogo} alt={brandTitle} width="56" height="56" /> : brandTitle}
       </a>
     )
   }
@@ -165,6 +165,13 @@ const projectLinks = [
 </nav>
 
 <style>
+  /* Breathing room above and below the 56px logo. `body` is a flex column,
+     so without `flex-shrink: 0` the bar shrinks back to acss's 4rem minimum. */
+  nav[data-site-nav] {
+    flex-shrink: 0;
+    padding-block: 0.5rem;
+  }
+
   /* The logo is the whole link, so the link takes the 44px target height. */
   [data-nav-brand] {
     align-items: center;

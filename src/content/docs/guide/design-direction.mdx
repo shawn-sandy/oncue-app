@@ -301,27 +301,27 @@ the direction removes - and it fails `e2e/homepage-design-direction.spec.ts` if 
 Every part renders complete HTML on the server. Scripts are small Astro `script` modules, with no framework island,
 and they only add behaviour on top:
 
-| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
-| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                     |
-| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies the commands; if the clipboard refuses, selects them and says how to copy |
-| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
+| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                       |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus          |
+| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                          |
+| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies that row's command; if the clipboard refuses, selects it and shows how to copy |
+| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it        |
 
 The film's server markup is its finished frame: every step revealed and no current word. That is also the view under
 `prefers-reduced-motion`, where nothing moves until Play is pressed, and the frame the demo ends on.
 
 ### Components
 
-| Component       | Props                                                              | What it does                                                                                   |
-| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                      |
-| `CommandBlock`  | `commands: string[]`                                               | `pre > code` from the `code-block` tokens, a `hidden` Copy button and a `role="status"` region |
-| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`   |
-| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame        |
-| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`        |
-| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content            |
-| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                      |
+| Component       | Props                                                              | What it does                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                                                                            |
+| `CommandBlock`  | `commands: string[]`                                               | One row per command, each a `code` with its own `hidden` icon copy button, and one `role="status"` region, shown only for the blocked-clipboard hint |
+| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`                                                         |
+| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame                                                              |
+| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`                                                              |
+| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                  |
+| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                            |
 
 All six new components are exported from `src/components/index.ts`.
 

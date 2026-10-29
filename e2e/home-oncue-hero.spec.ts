@@ -112,7 +112,7 @@ test.describe('OnCue homepage', () => {
 })
 
 test.describe('OnCue homepage edge cases', () => {
-  test('a rejected clipboard selects both commands and says how to copy', async ({ page }) => {
+  test('a rejected clipboard selects that command and says how to copy', async ({ page }) => {
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'clipboard', {
         configurable: true,
@@ -124,17 +124,29 @@ test.describe('OnCue homepage edge cases', () => {
     await page.goto('/')
     await openDialog(page)
 
-    await dialog(page).getByRole('button', { name: 'Copy' }).click()
+    await dialog(page)
+      .getByRole('button', { name: `Copy ${COMMANDS[1]}` })
+      .click()
 
     // Review fix 6: the reference fallback relabelled the button and selected nothing.
     await expect
       .poll(() => page.evaluate(() => window.getSelection()?.toString() ?? ''))
-      .toBe(COMMANDS.join('\n'))
+      .toBe(COMMANDS[1])
     await expect(dialog(page).getByRole('status')).toHaveText(/selected/i)
     await expect(dialog(page).getByRole('status')).toHaveText(/Ctrl\+C/)
+    // Sighted users get no icon change on this path, so the hint must show.
+    // toBeVisible() passes for the 1px visually-hidden box, so measure it.
+    await expect
+      .poll(() =>
+        dialog(page)
+          .getByRole('status')
+          .evaluate(el => el.getBoundingClientRect().width)
+      )
+      .toBeGreaterThan(50)
   })
 
-  test('closing and reopening the dialog resets the copy button', async ({ page }) => {
+  test("one button's reset does not clear another button's result", async ({ page }) => {
+    await page.clock.install()
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'clipboard', {
         configurable: true,
@@ -142,15 +154,77 @@ test.describe('OnCue homepage edge cases', () => {
       })
     })
     await page.goto('/')
+    await page.clock.pauseAt(Date.now() + 60_000)
     await openDialog(page)
 
-    const copy = dialog(page).locator('[data-command-copy]')
+    const [first, second] = [0, 1].map(i => dialog(page).locator('[data-command-copy]').nth(i))
+    await first.click()
+    await page.clock.runFor(1500)
+    await second.click()
+    await expect(second).toHaveAttribute('data-state', 'copied')
+    // The first click's 2s timer fires here; the second result must survive it.
+    await page.clock.runFor(600)
+    await expect(dialog(page).getByRole('status')).toHaveText('Command copied.')
+    await expect(second).toHaveAttribute('data-state', 'copied')
+  })
+
+  test('a copy that finishes after the dialog closes leaves no stale state', async ({ page }) => {
+    await page.clock.install()
+    await page.addInitScript(() => {
+      const w = window as typeof window & { finishCopy?: () => void; dialogClosed?: boolean }
+      // `close` is dispatched as a later task, so the test waits for it.
+      document.addEventListener('close', () => (w.dialogClosed = true), true)
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: () =>
+            new Promise<void>(resolve => {
+              w.finishCopy = resolve
+            }),
+        },
+      })
+    })
+    await page.goto('/')
+    await page.clock.pauseAt(Date.now() + 60_000)
+    await openDialog(page)
+
+    const copy = dialog(page).locator('[data-command-copy]').first()
     await copy.click()
-    await expect(copy).not.toHaveText('Copy')
+    await page.keyboard.press('Escape')
+    await expect
+      .poll(() =>
+        page.evaluate(() => (window as typeof window & { dialogClosed?: boolean }).dialogClosed)
+      )
+      .toBe(true)
+    await page.evaluate(() =>
+      (window as typeof window & { finishCopy?: () => void }).finishCopy?.()
+    )
+    await openDialog(page)
+
+    await expect(copy).not.toHaveAttribute('data-state')
+    await expect(dialog(page).getByRole('status')).toHaveText('')
+  })
+
+  test('closing and reopening the dialog resets the copy button', async ({ page }) => {
+    // Paused timers: the 2s auto-reset must not stand in for the close handler.
+    await page.clock.install()
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: () => Promise.resolve() },
+      })
+    })
+    await page.goto('/')
+    await page.clock.pauseAt(Date.now() + 60_000)
+    await openDialog(page)
+
+    const copy = dialog(page).locator('[data-command-copy]').first()
+    await copy.click()
+    await expect(copy).toHaveAttribute('data-state', 'copied')
 
     await page.keyboard.press('Escape')
     await openDialog(page)
-    await expect(copy).toHaveText('Copy')
+    await expect(copy).not.toHaveAttribute('data-state')
     await expect(dialog(page).getByRole('status')).toHaveText('')
   })
 
@@ -169,11 +243,11 @@ test.describe('OnCue homepage edge cases', () => {
 
       await expect(page.locator('[data-demo-transport]'), 'no demo transport').toHaveCount(1)
       await expect(page.locator('[data-demo-transport]')).toBeHidden()
-      // The install dialog and the requirements section each carry one. The
-      // attribute itself is checked: the closed dialog would hide its button
-      // anyway, but the section's is on the page.
+      // The install dialog and the requirements section each carry one per
+      // command. The attribute itself is checked: the closed dialog would hide
+      // its buttons anyway, but the section's are on the page.
       const copyButtons = page.locator('[data-command-copy]')
-      await expect(copyButtons, 'no copy button').toHaveCount(2)
+      await expect(copyButtons, 'no copy button').toHaveCount(COMMANDS.length * 2)
       for (const button of await copyButtons.all()) {
         await expect(button).toHaveAttribute('hidden', '')
       }
