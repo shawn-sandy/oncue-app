@@ -1,0 +1,242 @@
+---
+/**
+ * A still of an OnCue explainer on a phone screen: the timing demo's film.
+ *
+ * Presentational only. It renders the finished frame -- every step revealed,
+ * every caption word said -- which is also the no-JS and reduced-motion view.
+ * `TimingDemo` drives it by rewriting the `data-state` attribute on each
+ * `[data-step]` (`revealed`, `current`, `upcoming`) and `[data-word]` (`said`,
+ * `current`, `upcoming`).
+ *
+ * The palette is fixed in both themes because it depicts a screen, not the
+ * page. Its accent is `#ef827b` (7.33:1 on `#111111`); the reference design's
+ * `#c7342b` labels measured 3.56:1 there. The lowest pair is `#606060` step
+ * numbers on `#e9e9e9` badges, 5.18:1. Labels floor at 0.625rem.
+ *
+ * @component FilmCard
+ * @example
+ * ```astro
+ * <FilmCard />
+ * ```
+ */
+export type Props = Record<string, never>
+
+const steps = ['Start with a script', 'Give it a voice', 'Bring visuals to life']
+const words = ['Your', 'script.', 'Your', 'voice.', 'Your', 'visuals.']
+---
+
+<div
+  class="film"
+  role="img"
+  aria-label="Illustrative silent timing demo. As the caption says script, voice and visuals, the matching step card appears."
+  data-film
+>
+  <div class="film__header">
+    <span class="film__brand"
+      ><img src="/images/oncue-logo.svg" alt="" width="28" height="28" />OnCue</span
+    >
+    <span class="film__label" data-ui="label">Explained / 001</span>
+  </div>
+  <p class="film__title">Big ideas.<em>Short stories.</em></p>
+  <ol class="film__steps">
+    {
+      steps.map((step, index) => (
+        <li class="film__step" data-step={index} data-state="revealed">
+          <span class="film__step-number">{String(index + 1).padStart(2, '0')}</span>
+          {step}
+        </li>
+      ))
+    }
+  </ol>
+  <p class="film__captions">
+    {
+      words.map((word, index) => (
+        <>
+          <span class="film__word" data-word={index} data-state="said">
+            {word}
+          </span>{' '}
+        </>
+      ))
+    }
+  </p>
+  <div class="film__footer">
+    <span class="film__label" data-ui="label">Made to make sense.</span>
+    <span class="film__label film__label--accent" data-ui="label">9:16 · 16:9</span>
+  </div>
+</div>
+
+<style>
+  .film {
+    /* Fixed screen palette, deliberately not theme tokens. */
+    --film-paper: #111;
+    --film-ink: #f2f2f2;
+    --film-ink-soft: #a3a3a3;
+    --film-accent: #ef827b;
+    --film-rust: #c7342b;
+    --film-step: #fff;
+    --film-step-ink: #000;
+    --film-badge: #e9e9e9;
+    --film-badge-ink: #606060;
+    --film-upcoming: #1c1c1c;
+    --film-upcoming-badge: #2e2e2e;
+
+    background: var(--film-paper);
+    border: 1px solid var(--rule);
+    border-radius: 0.875rem;
+    box-sizing: border-box;
+    color: var(--film-ink);
+    display: flex;
+    flex-direction: column;
+    min-height: 30rem;
+    padding: 1.375rem 1.375rem 1rem;
+    position: relative;
+    width: min(17.25rem, 100%);
+  }
+
+  .film__header,
+  .film__footer {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+
+  .film__brand {
+    align-items: center;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 600;
+    gap: 0.375rem;
+  }
+
+  .film__brand img {
+    display: block;
+  }
+
+  .film .film__label {
+    color: var(--film-ink-soft);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+  }
+
+  .film .film__label--accent {
+    color: var(--film-accent);
+  }
+
+  .film .film__title {
+    color: var(--film-ink);
+    font-family: var(--font-family-display);
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 1.5rem 0 1.25rem;
+  }
+
+  .film__title em {
+    color: var(--film-accent);
+    display: block;
+  }
+
+  .film__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .film .film__step {
+    align-items: center;
+    background: var(--film-step);
+    border-radius: 0.25rem;
+    color: var(--film-step-ink);
+    display: flex;
+    font-size: 0.75rem;
+    font-weight: 600;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.625rem 0.75rem;
+    transition:
+      background-color 250ms ease-out,
+      color 250ms ease-out,
+      transform 350ms ease-out;
+  }
+
+  .film__step-number {
+    background: var(--film-badge);
+    border-radius: 50%;
+    color: var(--film-badge-ink);
+    display: grid;
+    flex-shrink: 0;
+    font-family: var(--font-family-mono);
+    font-size: 0.625rem;
+    font-weight: 400;
+    height: 1.5rem;
+    place-items: center;
+    width: 1.5rem;
+  }
+
+  .film .film__step[data-state='current'] {
+    background: var(--film-rust);
+    color: #fff;
+  }
+
+  .film__step[data-state='current'] .film__step-number {
+    background: #fff;
+    color: var(--film-rust);
+  }
+
+  .film .film__step[data-state='upcoming'] {
+    background: var(--film-upcoming);
+    color: var(--film-ink-soft);
+    transform: translateY(0.375rem);
+  }
+
+  .film__step[data-state='upcoming'] .film__step-number {
+    background: var(--film-upcoming-badge);
+    color: var(--film-ink-soft);
+  }
+
+  .film .film__captions {
+    font-size: 0.8125rem;
+    line-height: 1.8;
+    margin: auto 0 0;
+    max-width: none;
+    padding-block: 1.25rem 1rem;
+    text-align: center;
+  }
+
+  .film__word {
+    border-radius: 2px;
+    padding: 0.125rem 0.1875rem;
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .film__word[data-state='said'] {
+    color: var(--film-ink);
+  }
+
+  .film__word[data-state='upcoming'] {
+    color: var(--film-ink-soft);
+  }
+
+  .film__word[data-state='current'] {
+    background: var(--film-rust);
+    color: #fff;
+  }
+
+  .film__footer {
+    border-block-start: 1px solid #444;
+    padding-block-start: 0.625rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .film .film__step,
+    .film__word {
+      transition: none;
+    }
+  }
+</style>

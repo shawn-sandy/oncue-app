@@ -128,6 +128,86 @@ test.describe('Home Page Accessibility', () => {
     })
 
     /**
+     * The demo film keeps a fixed dark palette in both themes because it
+     * depicts a phone screen, so the token pairs above say nothing about it.
+     * The reference design's rust labels measured 3.56:1 on the film and
+     * 4.37:1 on the grey step badges. The plan's lowest pair is #606060 on
+     * #e9e9e9 (5.18:1).
+     *
+     * Every element in the film that holds text is measured from its own
+     * computed colour against the first opaque background behind it, with the
+     * demo forced through its three states -- a current word, a current step
+     * and an upcoming one beside the revealed ones -- so a pair that only
+     * appears mid-play is measured too.
+     */
+    test(`every text pair in the demo film clears WCAG AA in ${colorScheme} mode`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/')
+
+      const film = page.locator('[data-film]')
+      await expect(film, 'no [data-film] on the homepage').toHaveCount(1)
+
+      const measured = await film.evaluate(root => {
+        const set = (selector: string, index: number, state: string) => {
+          const el = root.querySelectorAll<HTMLElement>(selector)[index]
+          if (el) el.dataset.state = state
+        }
+        set('[data-word]', 3, 'current')
+        set('[data-word]', 5, 'upcoming')
+        set('[data-step]', 1, 'current')
+        set('[data-step]', 2, 'upcoming')
+
+        const rgb = (value: string) => (value.match(/[\d.]+/g) ?? []).map(Number)
+        const luminance = ([r, g, b]: number[]) => {
+          const channel = (value: number) => {
+            const c = value / 255
+            return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+          }
+          return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+        }
+        const background = (el: Element | null): string => {
+          for (let node = el; node; node = node.parentElement) {
+            const bg = getComputedStyle(node).backgroundColor
+            const alpha = rgb(bg)[3]
+            if (bg !== 'transparent' && alpha !== 0) return bg
+          }
+          return 'rgb(255, 255, 255)'
+        }
+
+        return Array.from(root.querySelectorAll('*'))
+          .filter(el =>
+            Array.from(el.childNodes).some(
+              node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+            )
+          )
+          .map(el => {
+            const fg = getComputedStyle(el).color
+            const bg = background(el)
+            const [a, b] = [luminance(rgb(fg)), luminance(rgb(bg))]
+            const [hi, lo] = a > b ? [a, b] : [b, a]
+            return {
+              text: el.textContent?.trim().slice(0, 24),
+              pair: `${fg} on ${bg}`,
+              ratio: (hi + 0.05) / (lo + 0.05),
+            }
+          })
+      })
+
+      // The film holds a header, a title, three steps, six caption words and
+      // a footer; far fewer measurements means the walk missed them.
+      expect(measured.length, 'too few text elements measured in the film').toBeGreaterThan(10)
+
+      for (const { text, pair, ratio } of measured) {
+        expect(
+          ratio,
+          `${colorScheme} "${text}": ${pair} = ${ratio.toFixed(2)}:1`
+        ).toBeGreaterThanOrEqual(4.5)
+      }
+    })
+
+    /**
      * WCAG 2.1 SC 2.4.7 Focus Visible. The direction repaints every surface, so
      * a focus ring that was legible against the old white page has to be
      * re-proved against the new paper and dark surfaces. Tab is used rather

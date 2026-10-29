@@ -33,7 +33,16 @@ test('starlight guide renders', async ({ page }) => {
 test('home to blog to post navigation has no console errors', async ({ page }) => {
   const errors: string[] = []
   page.on('console', msg => {
-    if (msg.type() === 'error') errors.push(msg.text())
+    // The dev toolbar's "Use the Image component" audit fetches each plain
+    // <img> after load. This test leaves every page at once, which aborts that
+    // fetch and logs the toolbar's own error. The toolbar exists only in dev,
+    // so its aborted audit is not a page error.
+    if (
+      msg.type() === 'error' &&
+      !msg.text().includes("Error while running audit's match function")
+    ) {
+      errors.push(msg.text())
+    }
   })
 
   await page.goto('/')

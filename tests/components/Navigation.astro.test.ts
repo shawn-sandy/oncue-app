@@ -126,6 +126,36 @@ describe('Navigation.astro popover markup contract', () => {
     expect(inner).toContain('href="/dashboard"')
   })
 
+  it('renders the brand as a logo whose alt is brandTitle when brandLogo is set', async () => {
+    const html = await render({ brandTitle: 'OnCue', brandLogo: '/images/oncue-logo.svg' })
+    const brand = /<a\b[^>]*\bdata-nav-brand\b[^>]*>([\s\S]*?)<\/a>/.exec(html)?.[1] ?? ''
+    const img = /<img\b[^>]*>/.exec(brand)?.[0] ?? ''
+
+    expect(attr(img, 'src')).toBe('/images/oncue-logo.svg')
+    expect(attr(img, 'alt')).toBe('OnCue')
+    // The alt is the link's whole name; repeating the title as text would
+    // announce it twice.
+    expect(brand.replace(/<img\b[^>]*>/, '').trim()).toBe('')
+  })
+
+  it('renders no logo without brandLogo', async () => {
+    expect(await render()).not.toMatch(/<img\b/)
+  })
+
+  it('lists the OnCue project links inside the popover panel', async () => {
+    // Review fix 5: the reference phone header dropped two of these three.
+    const { inner } = findPanel(await render())
+
+    for (const href of [
+      'https://github.com/shawn-sandy/oncue#how-it-works',
+      'https://github.com/shawn-sandy/oncue#readme',
+      'https://github.com/shawn-sandy/oncue',
+    ]) {
+      expect(inner).toContain(`href="${href}"`)
+    }
+    expect(inner).not.toMatch(/\starget=/)
+  })
+
   it('keeps popovertarget in sync when menuId is overridden', async () => {
     const html = await render({ menuId: 'custom-menu' })
 

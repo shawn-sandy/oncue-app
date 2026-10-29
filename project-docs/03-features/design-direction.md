@@ -22,7 +22,7 @@ Three supporting decisions are already settled:
   use latin-subset woff2 files in `public/fonts/`, not a CDN: `dm-sans-variable.woff2` (400-700 in one file, preloaded
   from `src/layouts/Base.astro`) and `dm-mono-400.woff2`. Both are declared with `font-display: swap`.
 - **The token layer applies sitewide.** Body background and text colour are global, so there is no way to scope them.
-  The homepage hero and the card tiering are homepage-only.
+  The OnCue hero and its timing demo are homepage-only.
 - **Component prop signatures stay stable.** `Card` and `FeatureCards` are package exports via `src/components/index.ts`,
   so new props are optional with defaults and new slots are additive.
 
@@ -93,7 +93,7 @@ inherited @fpkit/acss defaults. Both now point at direction tokens and both have
 Painted by `body [data-card]` in `src/styles/_base.scss`, and again inside `direction-dark-surfaces` for the dark
 scopes. `[data-card]` is the attribute @fpkit/acss puts on its `Card` root, so the alias reaches:
 
-- `Card.astro` everywhere it renders, including the six homepage feature cards and the hero specimen
+- `Card.astro` everywhere it renders
 - the promoted-tier specimens in `FeatureCards.astro`
 - `Featured.astro`
 - `DashboardCard` and any other composition built on the @fpkit/acss `Card`
@@ -104,9 +104,9 @@ The selector is scoped through `body` on purpose. The vendor's own `[data-card]`
 
 ### `--header-background: var(--paper-sunk)`
 
-Painted by `body > header`, which covers the shared `Header.astro` band on every route and the `HomeHero.astro` band on
-the homepage. The child combinator is load-bearing twice over: (0,0,2) beats the vendor's (0,0,1), and it cannot reach
-a nested `header` inside a card.
+Painted by `body > header`, which covers the shared `Header.astro` band on every route except the homepage,
+which renders no header band. The child combinator is load-bearing twice over: (0,0,2) beats the vendor's
+(0,0,1), and it cannot reach a nested `header` inside a card.
 
 A third header token, `--header-deck-font-size`, sizes the deck paragraph under the shared header's `h1`. It is a
 fluid `clamp()` on a shallower slope than the `h1` clamp, so the two separate as the viewport grows instead of
@@ -232,6 +232,72 @@ the direction rather than follow it:
 Applying your accent to a heading, a decorative border or a static card background reintroduces exactly the ambiguity
 the direction removes, and it fails `e2e/homepage-design-direction.spec.ts` if you run this project's suite.
 
+## The OnCue Homepage
+
+`/` is the OnCue plugin page. `src/pages/index.astro` composes it on `Base` with `hideHeader` and wraps it in
+`MainSection`, not `Layout`, because `Layout` always renders the blog sidebar. The hero is therefore a `section` inside
+`main`, and the skip link lands on it.
+
+### Working before JavaScript loads
+
+Every part renders complete HTML on the server. Scripts are small Astro `script` modules, with no framework island,
+and they only add behaviour on top:
+
+| Control               | Without JavaScript                                      | With JavaScript                                                                  |
+| --------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Make your first video | A link to the OnCue README's install section            | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
+| See it in motion      | A link to `#demo`                                       | Plays the demo from 00:00 and moves focus to the play button                     |
+| Copy                  | Not shown (`hidden`); the commands are selectable text  | Copies the commands; if the clipboard refuses, selects them and says how to copy |
+| Demo player           | Not shown (`hidden`); the film shows its finished frame | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
+
+The film's server markup is its finished frame: every step revealed and no current word. That is also the view under
+`prefers-reduced-motion`, where nothing moves until Play is pressed, and the frame the demo ends on.
+
+### Components
+
+| Component       | Props                                                              | What it does                                                                                   |
+| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                      |
+| `CommandBlock`  | `commands: string[]`                                               | `pre > code` from the `code-block` tokens, a `hidden` Copy button and a `role="status"` region |
+| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`   |
+| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame        |
+| `TimingDemo`    | none                                                               | `#demo`: the stage, the player and its script. Upgrades `a[data-demo-start][href="#demo"]`     |
+| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content            |
+| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                      |
+
+All six new components are exported from `src/components/index.ts`.
+
+The demo's timing is `frameAt(positionMs, wordCount = 6)` in `src/utils/timing-demo.ts`, a pure function that returns
+`{ wordIndex, revealedSteps, elapsedLabel, progress, ended }`. Words land every 1050ms after a 600ms lead-in, step `i`
+appears on word `i * 2 + 1`, and the run lasts 8000ms. Negative and non-finite positions count as 0. The component
+script only paints the frames it returns, so the timeline is unit-tested without a DOM in
+`tests/utils/timing-demo.test.ts`.
+
+### The scoped accent exception
+
+`data-accent="brand"` lets the accent paint something static in exactly two places: the headline's accent phrase and
+the `TimingDemo` root, whose stage depicts the OnCue brand. The accent audit in `e2e/homepage-design-direction.spec.ts`
+skips those elements and their descendants, and a separate test fails unless exactly those two carry the marker. The
+display serif is italic for the two accent phrases only.
+
+The film card keeps a fixed dark palette in both themes because it depicts a phone screen. Its accent is `#ef827b`,
+7.33:1 on `#111111`; the reference design's `#c7342b` measured 3.56:1 there. The lowest text pair in the film is
+`#606060` step numbers on `#e9e9e9` badges, 5.18:1. `e2e/home-accessibility.spec.ts` measures every text element in
+the film from its computed colours, with the demo forced through its current and upcoming states.
+
+### Link preview
+
+`src/layouts/Base.astro` renders `OpenGraph` on every page with absolute URLs built from `Astro.site`, and points
+`og:image` at `public/images/oncue-og.png` (1200x630). Regenerate that image whenever the hero changes:
+
+```bash
+node scripts/capture-og-image.mjs
+```
+
+The script boots the dev server, screenshots the hero in a 1200x630 light viewport, and stops the server. If a dev
+server is already running for the project, it uses that one and leaves it running. `Astro.site` comes from `SITE_URL`
+and falls back to `https://example.com`, so set `SITE_URL` in production.
+
 ## Verification
 
 Measured against the running dev server, light and dark:
@@ -248,8 +314,10 @@ Measured against the running dev server, light and dark:
 Automated coverage:
 
 - `e2e/homepage-design-direction.spec.ts` - three distinct font families resolve, the display-to-deck ratio clears 3.0,
-  both aliases have at least one consumer, body background differs between light and dark, no non-interactive element
-  carries the accent, and horizontal overflow is 0 at 320, 390, 768 and 1280
+  both aliases have at least one consumer, body background and the demo's ghost card differ between light and dark, no
+  non-interactive element outside the two `data-accent="brand"` elements carries the accent, and horizontal overflow
+  is 0 at 320, 390, 768 and 1280
+- `e2e/home-oncue-hero.spec.ts` - the homepage's content, dialog, copy fallback, demo, link preview and no-JS view
 - `tests/integration/design-tokens.test.ts` - `--card-background` and `--header-background` each keep at least one
   `var()` consumer in the compiled CSS, and the dark block sets at least one painted property rather than variables alone
 

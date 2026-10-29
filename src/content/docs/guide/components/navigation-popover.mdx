@@ -30,6 +30,10 @@ directive, and no open-state class toggled on the DOM.
       <li><a href="/">Home</a></li>
       <!-- Articles, Blog, About, Contact -->
     </ul>
+    <ul data-nav-external>
+      <li><a href="https://github.com/shawn-sandy/oncue#how-it-works">How it works ↗</a></li>
+      <!-- Documentation, GitHub -->
+    </ul>
     <slot />
   </div>
 
@@ -59,6 +63,20 @@ All props are optional.
 | `brandHref`  | `string`  | `'/'`                | Destination of the brand link.                                       |
 | `menuId`     | `string`  | `'site-nav-popover'` | id of the popover panel, wired to the button's `popovertarget`.      |
 | `showBrand`  | `boolean` | `true`               | Render the brand link. Set `false` when a consumer supplies its own. |
+| `brandLogo`  | `string`  | none                 | Logo image URL. Replaces the brand text; its `alt` is `brandTitle`.  |
+
+`brandLogo` swaps the brand text for an image without changing the link's accessible name: the `img` takes
+`brandTitle` as its `alt`, and the link grows to a 44px target. `Base.astro` passes the OnCue logo:
+
+```astro
+<Navigation brandLogo="/images/oncue-logo.svg">
+  <!-- slots as below -->
+</Navigation>
+```
+
+The panel's second list holds the OnCue project links - How it works, Documentation and GitHub - as
+`ExternalLink`s. They open in the same tab, and the arrow after each label is hidden from screen readers. Because
+they live in the panel, they stay reachable at every width.
 
 `menuId` matters when more than one `Navigation` renders on a page: `id` values must stay unique, and a duplicate id
 sends both buttons to the same panel.

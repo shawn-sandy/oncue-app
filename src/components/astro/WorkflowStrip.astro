@@ -1,0 +1,118 @@
+---
+/**
+ * A hairline-ruled strip naming the phases of a workflow, in order.
+ *
+ * The phases are an `ol`, so a screen reader announces them as a numbered
+ * sequence; the reference design used four `div`s separated by arrow glyphs
+ * that were read aloud. Here the numbers are the list's own markers and the
+ * arrows are generated content with empty alternative text.
+ *
+ * The title is in the mono label role at 400, the one DM Mono weight the site
+ * ships (the reference asked for 500).
+ *
+ * @component WorkflowStrip
+ * @example
+ * ```astro
+ * <WorkflowStrip
+ *   eyebrow="One idea. One connected workflow."
+ *   title="From your first beat to the final frame."
+ *   phases={['Storyboard', 'Voiceover', 'Editable deck', 'Finished video']}
+ * />
+ * ```
+ */
+export type Props = {
+  /** First line of the title, in ink. */
+  eyebrow: string
+  /** Second line of the title, in soft ink. */
+  title: string
+  /** Phase names, in order. */
+  phases: string[]
+}
+
+const { eyebrow, title, phases } = Astro.props
+const titleId = 'workflow-strip-title'
+---
+
+<section class="workflow-strip" aria-labelledby={titleId} data-workflow-strip>
+  <p class="workflow-strip__title" id={titleId} data-ui="label">
+    <span class="workflow-strip__eyebrow">{eyebrow}</span>
+    <span>{title}</span>
+  </p>
+  <ol class="workflow-strip__phases">
+    {phases.map(phase => <li>{phase}</li>)}
+  </ol>
+</section>
+
+<style>
+  .workflow-strip {
+    align-items: center;
+    border-block: 1px solid var(--rule);
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+    padding-block: 1.75rem;
+  }
+
+  .workflow-strip .workflow-strip__title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .workflow-strip__eyebrow {
+    color: var(--ink);
+  }
+
+  /* Only the eyebrow line is set in capitals. */
+  .workflow-strip__eyebrow + span {
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .workflow-strip__phases {
+    display: flex;
+
+    /* The vendor sets every list to a column. */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    justify-content: space-between;
+    list-style: decimal-leading-zero inside;
+    margin: 0;
+    padding: 0;
+  }
+
+  .workflow-strip .workflow-strip__phases li {
+    font-size: 0.9375rem;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  .workflow-strip__phases li::marker {
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: 0.75rem;
+  }
+
+  /* Decorative, so the alternative text after the slash is empty. */
+  .workflow-strip__phases li:not(:last-child)::after {
+    color: var(--ink-soft);
+    content: '→';
+    content: '→' / '';
+    font-family: var(--font-family-display);
+    margin-inline-start: 1rem;
+  }
+
+  @media (max-width: 47.5rem) {
+    .workflow-strip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .workflow-strip__phases {
+      justify-content: flex-start;
+    }
+  }
+</style>
