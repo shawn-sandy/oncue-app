@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **OnCue feature sections** (`src/components/astro/Feature*.astro`, `src/pages/index.astro`): eight sections
+  below the workflow strip, one claim each from the plugin README (one spec drives every output, word-synced
+  animation, any frame size, the two check-ins, real facts and pictures, brand and theme, the eight skills, and
+  what each output needs), built on a shared `FeatureSection` frame and exported from `src/components/index.ts`
+  - Every surface is a DESIGN.md token, so the sections follow the theme; depicted video frames keep a fixed
+    dark palette, as `FilmCard` does, and the accent stays on links and the Copy button
+  - Wide content stays inside the page at 320px: one-line code wraps, the spec sample, folder tree and
+    requirements table scroll inside focusable, labelled regions, and the drawn word timeline leaves the layout
+    below 62rem, where its table carries the same facts
+  - Tests: `FeatureSection`, `FeatureWordSync` and `FeatureRequirements` unit tests, and
+    `e2e/home-feature-sections.spec.ts` (each section named by its own h2; zero axe WCAG 2.2 AA violations at
+    1280px and 375px in both themes)
 - **OnCue homepage** (`src/pages/index.astro`, `src/components/astro/`): `/` is now the OnCue plugin page,
   rebuilt from the OnCue Studio Hero design with the eight fixes from its review
   - Composed from small server-rendered parts: `ExternalLink`, `CommandBlock`, `InstallDialog`, `FilmCard`,

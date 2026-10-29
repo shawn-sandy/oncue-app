@@ -1,0 +1,183 @@
+---
+/**
+ * Feature section: `short.json` drives every output, shown as a trimmed spec
+ * from the Gleaner example beside the four things built from it, then the
+ * folder a project ends up with.
+ *
+ * The spec sample keeps its nesting and the folder tree its columns, so both
+ * scroll inside a focusable region on a narrow screen instead of wrapping.
+ *
+ * @component FeatureOneFile
+ * @example
+ * ```astro
+ * <FeatureOneFile />
+ * ```
+ */
+import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+const SPEC_HREF =
+  'https://github.com/shawn-sandy/oncue/blob/main/plugins/oncue/skills/storyboard/references/spec.md'
+
+// Trimmed from plugins/oncue/engine/examples/gleaner/short.json (beat 2).
+const SPEC = `"format": { "width": 1080, "height": 1920 },
+"lines": [
+  { … },
+  {
+    "vo": "Tabs pile up, bookmarks lose their context, and notes …",
+    "scene": {
+      "kind": "list",
+      "items": [
+        { "title": "Too many tabs",  "cue": { "word": "tabs" } },
+        { "title": "Dead bookmarks", "cue": { "word": "bookmarks" } },
+        { "title": "Messy notes",    "cue": { "word": "notes" } }
+      ]
+    }
+  }
+]`
+
+// Odd indexes are the cue words, which the sample prints in ink.
+const specParts = SPEC.split(/("(?:tabs|bookmarks|notes)")/)
+
+const FILES: [name: string, note: string][] = [
+  ['short.json', 'the spec: beats, scenes, cue words, brand'],
+  ['research.md', 'sources, facts, topic and visual ideas'],
+  ['images/', 'pictures for image beats'],
+  ['voiceover.mp3', 'the chosen take'],
+  ['words.json', 'word timestamps for that take'],
+  ['deck.pptx', 'editable 9:16 or 16:9 deck'],
+  ['short.mp4', 'the finished video'],
+]
+const NAME_WIDTH = 16
+
+// Each row's name goes in ink; the rest pads the notes into one column.
+const treeRows = [
+  { indent: '', name: 'my-short/', rest: '\n' },
+  ...FILES.map(([name, note]) => ({
+    indent: '  ',
+    name,
+    rest: `${' '.repeat(NAME_WIDTH - name.length)}${note}\n`,
+  })),
+]
+---
+
+<FeatureSection id="one-file-title" eyebrow="One source of truth" title="One file. Every output.">
+  <Fragment slot="deck">
+    Claude writes your explainer into <code>short.json</code>: each beat’s voiceover line, its
+    scene, and the word each element enters on. The storyboard, the script, the deck and the video
+    are all built from that one file, so they always match.
+  </Fragment>
+
+  <div class="feature-grid" style="--feature-min: 28rem">
+    <figure class="feature-specimen">
+      <figcaption class="feature-specimen__bar" data-ui="label">
+        <span>Source · short.json</span>
+        <span>Trimmed from the Gleaner example</span>
+      </figcaption>
+      <pre
+        class="feature-code feature-code--layout feature-scroll one-file__spec"
+        tabindex="0"
+        role="region"
+        aria-label="short.json sample"><code>{specParts.map((part, i) => (i % 2 ? <span class="feature-ink">{part}</span> : part))}</code></pre>
+    </figure>
+
+    <div class="feature-stack">
+      <p data-ui="label">Built from it</p>
+      <ol class="one-file__outputs">
+        <li>
+          <h3>Storyboard</h3>
+          <p class="feature-muted">A beat list with preview stills, or a Design canvas.</p>
+        </li>
+        <li>
+          <h3>Voiceover script</h3>
+          <p class="feature-muted">
+            Every <code>vo</code> line in order, read in one take for a consistent voice.
+          </p>
+        </li>
+        <li>
+          <h3>Editable deck</h3>
+          <p class="feature-muted">
+            Real PowerPoint text and shapes in your colours, with the voiceover in the speaker
+            notes.
+          </p>
+        </li>
+        <li>
+          <h3>Finished video</h3>
+          <p class="feature-muted">An MP4 at the spec’s size, 30fps, H.264 with AAC audio.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="feature-grid" style="--feature-min: 28rem">
+    <figure class="feature-stack" style="margin: 0">
+      <figcaption data-ui="label">What lands in your folder</figcaption>
+      <pre
+        class="feature-code feature-code--layout feature-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Project folder"><code>{treeRows.map(row => <>{row.indent}<span class="feature-ink">{row.name}</span>{row.rest}</>)}</code></pre>
+    </figure>
+
+    <div class="feature-stack" style="max-width: 60ch">
+      <p data-ui="label">Change it in one place</p>
+      <p>
+        To change the copy, edit <code>short.json</code>, or ask Claude to, and rebuild. Every
+        output picks up the change.
+      </p>
+      <p class="feature-muted">
+        An edit made only in the <code>.pptx</code> leaves the deck and the video out of step.
+      </p>
+      <ExternalLink class="feature-link" href={SPEC_HREF}>Read the spec reference</ExternalLink>
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .one-file__spec {
+    background: var(--paper);
+  }
+
+  .one-file__outputs {
+    display: flex;
+    flex-direction: column;
+    counter-reset: output;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .one-file__outputs li {
+    border-block-start: 1px solid var(--rule);
+    display: grid;
+    gap: 0.25rem 1rem;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    list-style: none;
+    margin: 0;
+    padding-block: 1.25rem;
+  }
+
+  .one-file__outputs li:last-child {
+    border-block-end: 1px solid var(--rule);
+  }
+
+  /* The number is generated so it reads as the list's own marker. */
+  .one-file__outputs li::before {
+    color: var(--ink-soft);
+    content: counter(output, decimal-leading-zero);
+    counter-increment: output;
+    font-family: var(--font-family-mono);
+    font-size: 0.8125rem;
+    grid-row: span 2;
+    padding-block-start: 0.375rem;
+  }
+
+  .one-file__outputs h3 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: none;
+  }
+</style>

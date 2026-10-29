@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lands on the word</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="on-the-word-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Word-synced animation
+              </p>
+              <h2
+                id="on-the-word-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                Every card lands on the word that names it.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              OnCue times the animation from a word-level transcript, not from the audio. Each
+              element names its cue word, and it enters the moment the narrator says it.
+            </p>
+          </header>
+
+          <figure
+            style="
+              margin: 0;
+              border: 1px solid #dedede;
+              border-radius: 8px;
+              overflow: hidden;
+              min-width: 0;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <figcaption
+              style="
+                display: flex;
+                justify-content: space-between;
+                gap: 8px 16px;
+                flex-wrap: wrap;
+                padding: 10px 16px;
+                background: #f0f0f0;
+                border-bottom: 1px solid #dedede;
+                font-family: 'DM Mono', ui-monospace, monospace;
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #606060;
+              "
+            >
+              <span>Rendered from words.json + short.json</span>
+              <span>Beat 2 · Gleaner example · real timings</span>
+            </figcaption>
+
+            <div
+              aria-hidden="true"
+              style="overflow-x: auto; padding-bottom: 8px; border-bottom: 1px solid #dedede"
+            >
+              <div
+                style="
+                  position: relative;
+                  box-sizing: border-box;
+                  min-width: 880px;
+                  height: 164px;
+                  margin: 0 24px;
+                "
+              >
+                <span
+                  style="
+                    position: absolute;
+                    left: 0%;
+                    top: 20px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 11px;
+                    color: #606060;
+                  "
+                  >8.0 s</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 25%;
+                    top: 20px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 11px;
+                    color: #606060;
+                  "
+                  >9.0 s</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 50%;
+                    top: 20px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 11px;
+                    color: #606060;
+                  "
+                  >10.0 s</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 75%;
+                    top: 20px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 11px;
+                    color: #606060;
+                  "
+                  >11.0 s</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    right: 0;
+                    top: 20px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 11px;
+                    color: #606060;
+                  "
+                  >12.0 s</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 0%;
+                    top: 40px;
+                    bottom: 16px;
+                    width: 1px;
+                    background: #dedede;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    left: 25%;
+                    top: 40px;
+                    bottom: 16px;
+                    width: 1px;
+                    background: #dedede;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    left: 50%;
+                    top: 40px;
+                    bottom: 16px;
+                    width: 1px;
+                    background: #dedede;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    left: 75%;
+                    top: 40px;
+                    bottom: 16px;
+                    width: 1px;
+                    background: #dedede;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    right: 0;
+                    top: 40px;
+                    bottom: 16px;
+                    width: 1px;
+                    background: #dedede;
+                  "
+                ></span>
+
+                <span
+                  style="
+                    position: absolute;
+                    left: 5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #000000;
+                    text-decoration: underline;
+                    text-underline-offset: 4px;
+                  "
+                  >Tabs</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 14%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >pile</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 22.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >up,</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 34.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #000000;
+                    text-decoration: underline;
+                    text-underline-offset: 4px;
+                  "
+                  >bookmarks</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 47.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >lose</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 52.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >their</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 57.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >context,</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 81.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #606060;
+                  "
+                  >and</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 86.5%;
+                    top: 56px;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 13px;
+                    color: #000000;
+                    text-decoration: underline;
+                    text-underline-offset: 4px;
+                  "
+                  >notes</span
+                >
+
+                <span
+                  style="
+                    position: absolute;
+                    left: 5%;
+                    top: 82px;
+                    width: 1px;
+                    height: 26px;
+                    background: #000000;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    left: 34.5%;
+                    top: 82px;
+                    width: 1px;
+                    height: 26px;
+                    background: #000000;
+                  "
+                ></span>
+                <span
+                  style="
+                    position: absolute;
+                    left: 86.5%;
+                    top: 82px;
+                    width: 1px;
+                    height: 26px;
+                    background: #000000;
+                  "
+                ></span>
+
+                <span
+                  style="
+                    position: absolute;
+                    left: 5%;
+                    top: 110px;
+                    padding: 6px 10px;
+                    background: #111111;
+                    color: #f2f2f2;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    white-space: nowrap;
+                  "
+                  >Too many tabs</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 34.5%;
+                    top: 110px;
+                    padding: 6px 10px;
+                    background: #111111;
+                    color: #f2f2f2;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    white-space: nowrap;
+                  "
+                  >Dead bookmarks</span
+                >
+                <span
+                  style="
+                    position: absolute;
+                    left: 86.5%;
+                    top: 110px;
+                    padding: 6px 10px;
+                    background: #111111;
+                    color: #f2f2f2;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    white-space: nowrap;
+                  "
+                  >Messy notes</span
+                >
+              </div>
+            </div>
+
+            <div style="overflow-x: auto; padding: 8px 24px 16px">
+              <table
+                style="width: 100%; min-width: 30rem; border-collapse: collapse; font-size: 15px"
+              >
+                <caption
+                  style="
+                    caption-side: top;
+                    text-align: left;
+                    padding: 12px 0;
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 12px;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    color: #606060;
+                  "
+                >
+                  Cue words and what enters on them
+                </caption>
+                <thead>
+                  <tr>
+                    <th
+                      scope="col"
+                      style="
+                        text-align: left;
+                        padding: 10px 16px 10px 0;
+                        font-weight: 600;
+                        border-bottom: 1px solid #dedede;
+                      "
+                    >
+                      Cue word
+                    </th>
+                    <th
+                      scope="col"
+                      style="
+                        text-align: left;
+                        padding: 10px 16px;
+                        font-weight: 600;
+                        border-bottom: 1px solid #dedede;
+                      "
+                    >
+                      Heard at
+                    </th>
+                    <th
+                      scope="col"
+                      style="
+                        text-align: left;
+                        padding: 10px 0 10px 16px;
+                        font-weight: 600;
+                        border-bottom: 1px solid #dedede;
+                      "
+                    >
+                      Enters
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      style="
+                        padding: 10px 16px 10px 0;
+                        border-bottom: 1px solid #dedede;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                      "
+                    >
+                      tabs
+                    </td>
+                    <td
+                      style="
+                        padding: 10px 16px;
+                        border-bottom: 1px solid #dedede;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                        color: #606060;
+                      "
+                    >
+                      8.20 s
+                    </td>
+                    <td style="padding: 10px 0 10px 16px; border-bottom: 1px solid #dedede">
+                      Too many tabs
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 10px 16px 10px 0;
+                        border-bottom: 1px solid #dedede;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                      "
+                    >
+                      bookmarks
+                    </td>
+                    <td
+                      style="
+                        padding: 10px 16px;
+                        border-bottom: 1px solid #dedede;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                        color: #606060;
+                      "
+                    >
+                      9.38 s
+                    </td>
+                    <td style="padding: 10px 0 10px 16px; border-bottom: 1px solid #dedede">
+                      Dead bookmarks
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 10px 16px 10px 0;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                      "
+                    >
+                      notes
+                    </td>
+                    <td
+                      style="
+                        padding: 10px 16px;
+                        font-family: 'DM Mono', ui-monospace, monospace;
+                        color: #606060;
+                      "
+                    >
+                      11.46 s
+                    </td>
+                    <td style="padding: 10px 0 10px 16px">Messy notes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </figure>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+              gap: 32px 48px;
+              align-items: start;
+            "
+          >
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0"
+            >
+              <figcaption
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                One word in words.json
+              </figcaption>
+              <pre
+                style="
+                  margin: 0;
+                  padding: 16px 20px;
+                  background: #f0f0f0;
+                  color: #606060;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 13px;
+                  line-height: 1.7;
+                  overflow-x: auto;
+                  white-space: pre;
+                "
+              ><code>{ "text": <span style="color: #000000">"Tabs"</span>, "type": "word", "start": <span style="color: #000000">8.2</span>, "end": 8.52 }</code></pre>
+              <p style="margin: 0; color: #606060">
+                With the ElevenLabs connector, Claude transcribes the take for you. Without it, any
+                word-level transcriber works.
+              </p>
+            </figure>
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Also in every frame
+              </p>
+              <ul
+                style="
+                  list-style: none;
+                  margin: 0;
+                  padding: 0;
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                "
+              >
+                <li
+                  style="
+                    padding: 8px 12px;
+                    border: 1px solid #dedede;
+                    border-radius: 8px;
+                    font-size: 15px;
+                  "
+                >
+                  A typing effect
+                </li>
+                <li
+                  style="
+                    padding: 8px 12px;
+                    border: 1px solid #dedede;
+                    border-radius: 8px;
+                    font-size: 15px;
+                  "
+                >
+                  Spotlight glows
+                </li>
+                <li
+                  style="
+                    padding: 8px 12px;
+                    border: 1px solid #dedede;
+                    border-radius: 8px;
+                    font-size: 15px;
+                  "
+                >
+                  Drawn lines
+                </li>
+                <li
+                  style="
+                    padding: 8px 12px;
+                    border: 1px solid #dedede;
+                    border-radius: 8px;
+                    font-size: 15px;
+                  "
+                >
+                  Scene transitions
+                </li>
+                <li
+                  style="
+                    padding: 8px 12px;
+                    border: 1px solid #dedede;
+                    border-radius: 8px;
+                    font-size: 15px;
+                  "
+                >
+                  A progress bar
+                </li>
+              </ul>
+              <p style="margin: 0; color: #606060; max-width: 60ch">
+                If the narrator never says a cue word, the build tells you, and that element is
+                spaced evenly instead of landing on its word.
+              </p>
+              <a
+                href="https://github.com/shawn-sandy/oncue/blob/main/plugins/oncue/engine/examples/gleaner/short.json"
+                style="
+                  align-self: flex-start;
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  min-height: 44px;
+                  color: #c7342b;
+                  font-weight: 600;
+                  font-size: 15px;
+                  text-decoration: underline;
+                  text-underline-offset: 3px;
+                "
+                >See the Gleaner example <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1080}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

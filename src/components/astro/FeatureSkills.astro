@@ -1,0 +1,150 @@
+---
+/**
+ * Feature section: OnCue's eight skills, each callable on its own in plain
+ * words. The whole-pipeline skill leads in its own panel; the seven stages
+ * follow as cards with the words that start them and what they produce.
+ *
+ * Skill names are code identifiers, so their headings keep their casing.
+ *
+ * @component FeatureSkills
+ * @example
+ * ```astro
+ * <FeatureSkills />
+ * ```
+ */
+import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+const SKILLS_HREF = 'https://github.com/shawn-sandy/oncue/tree/main/plugins/oncue/skills'
+
+type Skill = { name: string; ask: string; get: string }
+
+const STAGES: Skill[] = [
+  {
+    name: 'setup',
+    ask: 'Set up OnCue',
+    get: 'Checks Node, ffmpeg, Playwright and ElevenLabs, installs the engine, and says which outputs are ready.',
+  },
+  {
+    name: 'research',
+    ask: 'Suggest three Shorts about this tool',
+    get: 'A research.md with ranked topics, sourced facts and visual ideas.',
+  },
+  {
+    name: 'storyboard',
+    ask: 'Storyboard a 60-second Short for this plugin',
+    get: 'A short.json, a beat list, and preview stills or a Design canvas.',
+  },
+  {
+    name: 'visuals',
+    ask: 'Add a diagram of how it works to beat 3',
+    get: 'Image beats with alt text, a cue word and credits. Safe after the voiceover.',
+  },
+  {
+    name: 'voiceover',
+    ask: 'Voice it with ElevenLabs',
+    get: 'Two takes as MP3, each with a word-level transcript.',
+  },
+  {
+    name: 'vertical-deck',
+    ask: 'Make the 9:16 slides',
+    get: 'An editable .pptx with the voiceover in the speaker notes.',
+  },
+  {
+    name: 'animate-short',
+    ask: 'Render it, and animate the slides',
+    get: 'The final MP4, or a silent preview before any audio exists.',
+  },
+]
+---
+
+<FeatureSection
+  id="skills-title"
+  eyebrow="Eight skills"
+  title="Run the whole pipeline, or only the stage you need."
+>
+  <Fragment slot="deck">
+    Each stage is its own skill, and you call it in plain words. Stop after any of them, or start
+    from a <code>short.json</code> you already have.
+  </Fragment>
+
+  <div class="feature-panel skills__pipeline">
+    <div class="feature-stack" style="gap: 0.5rem">
+      <p data-ui="label">The whole pipeline</p>
+      <h3 class="skills__name skills__name--lead">explainer-video</h3>
+    </div>
+    <p class="skills__ask skills__ask--lead">“Make an explainer short about our CLI”</p>
+    <p class="feature-muted">
+      Storyboard to finished video, with check-ins at the beats and the voice.
+    </p>
+  </div>
+
+  <ul class="skills__stages">
+    {
+      STAGES.map(skill => (
+        <li class="feature-card skills__stage">
+          <h3 class="skills__name">{skill.name}</h3>
+          <p class="skills__ask">“{skill.ask}”</p>
+          <p class="feature-muted skills__get">{skill.get}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <ExternalLink class="feature-link" href={SKILLS_HREF}>Read every skill on GitHub</ExternalLink>
+</FeatureSection>
+
+<style>
+  .skills__pipeline {
+    align-items: center;
+    display: grid;
+    gap: 1rem 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    padding: 1.75rem;
+  }
+
+  /* DM Mono ships 400 only, and a skill name keeps its own casing. */
+  .feature-section .skills__name {
+    font-family: var(--font-family-mono);
+    font-size: 1rem;
+    font-weight: var(--font-weight-normal);
+    letter-spacing: 0;
+    line-height: 1.3;
+    text-transform: none;
+  }
+
+  .feature-section .skills__name--lead {
+    font-size: 1.375rem;
+  }
+
+  .feature-section .skills__ask {
+    font-size: 1.0625rem;
+  }
+
+  .feature-section .skills__ask--lead {
+    font-family: var(--font-family-display);
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .skills__stages {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .skills__stage {
+    gap: 0.625rem;
+    margin: 0;
+  }
+
+  .feature-section .skills__get {
+    font-size: 0.9375rem;
+  }
+</style>

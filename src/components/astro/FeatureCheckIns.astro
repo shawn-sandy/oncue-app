@@ -1,0 +1,148 @@
+---
+/**
+ * Feature section: the two check-ins where the person steers, the beats
+ * before anything is recorded and the voice before anything is rendered,
+ * set in the order Claude reaches them.
+ *
+ * The steps are an `ol`; the two check-ins are steps too, marked by a sunk
+ * card and a label rather than by colour, which is reserved for controls.
+ *
+ * @component FeatureCheckIns
+ * @example
+ * ```astro
+ * <FeatureCheckIns />
+ * ```
+ */
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+type Step = { label: string; title: string; text: string; checkIn?: boolean }
+
+const STEPS: Step[] = [
+  { label: 'Step 1', title: 'Storyboard', text: 'Claude writes the beats into short.json.' },
+  {
+    label: 'Check-in 1',
+    title: 'The beats',
+    text: 'See the beat list with preview stills. Change, cut or reorder beats now: once the voiceover is recorded, a wording change means paying for a new recording.',
+    checkIn: true,
+  },
+  {
+    label: 'Step 2',
+    title: 'Voiceover',
+    text: 'ElevenLabs reads the whole script in one take, then transcribes it with word timestamps.',
+  },
+  {
+    label: 'Check-in 2',
+    title: 'The voice',
+    text: 'Claude names the voice it picked and gives you two takes. Pick one, or ask for another voice.',
+    checkIn: true,
+  },
+  {
+    label: 'Step 3',
+    title: 'Render',
+    text: 'Claude builds the deck if you asked for one, checks stills against the real word timings, and renders the video.',
+  },
+]
+---
+
+<FeatureSection
+  id="check-ins-title"
+  eyebrow="You direct"
+  title="You approve the beats and the voice."
+>
+  <Fragment slot="deck">
+    Claude writes the storyboard, records the voiceover and renders the video. It stops twice on the
+    way, so you can steer before anything is recorded or rendered.
+  </Fragment>
+
+  <ol class="check-ins__steps">
+    {
+      STEPS.map(step => (
+        <li class:list={['check-ins__step', { 'check-ins__step--check-in': step.checkIn }]}>
+          <span class="check-ins__label" data-ui="label">
+            {step.label}
+          </span>
+          <h3>{step.title}</h3>
+          <p class="feature-muted">{step.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="feature-grid" style="--feature-min: 26rem">
+    <div class="feature-panel">
+      <p data-ui="label">At the end you get</p>
+      <ul class="feature-list">
+        <li>The finished MP4</li>
+        <li>The deck, if you asked for one</li>
+        <li>The take and the voice used</li>
+        <li>The ElevenLabs credits spent</li>
+      </ul>
+    </div>
+    <div class="feature-panel">
+      <p data-ui="label">In a hurry?</p>
+      <p class="check-ins__shortcut">Say “go ahead without stopping” to skip both check-ins.</p>
+      <p class="feature-muted">
+        For scale: a 75-second script cost about 1,100 ElevenLabs credits per take, and about 600 to
+        transcribe. That is why the beats come first.
+      </p>
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .check-ins__steps {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .check-ins__step {
+    border-block-start: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin: 0;
+    min-width: 0;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .check-ins__step--check-in {
+    background: var(--paper-sunk);
+    border-inline: 1px solid var(--rule);
+    border-block-end: 1px solid var(--rule);
+    border-radius: 0 0 var(--radius, 0.5rem) var(--radius, 0.5rem);
+  }
+
+  .check-ins__step--check-in .check-ins__label {
+    align-self: flex-start;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-base, 0.25rem);
+    color: var(--ink);
+    padding: 0.1875rem 0.5rem;
+  }
+
+  .check-ins__step h3 {
+    font-size: 1.375rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: none;
+  }
+
+  .check-ins__step p {
+    font-size: 0.9375rem;
+    margin: 0;
+  }
+
+  .feature-section .check-ins__shortcut {
+    font-family: var(--font-family-display);
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+</style>

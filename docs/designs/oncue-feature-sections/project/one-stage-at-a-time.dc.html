@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>One stage at a time</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="stages-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Eight skills
+              </p>
+              <h2
+                id="stages-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                Run the whole pipeline, or only the stage you need.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              Each stage is its own skill, and you call it in plain words. Stop after any of them,
+              or start from a
+              <code
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 0.875em;
+                  background: #f0f0f0;
+                  color: #000000;
+                  padding: 1px 5px;
+                  border-radius: 4px;
+                "
+                >short.json</code
+              >
+              you already have.
+            </p>
+          </header>
+
+          <article
+            aria-labelledby="skill-explainer"
+            style="
+              box-sizing: border-box;
+              border: 1px solid #dedede;
+              border-radius: 8px;
+              padding: 28px;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+              gap: 16px 48px;
+              align-items: center;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <span
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+                >The whole pipeline</span
+              >
+              <h3
+                id="skill-explainer"
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 22px;
+                  line-height: 1.3;
+                "
+              >
+                explainer-video
+              </h3>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                font-size: 24px;
+                line-height: 1.25;
+                letter-spacing: -0.015em;
+              "
+            >
+              “Make an explainer short about our CLI”
+            </p>
+            <p style="margin: 0; color: #606060">
+              Storyboard to finished video, with check-ins at the beats and the voice.
+            </p>
+          </article>
+
+          <ul
+            style="
+              list-style: none;
+              margin: 0;
+              padding: 0;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+              gap: 16px;
+            "
+          >
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                setup
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Set up OnCue”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Checks Node, ffmpeg, Playwright and ElevenLabs, installs the engine, and says which
+                outputs are ready.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                research
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Suggest three Shorts about this tool”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                A research.md with ranked topics, sourced facts and visual ideas.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                storyboard
+              </h3>
+              <p style="margin: 0; font-size: 17px">
+                “Storyboard a 60-second Short for this plugin”
+              </p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                A short.json, a beat list, and preview stills or a Design canvas.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                visuals
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Add a diagram of how it works to beat 3”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Image beats with alt text, a cue word and credits. Safe after the voiceover.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                voiceover
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Voice it with ElevenLabs”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                Two takes as MP3, each with a word-level transcript.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                vertical-deck
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Make the 9:16 slides”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                An editable .pptx with the voiceover in the speaker notes.
+              </p>
+            </li>
+            <li
+              style="
+                box-sizing: border-box;
+                background: #f0f0f0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 0;
+              "
+            >
+              <h3
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-weight: 400;
+                  font-size: 16px;
+                "
+              >
+                animate-short
+              </h3>
+              <p style="margin: 0; font-size: 17px">“Render it, and animate the slides”</p>
+              <p style="margin: 0; color: #606060; font-size: 15px">
+                The final MP4, or a silent preview before any audio exists.
+              </p>
+            </li>
+          </ul>
+
+          <a
+            href="https://github.com/shawn-sandy/oncue/tree/main/plugins/oncue/skills"
+            style="
+              align-self: flex-start;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              min-height: 44px;
+              color: #c7342b;
+              font-weight: 600;
+              font-size: 15px;
+              text-decoration: underline;
+              text-underline-offset: 3px;
+            "
+            >Read every skill on GitHub <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>
