@@ -87,7 +87,7 @@ const OUTPUTS: { output: string; detail: string; needs: Need[] }[] = [
     role="region"
     aria-label="Tools needed for each output"
   >
-    <table class="feature-table requirements__table">
+    <table class="requirements__table">
       <thead>
         <tr>
           <th scope="col" data-ui="label">To make</th>
@@ -163,32 +163,42 @@ const OUTPUTS: { output: string; detail: string; needs: Need[] }[] = [
     border-radius: var(--radius, 0.5rem);
   }
 
+  /* Styled in full here rather than on the shared `.feature-table`: every
+     cell is centred and padded differently, so overriding would fight it. */
   .requirements__table {
+    border-collapse: collapse;
+    font-size: 0.9375rem;
     min-width: 46rem;
+    width: 100%;
   }
 
-  .feature-section .requirements__table :is(th, td) {
+  .requirements__table :is(th, td) {
+    border-block-end: 1px solid var(--rule);
     padding: 1rem 0.75rem;
     text-align: center;
     vertical-align: middle;
   }
 
-  .feature-section .requirements__table :is(th, td):first-child {
+  .requirements__table :is(th, td):first-child {
     padding-inline-start: 1.25rem;
     text-align: start;
   }
 
-  .feature-section .requirements__table :is(th, td):last-child {
+  .requirements__table :is(th, td):last-child {
     padding-inline-end: 1.25rem;
   }
 
-  .feature-section .requirements__table thead th {
-    background: var(--paper-sunk);
+  .requirements__table tbody tr:last-child :is(th, td) {
+    border-block-end: 0;
+  }
+
+  /* DM Mono, in the header labels, ships 400 only. */
+  .requirements__table th {
     font-weight: var(--font-weight-normal);
   }
 
-  .feature-section .requirements__table tbody th {
-    font-weight: var(--font-weight-normal);
+  .requirements__table thead th {
+    background: var(--paper-sunk);
   }
 
   .requirements__output {

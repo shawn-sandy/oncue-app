@@ -28,9 +28,9 @@ const NEVER = ['A product’s interface', 'A real person', 'A logo', 'A chart of
   </Fragment>
 
   <div class="feature-grid" style="--feature-min: 26rem; align-items: stretch">
-    <article class="feature-card" aria-labelledby="facts-research-title">
+    <div class="feature-card">
       <div class="facts__head">
-        <h3 id="facts-research-title">Research</h3>
+        <h3 class="facts__title">Research</h3>
         <span data-ui="label">Writes research.md</span>
       </div>
       <p class="feature-muted">
@@ -47,11 +47,11 @@ const NEVER = ['A product’s interface', 'A real person', 'A logo', 'A chart of
         Once a take is recorded, it changes no line without asking, and names the re-record cost
         first.
       </p>
-    </article>
+    </div>
 
-    <article class="feature-card" aria-labelledby="facts-visuals-title">
+    <div class="feature-card">
       <div class="facts__head">
-        <h3 id="facts-visuals-title">Visuals</h3>
+        <h3 class="facts__title">Visuals</h3>
         <span data-ui="label">Adds image beats</span>
       </div>
       <p class="feature-muted">
@@ -93,7 +93,7 @@ const NEVER = ['A product’s interface', 'A real person', 'A logo', 'A chart of
           diagram.
         </p>
       </div>
-    </article>
+    </div>
   </div>
 </FeatureSection>
 
@@ -106,8 +106,11 @@ const NEVER = ['A product’s interface', 'A real person', 'A logo', 'A chart of
     justify-content: space-between;
   }
 
-  .feature-section .facts__head h3 {
+  .facts__title {
     font-size: 1.625rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: none;
   }
 
   .facts__foot {

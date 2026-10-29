@@ -50,6 +50,61 @@ test.describe('Homepage feature sections', () => {
     expect(new Set(sections.map(s => s.id)).size, 'section ids repeat').toBe(SECTION_COUNT)
   })
 
+  // Astro scopes every part of a component's selector to that component, so a
+  // section rule that reaches up through `.feature-section` (rendered by
+  // FeatureSection, not by the section) matches nothing, and a one-class
+  // override can tie with the shared rule it means to replace. Each reading
+  // below is a property one such rule exists to set.
+  test('each section’s own styles reach its elements', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+
+    const measured = await page.evaluate(() => {
+      const style = (selector: string) => {
+        const el = document.querySelector(selector)
+        return el ? getComputedStyle(el) : null
+      }
+      const firstCell = document.querySelector('.requirements__table tbody th')
+      const inset = document.querySelector('.frame-sizes__inset')
+      const card = inset?.closest('.feature-card')
+
+      return {
+        skillFont: style('.skills__name')?.fontFamily ?? '',
+        requirementsInset: firstCell ? parseFloat(getComputedStyle(firstCell).paddingLeft) : -1,
+        sharpRadius: style('.brand__frame--sharp')?.borderTopLeftRadius ?? '',
+        roundRadius: style('.brand__frame--round')?.borderTopLeftRadius ?? '',
+        insetOffset:
+          inset && card
+            ? Math.abs(inset.getBoundingClientRect().left - card.getBoundingClientRect().left)
+            : -1,
+        footMargins: Array.from(document.querySelectorAll('.facts__foot')).map(
+          el => getComputedStyle(el).marginTop
+        ),
+      }
+    })
+
+    expect(measured.skillFont, 'skill names are not set in DM Mono').toMatch(/^"?DM Mono/)
+    expect(
+      measured.requirementsInset,
+      'requirements text sits on the table border'
+    ).toBeGreaterThanOrEqual(16)
+    expect(measured.sharpRadius, 'no sharp theme frame').not.toBe('')
+    expect(measured.sharpRadius, 'the two theme frames share one corner radius').not.toBe(
+      measured.roundRadius
+    )
+    // Within the card's 1px border: the sample runs edge to edge.
+    expect(
+      measured.insetOffset,
+      'the format sample does not run edge to edge'
+    ).toBeGreaterThanOrEqual(0)
+    expect(measured.insetOffset, 'the format sample does not run edge to edge').toBeLessThanOrEqual(
+      1
+    )
+    expect(measured.footMargins, 'expected two facts card footers').toHaveLength(2)
+    expect(new Set(measured.footMargins).size, `footers sit apart: ${measured.footMargins}`).toBe(1)
+  })
+
   for (const colorScheme of ['light', 'dark'] as const) {
     for (const width of [1280, 375]) {
       test(`zero axe WCAG 2.2 AA violations at ${width}px (${colorScheme})`, async ({ page }) => {

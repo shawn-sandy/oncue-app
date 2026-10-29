@@ -76,7 +76,7 @@ const SCENE = {
 
   <div class="feature-grid">
     <div class="feature-card">
-      <h3>One line in the spec</h3>
+      <h3 class="feature-title">One line in the spec</h3>
       <pre
         class="feature-code frame-sizes__inset"><code>"format": &#123; "width": <span class="feature-ink">1920</span>, "height": <span class="feature-ink">1080</span> &#125;</code></pre>
       <p class="feature-muted">
@@ -85,14 +85,14 @@ const SCENE = {
       </p>
     </div>
     <div class="feature-card">
-      <h3>Shrunk, never cut off</h3>
+      <h3 class="feature-title">Shrunk, never cut off</h3>
       <p class="feature-muted">
         A scene with more than fits its frame is scaled down to fit. You get a warning naming it,
         and every scene’s scale is recorded in <code>build/fit.json</code>.
       </p>
     </div>
     <div class="feature-card">
-      <h3>The deck follows</h3>
+      <h3 class="feature-title">The deck follows</h3>
       <p class="feature-muted">
         The deck is drawn at 9:16 or 16:9. Landscape specs get 16:9, portrait and square ones 9:16,
         and the video keeps the exact size.
@@ -193,7 +193,7 @@ const SCENE = {
     align-items: center;
     aspect-ratio: 4 / 5;
     background: var(--paper-sunk);
-    border: 1px dashed var(--ink-soft);
+    border: 1px dashed var(--rule);
     border-radius: 0.75rem;
     color: var(--ink-soft);
     display: flex;
@@ -203,7 +203,7 @@ const SCENE = {
   }
 
   /* Edge to edge inside the card (DESIGN.md Squared-Insert Rule). */
-  .feature-section .frame-sizes__inset {
+  .feature-code.frame-sizes__inset {
     background: var(--paper);
     border-block: 1px solid var(--rule);
     margin-inline: -1.5rem;

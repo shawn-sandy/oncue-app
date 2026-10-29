@@ -19,8 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     requirements table scroll inside focusable, labelled regions, and the drawn word timeline leaves the layout
     below 62rem, where its table carries the same facts
   - Tests: `FeatureSection`, `FeatureWordSync` and `FeatureRequirements` unit tests, and
-    `e2e/home-feature-sections.spec.ts` (each section named by its own h2; zero axe WCAG 2.2 AA violations at
-    1280px and 375px in both themes)
+    `e2e/home-feature-sections.spec.ts` (each section named by its own h2; each section's own styles reach its
+    elements; zero axe WCAG 2.2 AA violations at 1280px and 375px in both themes). Shared parts are global rules
+    fenced by a zero-specificity `:where(.feature-section)`: Astro scopes every part of a component's selector, so
+    a section rule written through `.feature-section` would never match
+  - `e2e/home-oncue-hero.spec.ts`: the no-JavaScript test now checks that both Copy buttons (the install dialog's
+    and the requirements section's) ship `hidden`
 - **OnCue homepage** (`src/pages/index.astro`, `src/components/astro/`): `/` is now the OnCue plugin page,
   rebuilt from the OnCue Studio Hero design with the eight fixes from its review
   - Composed from small server-rendered parts: `ExternalLink`, `CommandBlock`, `InstallDialog`, `FilmCard`,
