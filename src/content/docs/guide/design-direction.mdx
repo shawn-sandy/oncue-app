@@ -301,12 +301,12 @@ the direction removes - and it fails `e2e/homepage-design-direction.spec.ts` if 
 Every part renders complete HTML on the server. Scripts are small Astro `script` modules, with no framework island,
 and they only add behaviour on top:
 
-| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
-| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                     |
-| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies the commands; if the clipboard refuses, selects them and says how to copy |
-| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
+| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                       |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus          |
+| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                          |
+| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies that row's command; if the clipboard refuses, selects it and shows how to copy |
+| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it        |
 
 The film's server markup is its finished frame: every step revealed and no current word. That is also the view under
 `prefers-reduced-motion`, where nothing moves until Play is pressed, and the frame the demo ends on.
