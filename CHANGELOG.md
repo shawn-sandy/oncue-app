@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Per-line copy buttons** (`src/components/astro/CommandBlock.astro`): each install command has its own icon
+  copy button, named after its command, in place of one Copy button for the whole block
+  - A successful copy swaps the icon for a check and is announced through one shared `role="status"` region; a
+    blocked clipboard selects that command and shows the Ctrl+C or Cmd+C hint visibly, since that path has no
+    icon change
+  - One reset timer per block, so an earlier button's timer cannot clear a later button's result, and the
+    status is emptied before each copy so a repeat copy is announced again
+  - Tests: attribute escaping, per-button labels and payloads, and e2e checks with a paused clock for the timer
+    and dialog-close resets
+- **Larger nav logo** (`src/components/astro/Navigation.astro`): the logo is 56px, up from 44px, with `0.5rem`
+  of padding above and below; the bar sets `flex-shrink: 0`, since the flex-column `body` otherwise shrank it
+  back to 4rem
+
 ### Added
 
 - **OnCue feature sections** (`src/components/astro/Feature*.astro`, `src/pages/index.astro`): eight sections

@@ -313,15 +313,15 @@ The film's server markup is its finished frame: every step revealed and no curre
 
 ### Components
 
-| Component       | Props                                                              | What it does                                                                                   |
-| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                      |
-| `CommandBlock`  | `commands: string[]`                                               | `pre > code` from the `code-block` tokens, a `hidden` Copy button and a `role="status"` region |
-| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`   |
-| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame        |
-| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`        |
-| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content            |
-| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                      |
+| Component       | Props                                                              | What it does                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                                                                            |
+| `CommandBlock`  | `commands: string[]`                                               | One row per command, each a `code` with its own `hidden` icon copy button, and one `role="status"` region, shown only for the blocked-clipboard hint |
+| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`                                                         |
+| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame                                                              |
+| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`                                                              |
+| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                  |
+| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                            |
 
 All six new components are exported from `src/components/index.ts`.
 
