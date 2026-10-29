@@ -9,6 +9,13 @@
         "files": ["tests/components/Navigation.astro.test.ts"],
         "createdAt": "2026-10-28T23:28:29.393Z",
         "reason": "Claude: L132/L138 are <img> regex literals in a unit test that parses rendered markup, not rendered images"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": ["docs/designs/oncue-feature-sections/project/start-small-add-as-you-go.dc.html"],
+        "createdAt": "2026-10-29T01:53:48.621Z",
+        "reason": "Claude triage: the requirements table runs edge to edge inside its bordered box on purpose (DESIGN.md Squared-Insert Rule); every cell has 14-20px padding, so no text touches the border"
       }
     ]
   }

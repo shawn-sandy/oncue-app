@@ -1,0 +1,355 @@
+---
+/**
+ * The frame every homepage feature section shares: a mono eyebrow and a serif
+ * title, the deck beside them, then the section's own body below.
+ *
+ * It also owns the small set of parts the eight sections draw with (cards,
+ * code blocks, chips, tables, the depicted video frames), styled once here as
+ * global rules fenced by a zero-specificity `:where(.feature-section)`, so each
+ * section file holds only its own content and can override a part with one
+ * compound selector. The depicted frames keep a fixed dark palette in both themes
+ * because they show a screen, as `FilmCard` does; every other surface is a
+ * DESIGN.md token and follows the theme.
+ *
+ * The divider is drawn under each section, not over it: the workflow strip
+ * above already ends in a hairline, and two touching rules read as one heavy
+ * line. The page sets the margins (DESIGN.md: composition owns spacing).
+ *
+ * @component FeatureSection
+ * @example
+ * ```astro
+ * <FeatureSection id="one-file-title" eyebrow="One source of truth" title="One file. Every output.">
+ *   <Fragment slot="deck">Claude writes your explainer into <code>short.json</code>.</Fragment>
+ *   <div class="feature-grid">…</div>
+ * </FeatureSection>
+ * ```
+ */
+export type Props = {
+  /** id for the h2, which labels the section. Unique on the page. */
+  id: string
+  /** Mono label above the title. */
+  eyebrow: string
+  /** The section title, kept in sentence case. */
+  title: string
+}
+
+const { id, eyebrow, title } = Astro.props
+---
+
+<section class="feature-section" aria-labelledby={id} data-feature-section>
+  <div class="feature-section__header">
+    <div class="feature-section__heading">
+      <p data-ui="eyebrow">{eyebrow}</p>
+      <h2 id={id}>{title}</h2>
+    </div>
+    <p class="feature-section__deck"><slot name="deck" /></p>
+  </div>
+  <slot />
+</section>
+
+<style>
+  .feature-section {
+    border-block-end: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding-block: var(--space-16);
+  }
+
+  .feature-section__header {
+    align-items: end;
+    display: grid;
+    gap: 1rem 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  }
+
+  .feature-section__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .feature-section .feature-section__heading p {
+    margin: 0;
+  }
+
+  /* Sentence case, as in the hero: the shared h1-h3 rule capitalizes titles. */
+  .feature-section h2 {
+    font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+    hyphens: auto;
+    line-height: 1.08;
+    margin: 0;
+    overflow-wrap: break-word;
+    text-transform: none;
+  }
+
+  .feature-section .feature-section__deck {
+    color: var(--ink-soft);
+    font-size: var(--header-deck-font-size);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* Shared parts, used by the section components inside the default slot.
+
+     Astro scopes every part of a component's selector to that component, so
+     these rules are global; `:where(.feature-section)` fences them to feature
+     sections without adding specificity. A section changes one of them with a
+     compound selector on its own element (`.feature-card.skills__stage`) or
+     uses its own class instead, never by reaching up through
+     `.feature-section`, which its own scope would never match. */
+
+  /* Kept at (0,1,1) so inline code beats the vendor's `code` rule. */
+  :global(.feature-section code) {
+    background: var(--paper-sunk);
+    border-radius: var(--radius-base, 0.25rem);
+    color: var(--ink);
+    font-size: 0.875em;
+    padding: 0.0625rem 0.3125rem;
+  }
+
+  :global(.feature-section [data-ui='label']) {
+    margin: 0;
+  }
+
+  :global(:where(.feature-section) .feature-grid) {
+    align-items: start;
+    display: grid;
+    gap: 2rem 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-min, 18rem)), 1fr));
+  }
+
+  :global(:where(.feature-section) .feature-stack) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  :global(:where(.feature-section) .feature-card) {
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.5rem;
+  }
+
+  :global(:where(.feature-section) .feature-panel) {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.5rem;
+  }
+
+  /* A card or panel title. Sentence case: the shared h1-h3 rule capitalizes. */
+  :global(:where(.feature-section) .feature-title) {
+    font-size: 1.375rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: none;
+  }
+
+  :global(:where(.feature-section) :is(.feature-card, .feature-panel, .feature-stack) p) {
+    margin: 0;
+  }
+
+  :global(:where(.feature-section) .feature-muted) {
+    color: var(--ink-soft);
+  }
+
+  :global(:where(.feature-section) .feature-list) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    list-style: disc;
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+
+  :global(:where(.feature-section) .feature-list li) {
+    margin: 0;
+  }
+
+  :global(:where(.feature-section) .feature-chips) {
+    display: flex;
+
+    /* The vendor sets every list to a column. */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  :global(:where(.feature-section) .feature-chips li) {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    font-size: 0.9375rem;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Code samples. They wrap by default, like CommandBlock, so they never need
+     a tab stop or widen a 320px page; a sample whose layout is the point
+     (aligned columns, nesting) scrolls inside a `.feature-scroll` region. */
+  :global(:where(.feature-section) .feature-code) {
+    background: var(--paper-sunk);
+    border-radius: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    margin: 0;
+    overflow-wrap: anywhere;
+    padding: 1rem 1.25rem;
+    white-space: pre-wrap;
+  }
+
+  /* After the inline-code rule above, which it ties with and must undo. */
+  :global(:where(.feature-section) .feature-code code) {
+    background: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+  }
+
+  :global(:where(.feature-section) .feature-code--layout) {
+    overflow-wrap: normal;
+    white-space: pre;
+  }
+
+  :global(:where(.feature-section) .feature-ink) {
+    color: var(--ink);
+  }
+
+  /* Positioned so a visually hidden child cannot escape the clip and widen the
+     page; scrollable regions also take a tab stop at the call site. */
+  :global(:where(.feature-section) .feature-scroll) {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  /* Drawn inside the edge: a clipping parent would cut an outset ring. */
+  :global(:where(.feature-section) .feature-scroll:focus-visible) {
+    outline-offset: -2px;
+  }
+
+  :global(:where(.feature-section) .feature-specimen) {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  :global(:where(.feature-section) .feature-specimen__bar) {
+    background: var(--paper-sunk);
+    border-block-end: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    justify-content: space-between;
+    padding: 0.625rem 1rem;
+  }
+
+  :global(:where(.feature-section) .feature-table) {
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    width: 100%;
+  }
+
+  :global(:where(.feature-section) .feature-table :is(th, td)) {
+    border-block-end: 1px solid var(--rule);
+    padding: 0.75rem 1rem 0.75rem 0;
+    text-align: start;
+    vertical-align: top;
+  }
+
+  :global(:where(.feature-section) .feature-table tbody tr:last-child :is(th, td)) {
+    border-block-end: 0;
+  }
+
+  :global(:where(.feature-section) .feature-table thead th) {
+    font-weight: 600;
+  }
+
+  /* DM Mono ships 400 only; a bold th would be synthesized. Outranks the
+     `thead th` rule above, so a mono header cell stays at 400 too. */
+  :global(:where(.feature-section) .feature-table :is(.feature-mono, [data-ui])) {
+    font-weight: var(--font-weight-normal);
+  }
+
+  :global(:where(.feature-section) .feature-table .feature-mono) {
+    font-family: var(--font-family-mono);
+  }
+
+  /* Kept at (0,2,0): the vendor sizes every link, and a single class would
+     tie with it. */
+  :global(.feature-section .feature-link) {
+    align-items: center;
+    align-self: flex-start;
+    display: inline-flex;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    min-height: 2.75rem;
+  }
+
+  /* Depicted video frames: a fixed dark palette, as in FilmCard. The rule
+     border keeps the edge visible on the dark theme's own dark paper. */
+  :global(:where(.feature-section) .feature-frame) {
+    background: #111111;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+    color: #f2f2f2;
+    overflow: hidden;
+    position: relative;
+  }
+
+  :global(:where(.feature-section) .feature-frame__kicker) {
+    color: #a3a3a3;
+    font-family: var(--font-family-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  :global(:where(.feature-section) .feature-frame__title) {
+    font-family: var(--font-family-display);
+    line-height: 1.15;
+  }
+
+  :global(:where(.feature-section) .feature-frame__row) {
+    background: #1c1c1c;
+    border-radius: 0.375rem;
+    font-size: 0.6875rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  :global(:where(.feature-section) .feature-frame-caption) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  :global(:where(.feature-section) .feature-frame-caption span:first-child) {
+    font-family: var(--font-family-mono);
+    font-size: 0.875rem;
+  }
+
+  :global(:where(.feature-section) .feature-frame-caption span + span) {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+</style>

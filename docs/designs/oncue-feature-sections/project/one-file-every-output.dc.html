@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>One file, every output</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono&amp;family=DM+Sans:wght@400;600;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+        </style>
+      </helmet>
+      <section
+        aria-labelledby="one-file-title"
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          font-family:
+            'DM Sans',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
+          font-size: 16px;
+          line-height: 1.5;
+          border-top: 1px solid #dedede;
+          padding: 64px 0;
+        "
+      >
+        <div
+          style="
+            box-sizing: border-box;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+          "
+        >
+          <header
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+              gap: 16px 64px;
+              align-items: end;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                One source of truth
+              </p>
+              <h2
+                id="one-file-title"
+                style="
+                  margin: 0;
+                  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                  font-weight: 400;
+                  font-size: clamp(2rem, 2.6vw + 1rem, 2.75rem);
+                  line-height: 1.08;
+                  letter-spacing: -0.015em;
+                  overflow-wrap: break-word;
+                  hyphens: auto;
+                "
+              >
+                One file. Every output.
+              </h2>
+            </div>
+            <p
+              style="
+                margin: 0;
+                font-size: clamp(1.0625rem, 0.5vw + 0.95rem, 1.25rem);
+                line-height: 1.5;
+                color: #606060;
+                max-width: 60ch;
+              "
+            >
+              Claude writes your explainer into
+              <code
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 0.875em;
+                  background: #f0f0f0;
+                  color: #000000;
+                  padding: 1px 5px;
+                  border-radius: 4px;
+                "
+                >short.json</code
+              >: each beat’s voiceover line, its scene, and the word each element enters on. The
+              storyboard, the script, the deck and the video are all built from that one file, so
+              they always match.
+            </p>
+          </header>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+              gap: 32px 48px;
+              align-items: start;
+            "
+          >
+            <figure
+              style="
+                margin: 0;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                overflow: hidden;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <figcaption
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  gap: 8px 16px;
+                  flex-wrap: wrap;
+                  padding: 10px 16px;
+                  background: #f0f0f0;
+                  border-bottom: 1px solid #dedede;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 11px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                <span>Source · short.json</span>
+                <span>Trimmed from the Gleaner example</span>
+              </figcaption>
+              <pre
+                style="
+                  margin: 0;
+                  padding: 20px;
+                  background: #ffffff;
+                  color: #606060;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 12px;
+                  line-height: 1.7;
+                  overflow-x: auto;
+                  white-space: pre;
+                "
+              ><code>"format": { "width": 1080, "height": 1920 },
+"lines": [
+  { … },
+  {
+    "vo": "Tabs pile up, bookmarks lose their context, and notes …",
+    "scene": {
+      "kind": "list",
+      "items": [
+        { "title": "Too many tabs",  "cue": { "word": <span style="color: #000000">"tabs"</span> } },
+        { "title": "Dead bookmarks", "cue": { "word": <span style="color: #000000">"bookmarks"</span> } },
+        { "title": "Messy notes",    "cue": { "word": <span style="color: #000000">"notes"</span> } }
+      ]
+    }
+  }
+]</code></pre>
+            </figure>
+
+            <div style="display: flex; flex-direction: column; min-width: 0">
+              <p
+                style="
+                  margin: 0 0 8px;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Built from it
+              </p>
+              <ol
+                style="
+                  list-style: none;
+                  margin: 0;
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                "
+              >
+                <li
+                  style="
+                    display: grid;
+                    grid-template-columns: 3rem minmax(0, 1fr);
+                    gap: 16px;
+                    padding: 20px 0;
+                    border-top: 1px solid #dedede;
+                  "
+                >
+                  <span
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 13px;
+                      color: #606060;
+                      padding-top: 6px;
+                    "
+                    >01</span
+                  >
+                  <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                    <h3
+                      style="
+                        margin: 0;
+                        font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                        font-weight: 400;
+                        font-size: 24px;
+                        line-height: 1.2;
+                        letter-spacing: -0.015em;
+                      "
+                    >
+                      Storyboard
+                    </h3>
+                    <p style="margin: 0; color: #606060">
+                      A beat list with preview stills, or a Design canvas.
+                    </p>
+                  </div>
+                </li>
+                <li
+                  style="
+                    display: grid;
+                    grid-template-columns: 3rem minmax(0, 1fr);
+                    gap: 16px;
+                    padding: 20px 0;
+                    border-top: 1px solid #dedede;
+                  "
+                >
+                  <span
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 13px;
+                      color: #606060;
+                      padding-top: 6px;
+                    "
+                    >02</span
+                  >
+                  <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                    <h3
+                      style="
+                        margin: 0;
+                        font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                        font-weight: 400;
+                        font-size: 24px;
+                        line-height: 1.2;
+                        letter-spacing: -0.015em;
+                      "
+                    >
+                      Voiceover script
+                    </h3>
+                    <p style="margin: 0; color: #606060">
+                      Every
+                      <code
+                        style="
+                          font-family: 'DM Mono', ui-monospace, monospace;
+                          font-size: 0.875em;
+                          background: #f0f0f0;
+                          color: #000000;
+                          padding: 1px 5px;
+                          border-radius: 4px;
+                        "
+                        >vo</code
+                      >
+                      line in order, read in one take for a consistent voice.
+                    </p>
+                  </div>
+                </li>
+                <li
+                  style="
+                    display: grid;
+                    grid-template-columns: 3rem minmax(0, 1fr);
+                    gap: 16px;
+                    padding: 20px 0;
+                    border-top: 1px solid #dedede;
+                  "
+                >
+                  <span
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 13px;
+                      color: #606060;
+                      padding-top: 6px;
+                    "
+                    >03</span
+                  >
+                  <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                    <h3
+                      style="
+                        margin: 0;
+                        font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                        font-weight: 400;
+                        font-size: 24px;
+                        line-height: 1.2;
+                        letter-spacing: -0.015em;
+                      "
+                    >
+                      Editable deck
+                    </h3>
+                    <p style="margin: 0; color: #606060">
+                      Real PowerPoint text and shapes in your colours, with the voiceover in the
+                      speaker notes.
+                    </p>
+                  </div>
+                </li>
+                <li
+                  style="
+                    display: grid;
+                    grid-template-columns: 3rem minmax(0, 1fr);
+                    gap: 16px;
+                    padding: 20px 0;
+                    border-top: 1px solid #dedede;
+                    border-bottom: 1px solid #dedede;
+                  "
+                >
+                  <span
+                    style="
+                      font-family: 'DM Mono', ui-monospace, monospace;
+                      font-size: 13px;
+                      color: #606060;
+                      padding-top: 6px;
+                    "
+                    >04</span
+                  >
+                  <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                    <h3
+                      style="
+                        margin: 0;
+                        font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+                        font-weight: 400;
+                        font-size: 24px;
+                        line-height: 1.2;
+                        letter-spacing: -0.015em;
+                      "
+                    >
+                      Finished video
+                    </h3>
+                    <p style="margin: 0; color: #606060">
+                      An MP4 at the spec’s size, 30fps, H.264 with AAC audio.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+              gap: 32px 48px;
+              align-items: start;
+            "
+          >
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0"
+            >
+              <figcaption
+                style="
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                What lands in your folder
+              </figcaption>
+              <pre
+                style="
+                  margin: 0;
+                  padding: 16px 20px;
+                  background: #f0f0f0;
+                  color: #606060;
+                  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 13px;
+                  line-height: 1.7;
+                  overflow-x: auto;
+                  white-space: pre;
+                "
+              ><code><span style="color: #000000">my-short/</span>
+  <span style="color: #000000">short.json</span>      the spec: beats, scenes, cue words, brand
+  <span style="color: #000000">research.md</span>     sources, facts, topic and visual ideas
+  <span style="color: #000000">images/</span>         pictures for image beats
+  <span style="color: #000000">voiceover.mp3</span>   the chosen take
+  <span style="color: #000000">words.json</span>      word timestamps for that take
+  <span style="color: #000000">deck.pptx</span>       editable 9:16 or 16:9 deck
+  <span style="color: #000000">short.mp4</span>       the finished video</code></pre>
+            </figure>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0;
+                max-width: 60ch;
+              "
+            >
+              <p
+                style="
+                  margin: 0;
+                  font-family: 'DM Mono', ui-monospace, monospace;
+                  font-size: 12px;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: #606060;
+                "
+              >
+                Change it in one place
+              </p>
+              <p style="margin: 0; font-size: 17px">
+                To change the copy, edit
+                <code
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 0.875em;
+                    background: #f0f0f0;
+                    color: #000000;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                  "
+                  >short.json</code
+                >, or ask Claude to, and rebuild. Every output picks up the change.
+              </p>
+              <p style="margin: 0; color: #606060">
+                An edit made only in the
+                <code
+                  style="
+                    font-family: 'DM Mono', ui-monospace, monospace;
+                    font-size: 0.875em;
+                    background: #f0f0f0;
+                    color: #000000;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                  "
+                  >.pptx</code
+                >
+                leaves the deck and the video out of step.
+              </p>
+              <a
+                href="https://github.com/shawn-sandy/oncue/blob/main/plugins/oncue/skills/storyboard/references/spec.md"
+                style="
+                  align-self: flex-start;
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  min-height: 44px;
+                  color: #c7342b;
+                  font-weight: 600;
+                  font-size: 15px;
+                  text-decoration: underline;
+                  text-underline-offset: 3px;
+                "
+                >Read the spec reference <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1040}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      return {};
+      }
+      }
+    </script>
+  </body>
+</html>

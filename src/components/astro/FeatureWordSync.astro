@@ -1,0 +1,240 @@
+---
+/**
+ * Feature section: every element enters on the word that names it. Shows beat
+ * 2 of the Gleaner example with its real word timings: a drawn timeline of the
+ * transcript with each cue word dropping its card, and a table of the same
+ * facts.
+ *
+ * The drawn timeline is `aria-hidden` and leaves the layout below 62rem, where
+ * the words would collide; the table carries the same facts at every width and
+ * for screen readers.
+ *
+ * @component FeatureWordSync
+ * @example
+ * ```astro
+ * <FeatureWordSync />
+ * ```
+ */
+import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+const EXAMPLE_HREF =
+  'https://github.com/shawn-sandy/oncue/blob/main/plugins/oncue/engine/examples/gleaner/short.json'
+
+/** The ruler's span, in seconds of the Gleaner voiceover. */
+const RULER = { from: 8, to: 12 }
+
+type Word = { text: string; start: number; enters?: string }
+
+// From plugins/oncue/engine/examples/gleaner/words.json; `enters` marks a cue.
+const WORDS: Word[] = [
+  { text: 'Tabs', start: 8.2, enters: 'Too many tabs' },
+  { text: 'pile', start: 8.56 },
+  { text: 'up,', start: 8.9 },
+  { text: 'bookmarks', start: 9.38, enters: 'Dead bookmarks' },
+  { text: 'lose', start: 9.9 },
+  { text: 'their', start: 10.1 },
+  { text: 'context,', start: 10.3 },
+  { text: 'and', start: 11.26 },
+  { text: 'notes', start: 11.46, enters: 'Messy notes' },
+]
+
+/** Where a time sits on the ruler, as a CSS percentage rounded to hundredths. */
+const at = (seconds: number) =>
+  `${Number((((seconds - RULER.from) / (RULER.to - RULER.from)) * 100).toFixed(2))}%`
+
+const ticks = Array.from({ length: RULER.to - RULER.from + 1 }, (_, i) => RULER.from + i)
+const cues = WORDS.filter((word): word is Required<Word> => word.enters !== undefined)
+const EFFECTS = [
+  'A typing effect',
+  'Spotlight glows',
+  'Drawn lines',
+  'Scene transitions',
+  'A progress bar',
+]
+---
+
+<FeatureSection
+  id="word-sync-title"
+  eyebrow="Word-synced animation"
+  title="Every card lands on the word that names it."
+>
+  <Fragment slot="deck">
+    OnCue times the animation from a word-level transcript, not from the audio. Each element names
+    its cue word, and it enters the moment the narrator says it.
+  </Fragment>
+
+  <figure class="feature-specimen">
+    <figcaption class="feature-specimen__bar" data-ui="label">
+      <span>Rendered from words.json + short.json</span>
+      <span>Beat 2 · Gleaner example · real timings</span>
+    </figcaption>
+
+    <div class="word-sync__ribbon" aria-hidden="true" data-word-ribbon>
+      {
+        ticks.map(second => (
+          <>
+            <span class="word-sync__tick" style={{ left: at(second) }} />
+            <span
+              class:list={['word-sync__second', { 'word-sync__second--end': second === RULER.to }]}
+              style={{ left: at(second) }}
+            >
+              {second.toFixed(1)} s
+            </span>
+          </>
+        ))
+      }
+      {
+        WORDS.map(word => (
+          <span
+            class:list={['word-sync__word', { 'word-sync__word--cue': word.enters }]}
+            style={{ left: at(word.start) }}
+          >
+            {word.text}
+          </span>
+        ))
+      }
+      {
+        cues.map(cue => (
+          <span class="word-sync__card" style={{ left: at(cue.start) }}>
+            {cue.enters}
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="word-sync__table">
+      <table class="feature-table">
+        <caption data-ui="label">Cue words and what enters on them</caption>
+        <thead>
+          <tr>
+            <th scope="col">Cue word</th>
+            <th scope="col">Heard at</th>
+            <th scope="col">Enters</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            cues.map(cue => (
+              <tr>
+                <td class="feature-mono">{cue.text.toLowerCase()}</td>
+                <td class="feature-mono feature-muted">{cue.start.toFixed(2)} s</td>
+                <td>{cue.enters}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <div class="feature-grid" style="--feature-min: 26rem">
+    <figure class="feature-stack" style="margin: 0">
+      <figcaption data-ui="label">One word in words.json</figcaption>
+      <pre
+        class="feature-code"><code>&#123; "text": <span class="feature-ink">"Tabs"</span>, "type": "word", "start": <span class="feature-ink">8.2</span>, "end": 8.52 &#125;</code></pre>
+      <p class="feature-muted">
+        With the ElevenLabs connector, Claude transcribes the take for you. Without it, any
+        word-level transcriber works.
+      </p>
+    </figure>
+
+    <div class="feature-stack">
+      <p data-ui="label">Also in every frame</p>
+      <ul class="feature-chips">
+        {EFFECTS.map(effect => <li>{effect}</li>)}
+      </ul>
+      <p class="feature-muted" style="max-width: 60ch">
+        If the narrator never says a cue word, the build tells you, and that element is spaced
+        evenly instead of landing on its word.
+      </p>
+      <ExternalLink class="feature-link" href={EXAMPLE_HREF}>See the Gleaner example</ExternalLink>
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .word-sync__ribbon {
+    border-block-end: 1px solid var(--rule);
+    height: 9rem;
+    margin-inline: 1.5rem;
+    position: relative;
+  }
+
+  /* No wrapping: a label placed near the right edge would otherwise break. */
+  .word-sync__ribbon > span {
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .word-sync__tick {
+    background: var(--rule);
+    bottom: 1rem;
+    top: 2.5rem;
+    width: 1px;
+  }
+
+  .word-sync__second {
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: 0.6875rem;
+    top: 1.25rem;
+  }
+
+  /* The last second label would hang past the ruler's end. */
+  .word-sync__second--end {
+    transform: translateX(-100%);
+  }
+
+  .word-sync__word {
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: 0.8125rem;
+    top: 3.5rem;
+  }
+
+  .word-sync__word--cue {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .word-sync__word--cue::after {
+    background: var(--ink);
+    content: '';
+    height: 1.625rem;
+    left: 0;
+    position: absolute;
+    top: 1.625rem;
+    width: 1px;
+  }
+
+  /* An element entering: ink on paper, so it inverts with the theme. */
+  .word-sync__card {
+    background: var(--ink);
+    border-radius: 0.375rem;
+    color: var(--paper);
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.625rem;
+    top: 5.375rem;
+    white-space: nowrap;
+  }
+
+  .word-sync__table {
+    padding: 0.5rem 1.5rem 1rem;
+  }
+
+  .word-sync__table caption {
+    caption-side: top;
+    padding-block: 0.75rem;
+    text-align: start;
+  }
+
+  @media (max-width: 62rem) {
+    .word-sync__ribbon {
+      display: none;
+    }
+  }
+</style>

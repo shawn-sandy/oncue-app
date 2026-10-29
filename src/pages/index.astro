@@ -1,6 +1,14 @@
 ---
 import Base from '#layouts/Base.astro'
 import ExternalLink from '#components/astro/ExternalLink.astro'
+import FeatureBrand from '#components/astro/FeatureBrand.astro'
+import FeatureCheckIns from '#components/astro/FeatureCheckIns.astro'
+import FeatureFactsPictures from '#components/astro/FeatureFactsPictures.astro'
+import FeatureFrameSizes from '#components/astro/FeatureFrameSizes.astro'
+import FeatureOneFile from '#components/astro/FeatureOneFile.astro'
+import FeatureRequirements from '#components/astro/FeatureRequirements.astro'
+import FeatureSkills from '#components/astro/FeatureSkills.astro'
+import FeatureWordSync from '#components/astro/FeatureWordSync.astro'
 import HomeHero from '#components/astro/HomeHero.astro'
 import InstallDialog from '#components/astro/InstallDialog.astro'
 import MainSection from '#components/astro/MainSection.astro'
@@ -22,6 +30,14 @@ const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install 
       title="From your first beat to the final frame."
       phases={['Storyboard', 'Voiceover', 'Editable deck', 'Finished video']}
     />
+    <FeatureOneFile />
+    <FeatureWordSync />
+    <FeatureFrameSizes />
+    <FeatureCheckIns />
+    <FeatureFactsPictures />
+    <FeatureBrand />
+    <FeatureSkills />
+    <FeatureRequirements commands={COMMANDS} requirementsHref={`${README}#requirements`} />
     <p class="home-closing" data-ui="label">
       <span>Made for Shorts, Reels, TikTok and YouTube.</span>
       <ExternalLink href={`${README}#usage`}>You direct. Claude brings it together.</ExternalLink>
@@ -36,7 +52,7 @@ const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install 
     padding-block: 0;
   }
 
-  :global(main:has([data-home-hero]) > [data-workflow-strip]) {
+  :global(main:has([data-home-hero]) > :is([data-workflow-strip], [data-feature-section])) {
     margin-block-start: 0;
     margin-inline: 1.25rem;
     padding-inline: 0;

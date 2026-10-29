@@ -1,0 +1,140 @@
+---
+/**
+ * Feature section: OnCue uses real facts and real pictures, and marks what is
+ * missing instead of inventing it. Pairs the research skill with the visuals
+ * skill, and lists what the visuals skill never draws or generates.
+ *
+ * @component FeatureFactsPictures
+ * @example
+ * ```astro
+ * <FeatureFactsPictures />
+ * ```
+ */
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+export type Props = Record<string, never>
+
+const NEVER = ['A product’s interface', 'A real person', 'A logo', 'A chart of real data']
+---
+
+<FeatureSection
+  id="facts-pictures-title"
+  eyebrow="Nothing made up"
+  title="Real facts. Real pictures. Clear gaps."
+>
+  <Fragment slot="deck">
+    Point Claude at a repo, a README, a docs page or your notes. It uses real facts only, and marks
+    anything missing as <code>[YOUR FACT]</code> for you to fill in.
+  </Fragment>
+
+  <div class="feature-grid" style="--feature-min: 26rem; align-items: stretch">
+    <div class="feature-card">
+      <div class="facts__head">
+        <h3 class="facts__title">Research</h3>
+        <span data-ui="label">Writes research.md</span>
+      </div>
+      <p class="feature-muted">
+        Joins at any stage, from a bare topic to a rendered video, and works out where you are from
+        the files in the folder.
+      </p>
+      <ul class="feature-list">
+        <li>3 to 5 ranked topic ideas, each with a hook line, an audience and sources</li>
+        <li>A fact-check of the storyboard</li>
+        <li>Narration rewrites, shown before and after, with sources</li>
+        <li>Icon and picture ideas for each beat</li>
+      </ul>
+      <p class="feature-muted facts__foot">
+        Once a take is recorded, it changes no line without asking, and names the re-record cost
+        first.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="facts__head">
+        <h3 class="facts__title">Visuals</h3>
+        <span data-ui="label">Adds image beats</span>
+      </div>
+      <p class="feature-muted">
+        Every picture gets alt text and a cue word. Pictures change only the scene, so they are safe
+        to add after the voiceover.
+      </p>
+      <ul class="feature-list">
+        <li>Places your screenshots and photos</li>
+        <li>Draws diagrams, charts and timelines</li>
+        <li>Uses an image-generation tool only when your session has one</li>
+        <li>Finds openly licensed images, with credits</li>
+      </ul>
+      <div class="feature-stack facts__foot" style="gap: 0.75rem">
+        <p data-ui="label">Never drawn or generated</p>
+        <ul class="facts__never">
+          {
+            NEVER.map(item => (
+              <li>
+                <svg
+                  aria-hidden="true"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                >
+                  <circle cx="8" cy="8" r="7" />
+                  <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" />
+                </svg>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="feature-muted">
+          Asked for one with nothing supplied, it asks for the real picture or offers a labelled
+          diagram.
+        </p>
+      </div>
+    </div>
+  </div>
+</FeatureSection>
+
+<style>
+  .facts__head {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    justify-content: space-between;
+  }
+
+  .facts__title {
+    font-size: 1.625rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: none;
+  }
+
+  .facts__foot {
+    border-block-start: 1px solid var(--rule);
+    padding-block-start: 1rem;
+  }
+
+  .facts__never {
+    display: grid;
+    gap: 0.5rem 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .facts__never li {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .facts__never svg {
+    flex-shrink: 0;
+  }
+</style>

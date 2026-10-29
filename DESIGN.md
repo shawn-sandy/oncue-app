@@ -392,7 +392,7 @@ in the promoted tier of `FeatureCards`.
 
 ### The OnCue homepage parts
 
-The homepage is composed from six small components, each of which renders complete HTML on the server.
+The homepage is composed from small components, each of which renders complete HTML on the server.
 Scripts only add behaviour on top, so every control works as a plain link or as text before
 JavaScript loads.
 
@@ -410,8 +410,18 @@ JavaScript loads.
   its transport by script, and paints `frameAt()` from `src/utils/timing-demo.ts`.
 - **`WorkflowStrip`**: a hairline-ruled strip with the workflow as an `ol`; its arrows are generated
   content with empty alternative text.
+- **`FeatureSection`**: the frame the eight feature sections share (eyebrow, title, deck) and the parts
+  they draw with: cards, code samples, chips, tables and depicted video frames. Code wraps unless its
+  layout is the point; then it scrolls inside a focusable, labelled region, which is positioned so that
+  visually hidden text inside it cannot escape the clip and widen the page. Depicted frames keep
+  `FilmCard`'s fixed dark palette with a Rule border, so their edge shows on the dark theme's paper.
+- **Feature sections** (`FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`,
+  `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`): one claim each from
+  the plugin README, in that order below the workflow strip. Facts and timings come from the README and
+  the Gleaner example, not from invention.
 
-`HomeHero` composes `TimingDemo`; the page composes the rest.
+`HomeHero` composes `TimingDemo`; the feature sections compose `FeatureSection`; the page composes the
+rest.
 
 ## Do's and Don'ts
 
