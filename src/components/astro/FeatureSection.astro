@@ -1,7 +1,7 @@
 ---
 /**
  * The frame every homepage feature section shares: a mono eyebrow and a serif
- * title, the deck beside them, then the section's own body below.
+ * title, the deck under them, then the section's own body below.
  *
  * It also owns the small set of parts the eight sections draw with (cards,
  * code blocks, chips, tables, the depicted video frames), styled once here as
@@ -57,10 +57,9 @@ const { id, eyebrow, title } = Astro.props
   }
 
   .feature-section__header {
-    align-items: end;
-    display: grid;
-    gap: 1rem 4rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .feature-section__heading {
