@@ -10,11 +10,14 @@ The direction is one idea specific to Astro rather than to websites in general: 
 
 Astro ships static HTML and withholds JavaScript. The palette says the same thing the framework does. Static content
 renders in ink on paper, and the accent (`--island`) appears only where something is interactive - links, buttons,
-focus rings, the interactive-specimen badge. Nothing decorative carries it.
+focus rings, the interactive-specimen badge. Nothing decorative carries it, with one scoped exception: the two elements
+marked `data-accent="brand"` on the homepage, the headline's accent phrase and the timing demo, which depict the OnCue
+brand (see [The scoped accent exception](#the-scoped-accent-exception)).
 
 That is a structural rule, not a style preference, and it is machine-checked. `e2e/homepage-design-direction.spec.ts`
 walks the rendered homepage and asserts that **no non-interactive element computes to the accent colour**. Using
-`--island` for a decorative border, a heading, a rule or a card surface fails that test.
+`--island` for a decorative border, a heading, a rule or a card surface fails that test anywhere outside those two
+marked elements, and a third `data-accent="brand"` marker fails it too.
 
 Three supporting decisions are already settled:
 
@@ -243,12 +246,12 @@ the direction removes, and it fails `e2e/homepage-design-direction.spec.ts` if y
 Every part renders complete HTML on the server. Scripts are small Astro `script` modules, with no framework island,
 and they only add behaviour on top:
 
-| Control               | Without JavaScript                                      | With JavaScript                                                                  |
-| --------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Make your first video | A link to the OnCue README's install section            | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
-| See it in motion      | A link to `#demo`                                       | Plays the demo from 00:00 and moves focus to the play button                     |
-| Copy                  | Not shown (`hidden`); the commands are selectable text  | Copies the commands; if the clipboard refuses, selects them and says how to copy |
-| Demo player           | Not shown (`hidden`); the film shows its finished frame | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
+| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
+| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                     |
+| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies the commands; if the clipboard refuses, selects them and says how to copy |
+| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
 
 The film's server markup is its finished frame: every step revealed and no current word. That is also the view under
 `prefers-reduced-motion`, where nothing moves until Play is pressed, and the frame the demo ends on.
