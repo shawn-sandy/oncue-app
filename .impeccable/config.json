@@ -1,0 +1,15 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": ["tests/components/Navigation.astro.test.ts"],
+        "createdAt": "2026-10-28T23:28:29.393Z",
+        "reason": "Claude: L132/L138 are <img> regex literals in a unit test that parses rendered markup, not rendered images"
+      }
+    ]
+  }
+}

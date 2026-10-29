@@ -4,6 +4,7 @@ import Navigation from '#components/astro/Navigation.astro'
 import Footer from '#components/astro/Footer.astro'
 import Header from '#components/astro/Header.astro'
 import ThemeToggle from '#components/astro/ThemeToggle.astro'
+import OpenGraph from '#components/astro/OpenGraph.astro'
 // import PWAInstallPrompt from '#components/astro/PWAInstallPrompt.astro'
 // import OfflineIndicator from '#components/astro/OfflineIndicator.astro'
 
@@ -35,6 +36,16 @@ const showBreadcrumb = Astro.props.showBreadcrumb === undefined ? true : Astro.p
 const { userId } = Astro.locals
 
 const { pageTitle, pageDescription, pageImageUrl, hideHeader, hideSiteChrome } = Astro.props
+
+// Link previews need absolute URLs. `Astro.site` comes from `SITE_URL` in
+// astro.config.mjs and falls back to https://example.com when it is unset;
+// a render with no site at all (the Astro container in unit tests) uses the
+// request's own origin. The preview image is the 1200x630 capture
+// `scripts/capture-og-image.mjs` writes; `pageImageUrl` stays the page
+// header's image, whose size is unknown.
+const origin = Astro.site ?? Astro.url
+const ogUrl = new URL(Astro.url.pathname, origin).href
+const ogImage = new URL('/images/oncue-og.png', origin).href
 ---
 
 <html lang="en">
@@ -81,8 +92,8 @@ const { pageTitle, pageDescription, pageImageUrl, hideHeader, hideSiteChrome } =
     <meta name="theme-color" content="#1e293b" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="AstroKit" />
-    <meta name="application-name" content="AstroKit" />
+    <meta name="apple-mobile-web-app-title" content={SITE_TITLE} />
+    <meta name="application-name" content={SITE_TITLE} />
 
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
@@ -92,6 +103,14 @@ const { pageTitle, pageDescription, pageImageUrl, hideHeader, hideSiteChrome } =
 
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle || SITE_TITLE}</title>
+    <OpenGraph
+      title={pageTitle || SITE_TITLE}
+      description={pageDescription || SITE_DESCRIPTION}
+      url={ogUrl}
+      image={ogImage}
+      imgWidth="1200"
+      imgHeight="630"
+    />
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
@@ -101,7 +120,7 @@ const { pageTitle, pageDescription, pageImageUrl, hideHeader, hideSiteChrome } =
 
     {
       !hideSiteChrome && (
-        <Navigation>
+        <Navigation brandLogo="/images/oncue-logo.svg">
           {
             /*
              * Authenticated-only links render into the default slot, which sits

@@ -1,0 +1,33 @@
+---
+/**
+ * A link to another site, marked with an arrow that screen readers skip.
+ *
+ * The reference design read "north east arrow" after every label and opened
+ * each link in a new tab without saying so. This opens in the same tab, so
+ * there is nothing to announce, and hides the glyph from assistive tech.
+ *
+ * @component ExternalLink
+ * @example
+ * ```astro
+ * <ExternalLink href="https://github.com/shawn-sandy/oncue">GitHub</ExternalLink>
+ * ```
+ */
+export type Props = {
+  /** Destination URL. */
+  href: string
+  /** Class names for the anchor, so the caller can style it. */
+  class?: string
+}
+
+const { href, class: className } = Astro.props
+---
+
+<a href={href} class:list={['external-link', className]}>
+  <slot /><span class="external-link__arrow" aria-hidden="true">↗</span>
+</a>
+
+<style>
+  .external-link__arrow {
+    margin-inline-start: 0.25em;
+  }
+</style>

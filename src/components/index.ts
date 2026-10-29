@@ -23,6 +23,12 @@ export { default as Breadcrumb } from './astro/Breadcrumb.astro'
 export { default as TextToSpeech } from './astro/TextToSpeech.astro'
 export { default as SignedOutMessage } from './astro/SignedOutMessage.astro'
 export { default as UserInfo } from './astro/UserInfo.astro'
+export { default as ExternalLink } from './astro/ExternalLink.astro'
+export { default as CommandBlock } from './astro/CommandBlock.astro'
+export { default as InstallDialog } from './astro/InstallDialog.astro'
+export { default as FilmCard } from './astro/FilmCard.astro'
+export { default as TimingDemo } from './astro/TimingDemo.astro'
+export { default as WorkflowStrip } from './astro/WorkflowStrip.astro'
 
 // Dashboard components
 export { default as DashboardCard } from './dashboard/DashboardCard.astro'

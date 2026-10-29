@@ -1,4 +1,5 @@
 ---
+import ExternalLink from '#components/astro/ExternalLink.astro'
 import { SITE_TITLE } from '#utils/site-config'
 
 /**
@@ -34,6 +35,11 @@ export type Props = {
   menuId?: string
   /** Render the brand link. Set false when a consumer supplies its own. */
   showBrand?: boolean
+  /**
+   * Logo image for the brand link. When set it replaces the brand text, and
+   * its `alt` is `brandTitle`, so the link's name is unchanged.
+   */
+  brandLogo?: string
 }
 
 const {
@@ -41,7 +47,16 @@ const {
   brandHref = '/',
   menuId = 'site-nav-popover',
   showBrand = true,
+  brandLogo,
 } = Astro.props
+
+// The OnCue project links. They live in the panel, so they stay reachable at
+// every width; the reference header dropped two of them on phones.
+const projectLinks = [
+  { href: 'https://github.com/shawn-sandy/oncue#how-it-works', label: 'How it works' },
+  { href: 'https://github.com/shawn-sandy/oncue#readme', label: 'Documentation' },
+  { href: 'https://github.com/shawn-sandy/oncue', label: 'GitHub' },
+]
 ---
 
 <!--
@@ -111,7 +126,7 @@ const {
   {
     showBrand && (
       <a href={brandHref} data-nav-brand>
-        {brandTitle}
+        {brandLogo ? <img src={brandLogo} alt={brandTitle} width="44" height="44" /> : brandTitle}
       </a>
     )
   }
@@ -134,8 +149,30 @@ const {
         <a href="/contact">Contact</a>
       </li>
     </ul>
+    <ul data-nav-external>
+      {
+        projectLinks.map(({ href, label }) => (
+          <li>
+            <ExternalLink href={href}>{label}</ExternalLink>
+          </li>
+        ))
+      }
+    </ul>
     <slot />
   </div>
 
   <slot name="login" />
 </nav>
+
+<style>
+  /* The logo is the whole link, so the link takes the 44px target height. */
+  [data-nav-brand] {
+    align-items: center;
+    display: inline-flex;
+    min-height: 2.75rem;
+  }
+
+  [data-nav-brand] img {
+    display: block;
+  }
+</style>

@@ -190,6 +190,13 @@ Never a decorative border, a heading, a hairline, or a card surface. This is mac
 preference: `e2e/homepage-design-direction.spec.ts` fails the build when a non-interactive element
 computes to the accent. Treat it exactly as you would a type error.
 
+**The scoped brand exception.** `data-accent="brand"` lets the accent paint something static in exactly
+two places on the homepage: the headline's accent phrase ("Right on cue.") and the `TimingDemo` root,
+whose stage depicts the OnCue brand. The accent audit skips those two elements and their descendants,
+and a separate test fails if the marker appears on any third element. It is an exception for depicting
+the brand, not a licence: everywhere else the rule stands, and the eyebrow and the hero's output check
+marks stay in Soft Ink.
+
 **The Legacy Family Rule.** The `--color-primary-*` sky-blue ramp and the `--color-neutral-*` grey
 ramp exist for backward compatibility with earlier component tokens. They are not the palette. New
 work reaches for the seven direction tokens; a sky-blue that reaches the screen is a regression.
@@ -206,7 +213,7 @@ Times)
 **Label/Mono Font:** DM Mono 400 (self-hosted, latin subset, single weight)
 
 **Character:** Editorial and instrument-like. The display serif is tight and confident — negative
-tracking, one weight, no italic — and DM Sans underneath it is plain and geometric so that reading
+tracking, one weight, upright except for two accent phrases — and DM Sans underneath it is plain and geometric so that reading
 feels like reading rather than like being marketed to. The mono capitals are the
 system's annotation voice: everything that labels, measures, or points at something else speaks in
 them.
@@ -240,6 +247,10 @@ faces are latin-subset woff2 files with no CDN: DM Sans as one variable file cov
 static weight outside those files is asking for another network request; make that trade
 deliberately or not at all.
 
+**The Accent Italic Rule.** The display serif is set in italic for exactly two accent phrases: the
+homepage headline's "Right on cue." and the film card's "Short stories.". Georgia italic is a system
+face, so it costs no font request. Nothing else is italic in the display role.
+
 **The Labels Keep Their Case Rule.** `text-transform: capitalize` applies to `h1`–`h3`, which are
 titles. `h4`–`h6` are used as UI labels — the contact form renders its error summary as an `h6` —
 and capitalizing a sentence produces "Please Correct The Following Errors".
@@ -256,11 +267,11 @@ element.
 Vertical rhythm runs on an 8pt grid (`--space-*`). `main` carries 2rem block padding; sections take
 2rem inline padding; sibling sections separate by 2rem; elements inside an `article` separate by
 1.5rem. Composed pages own the space between their own regions — a reusable component never carries
-page-specific margin, which is why the homepage sets `.home-features { margin-block-start: 4rem }`
-at the call site rather than inside `FeatureCards`.
+page-specific margin, which is why `src/pages/index.astro` sets the workflow strip's margins at the
+call site rather than inside `WorkflowStrip`.
 
-The homepage hero is a two-column grid (`minmax(0, 1fr)` beside a 420px-max specimen column) with a
-3.5rem gutter, collapsing to a single column at 60rem. Interactive controls hold a 44px minimum
+The homepage hero is a two-column grid (`minmax(0, 1fr)` copy beside a `minmax(0, 1.15fr)` timing
+demo) with a 2rem gutter, collapsing to a single column at 47.5rem. Interactive controls hold a 44px minimum
 target (`--space-11`, WCAG 2.2 SC 2.5.8).
 
 ### Named Rules
@@ -377,14 +388,38 @@ block below a hairline with squared corners and its own horizontal scroll.
 
 The rule that makes it worth having: **the rendered instance and the printed snippet are built from
 the same constants**, so the sample cannot drift from the component standing beside it. It appears
-in the homepage hero and in the promoted tier of `FeatureCards`.
+in the promoted tier of `FeatureCards`.
+
+### The OnCue homepage parts
+
+The homepage is composed from six small components, each of which renders complete HTML on the server.
+Scripts only add behaviour on top, so every control works as a plain link or as text before
+JavaScript loads.
+
+- **`ExternalLink`** (atom): a link to another site with an `aria-hidden` ↗. Opens in the same tab, so
+  there is no "opens in a new tab" text to add.
+- **`CommandBlock`**: commands in a `pre > code` styled from the `code-block` tokens, with a Copy button
+  that ships `hidden` and a `role="status"` region. When the clipboard refuses, it selects the commands
+  and says how to copy them.
+- **`InstallDialog`**: a native `dialog` (`showModal()`, `closedby="any"`, a `method="dialog"` close
+  form) that upgrades links carrying `data-opens-dialog` and its `id`. Without a script those links open
+  the README's install section.
+- **`FilmCard`**: a static phone frame with a fixed dark palette in both themes, because it depicts a
+  screen. Its accent is `#ef827b` (7.33:1 on `#111111`); its labels floor at 0.625rem.
+- **`TimingDemo`**: the stage, the transport and the player script. Renders the finished frame, reveals
+  its transport by script, and paints `frameAt()` from `src/utils/timing-demo.ts`.
+- **`WorkflowStrip`**: a hairline-ruled strip with the workflow as an `ol`; its arrows are generated
+  content with empty alternative text.
+
+`HomeHero` composes `TimingDemo`; the page composes the rest.
 
 ## Do's and Don'ts
 
 ### Do:
 
 - **Do** reserve OnCue Rust for things a visitor can operate — links, buttons, focus rings,
-  specimen badges. Run the homepage e2e spec before assuming an exception is safe.
+  specimen badges. The only static exceptions are the two `data-accent="brand"` elements on the
+  homepage. Run the homepage e2e spec before assuming another exception is safe.
 - **Do** use the seven direction tokens (`--ink`, `--ink-soft`, `--paper`, `--paper-sunk`,
   `--island`, `--island-bg`, `--rule`) for every new surface.
 - **Do** flip both palette families in all three theming scopes when overriding, and load your
@@ -399,8 +434,9 @@ in the homepage hero and in the promoted tier of `FeatureCards`.
 
 ### Don't:
 
-- **Don't** put the accent on a heading, a decorative border, a hairline, or a card surface. The
-  test will catch it, and it is the one rule the whole system rests on.
+- **Don't** put the accent on a heading, a decorative border, a hairline, or a card surface, and
+  don't add a third `data-accent="brand"` marker. The test will catch it, and it is the one rule the
+  whole system rests on.
 - **Don't** reach for the legacy `--color-primary-*` sky-blue or `--color-neutral-*` greys in new
   work; they exist only for backward compatibility.
 - **Don't** drift the accent toward violet, indigo, or Tailwind sky-500 — those are confirmed

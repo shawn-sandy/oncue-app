@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="212 212 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">OnCue circular play logo</title>
+  <desc id="desc">A black disc with a brick-red concentric ring and a white play triangle.</desc>
+  <circle cx="512" cy="512" r="300" fill="#000000" />
+  <circle cx="512" cy="512" r="202" fill="#C7342B" />
+  <circle cx="512" cy="512" r="153" fill="#000000" />
+  <path d="M 474 466 Q 474 456 483 461 L 560 505 Q 570 511 560 517 L 483 561 Q 474 566 474 556 Z" fill="#FFFFFF" transform="translate(512 511) scale(1.2) translate(-512 -511)" />
+</svg>
