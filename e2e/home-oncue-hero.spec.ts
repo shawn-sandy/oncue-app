@@ -168,6 +168,43 @@ test.describe('OnCue homepage edge cases', () => {
     await expect(second).toHaveAttribute('data-state', 'copied')
   })
 
+  test('a copy that finishes after the dialog closes leaves no stale state', async ({ page }) => {
+    await page.clock.install()
+    await page.addInitScript(() => {
+      const w = window as typeof window & { finishCopy?: () => void; dialogClosed?: boolean }
+      // `close` is dispatched as a later task, so the test waits for it.
+      document.addEventListener('close', () => (w.dialogClosed = true), true)
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: () =>
+            new Promise<void>(resolve => {
+              w.finishCopy = resolve
+            }),
+        },
+      })
+    })
+    await page.goto('/')
+    await page.clock.pauseAt(Date.now() + 60_000)
+    await openDialog(page)
+
+    const copy = dialog(page).locator('[data-command-copy]').first()
+    await copy.click()
+    await page.keyboard.press('Escape')
+    await expect
+      .poll(() =>
+        page.evaluate(() => (window as typeof window & { dialogClosed?: boolean }).dialogClosed)
+      )
+      .toBe(true)
+    await page.evaluate(() =>
+      (window as typeof window & { finishCopy?: () => void }).finishCopy?.()
+    )
+    await openDialog(page)
+
+    await expect(copy).not.toHaveAttribute('data-state')
+    await expect(dialog(page).getByRole('status')).toHaveText('')
+  })
+
   test('closing and reopening the dialog resets the copy button', async ({ page }) => {
     // Paused timers: the 2s auto-reset must not stand in for the close handler.
     await page.clock.install()

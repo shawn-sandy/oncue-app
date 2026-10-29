@@ -90,7 +90,11 @@ const { commands } = Astro.props
     // One timer per block, not per button: the status region is shared, so an
     // earlier button's timer must not blank a later button's result.
     let timer: number | undefined
+    // Bumped on every reset, so a clipboard write that settles after a newer
+    // click or a dialog close cannot restore stale state.
+    let generation = 0
     const reset = () => {
+      generation += 1
       clearTimeout(timer)
       for (const button of buttons) delete button.dataset.state
       delete status.dataset.state
@@ -106,13 +110,21 @@ const { commands } = Astro.props
         // Emptying the region first lets a repeat click on the same button
         // be announced again; an unchanged live region is not re-read.
         reset()
+        const current = generation
+        let copied = true
         try {
           // No optional chaining: where `navigator.clipboard` is undefined the
           // call must throw into the fallback, not resolve to nothing.
           await navigator.clipboard.writeText(button.dataset.copy ?? '')
+        } catch {
+          copied = false
+        }
+        if (current !== generation) return
+
+        if (copied) {
           button.dataset.state = 'copied'
           status.textContent = COPIED
-        } catch {
+        } else {
           const range = document.createRange()
           range.selectNodeContents(code)
           const selection = getSelection()
