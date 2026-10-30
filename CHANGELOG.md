@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`@clerk/astro` 3.0.23 to 4.1.19**: 4.0.0 is the first major whose peer range includes Astro 7.
+  Clerk's half of the `.npmrc` `legacy-peer-deps` reason is gone; the flag stays for
+  `astro-embed@0.13.0`
 - **Design system record** (`DESIGN.md`, `src/content/docs/guide/design-direction.mdx`,
   `project-docs/03-features/design-direction.md`): brought in step with the shipped homepage — the
   `command-block`, `copy-button`, `nav-logo`, `feature-card`, `feature-panel`, `chip` and `feature-frame`
@@ -367,6 +370,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Builds depended on a `patch-package` fix for `@clerk/astro`** (`package.json`): an install that
+  skipped `prepare` failed every build with `A 'return' statement can only be used within a function
+body` in `@clerk/astro`'s `MenuItemRenderer.astro`. Clerk 4 ships the fix, so
+  `patches/@clerk+astro+3.0.23.patch` is gone
 - **Interactive sections randomly dead on sites built without a Clerk key** (`astro.config.mjs`):
   `clerk()` injected its two browser startup scripts on every page even with no publishable key,
   and whichever ran first threw `@clerk/astro: Missing publishableKey`. Every island awaits the
@@ -499,6 +506,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Route protection moved into each protected page** (`src/utils/require-signed-in.ts`): with
+  `@clerk/astro` 4, `/dashboard`, `/dashboard/users` and `/organization` each call
+  `requireSignedIn` first in their frontmatter. Signed-out visitors are redirected to sign-in, and
+  without Clerk keys the pages still render the `/auth-setup` notice with HTTP 503. Clerk removed
+  `createRouteMatcher` because middleware path matching can diverge from Astro's routing. The
+  middleware keeps a `/dashboard` and `/organization` prefix match, now on the path Astro routes
+  (`context.url`), as a backstop, and `tests/utils/require-signed-in.test.ts` fails when a page
+  under those trees does not call `requireSignedIn` first. `/organization` used to redirect
+  signed-out visitors to `/sign-in`, which does not exist; it now uses Clerk's sign-in redirect
+  like the dashboard
 - **Protected routes no longer fail open without Clerk keys** (`src/middleware.ts`): with the Clerk
   keys missing or still the `YOUR_*` placeholders, `/dashboard` and `/organization` (and their
   sub-paths) used to be served to anyone. They now render a setup notice (`/auth-setup`) with HTTP 503. With real keys, unauthenticated visitors are still redirected to sign-in. The stale
