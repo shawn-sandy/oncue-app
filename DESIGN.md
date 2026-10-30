@@ -280,7 +280,9 @@ them.
   homepage feature section, in sentence case. Its deck stacks under it at `--header-deck-font-size`,
   capped at 60ch.
 - **Card Title** (400, 1.375rem, 1.2, `-0.015em`): The `h3` of a feature card or panel, also in
-  sentence case.
+  sentence case. Two sections override it: `FeatureSkills` sets skill names in DM Mono at 1rem
+  (1.375rem on the lead card) and keeps their own casing, since they are identifiers, and
+  `FeatureFactsPictures` raises its panel titles to 1.625rem.
 - **Deck** (400, `clamp(1.125rem, 0.9vw + 0.9rem, 1.5rem)`, 1.5): The paragraph under a page
   heading, in Soft Ink. Its clamp runs a shallower slope than the heading's, so the two separate as
   the viewport grows rather than converging.
@@ -338,7 +340,8 @@ section — never above it, since the strip already ends in one and two touching
 heavy line. The header stacks eyebrow, title and deck in one column with a 1rem gap at every width,
 and the deck is capped at 60ch. Bodies lay out on `.feature-grid`, an `auto-fit` grid of columns at
 least 18rem wide (`--feature-min` raises that per section) with a 2rem row gap and a 3rem column
-gap. The page sets the sections' 1.25rem inline margin at the call site.
+gap. The minimum is capped at the container width (`min(100%, …)`), so a 320px viewport gets one
+full-width column rather than a wider document. The page sets the sections' 1.25rem inline margin at the call site.
 
 ### Named Rules
 

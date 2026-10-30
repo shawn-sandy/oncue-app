@@ -272,7 +272,7 @@ The film's server markup is its finished frame: every step revealed and no curre
 | `FeatureSection` | `id`, `eyebrow`, `title`, `deck` slot, default slot                | The frame the eight feature sections share: eyebrow, sentence-case `h2` and deck stacked in one column, then the body. Also styles the parts the sections draw with: cards, panels, chips, code samples, tables and depicted frames |
 | `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`               |
 
-All of them are exported from `src/components/index.ts`.
+All of them except `HomeHero` are exported from `src/components/index.ts`.
 
 The demo's timing is `frameAt(positionMs, wordCount = 6)` in `src/utils/timing-demo.ts`, a pure function that returns
 `{ wordIndex, revealedSteps, elapsedLabel, progress, ended }`. Words land every 1050ms after a 600ms lead-in, step `i`
