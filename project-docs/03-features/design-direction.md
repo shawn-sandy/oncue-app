@@ -43,7 +43,9 @@ Source of truth: `src/styles/_design-tokens.scss` (definitions) and `src/styles/
 | `--island-bg`  | `#fcebe9` | `#3a1714` | Accent wash behind interactive affordances and `::selection`   |
 | `--rule`       | `#dedede` | `#2e2e2e` | Hairlines and dividers                                         |
 
-The accent is OnCue rust, the brand's primary-button red, on an otherwise colourless black-and-white ground —
+The accent is OnCue rust, the brand's primary-button red and the ring of the logo in
+`public/images/oncue-logo.svg`, whose black disc and white play triangle are `--ink` and `--paper`, on an otherwise
+colourless black-and-white ground —
 deliberately not Tailwind sky-500 and not the violet/indigo family that generated palettes converge on, so the palette
 does not read as a framework default. With no other hue on the page, one warm colour is enough to mark what can be
 pressed, and it darkens under the `color-mix` hover states without going brown. The wash is paler than the brand's
@@ -246,29 +248,31 @@ the direction removes, and it fails `e2e/homepage-design-direction.spec.ts` if y
 Every part renders complete HTML on the server. Scripts are small Astro `script` modules, with no framework island,
 and they only add behaviour on top:
 
-| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus     |
-| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                     |
-| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies the commands; if the clipboard refuses, selects them and says how to copy |
-| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it   |
+| Control               | Without JavaScript                                                                                                            | With JavaScript                                                                       |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Make your first video | A link to the OnCue README's install section                                                                                  | Opens `InstallDialog` with `showModal()`; Escape closes it and returns focus          |
+| See it in motion      | A link to `#demo`                                                                                                             | Plays the demo from 00:00 and moves focus to the play button                          |
+| Copy                  | Not shown (`hidden`), and the dialog holding the commands never opens; the install link leads to the README, which lists them | Copies that row's command; if the clipboard refuses, selects it and shows how to copy |
+| Demo player           | Not shown (`hidden`); the film shows its finished frame                                                                       | Play, Pause and Replay, with a `00:00 / 00:08` readout; a hidden tab pauses it        |
 
 The film's server markup is its finished frame: every step revealed and no current word. That is also the view under
 `prefers-reduced-motion`, where nothing moves until Play is pressed, and the frame the demo ends on.
 
 ### Components
 
-| Component       | Props                                                              | What it does                                                                                   |
-| --------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| `ExternalLink`  | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                      |
-| `CommandBlock`  | `commands: string[]`                                               | `pre > code` from the `code-block` tokens, a `hidden` Copy button and a `role="status"` region |
-| `InstallDialog` | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`   |
-| `FilmCard`      | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame        |
-| `TimingDemo`    | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`        |
-| `WorkflowStrip` | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content            |
-| `HomeHero`      | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                      |
+| Component        | Props                                                              | What it does                                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExternalLink`   | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                                                                                                                                                           |
+| `CommandBlock`   | `commands: string[]`                                               | One row per command, each a `code` with its own `hidden` icon copy button, and one `role="status"` region, shown only for the blocked-clipboard hint                                                                                |
+| `InstallDialog`  | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`                                                                                                                                        |
+| `FilmCard`       | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame                                                                                                                                             |
+| `TimingDemo`     | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`                                                                                                                                             |
+| `WorkflowStrip`  | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                                                                                                 |
+| `HomeHero`       | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                                                                                                           |
+| `FeatureSection` | `id`, `eyebrow`, `title`, `deck` slot, default slot                | The frame the eight feature sections share: eyebrow, sentence-case `h2` and deck stacked in one column, then the body. Also styles the parts the sections draw with: cards, panels, chips, code samples, tables and depicted frames |
+| `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`               |
 
-All six new components are exported from `src/components/index.ts`.
+All of them are exported from `src/components/index.ts`.
 
 The demo's timing is `frameAt(positionMs, wordCount = 6)` in `src/utils/timing-demo.ts`, a pure function that returns
 `{ wordIndex, revealedSteps, elapsedLabel, progress, ended }`. Words land every 1050ms after a 600ms lead-in, step `i`
@@ -321,6 +325,8 @@ Automated coverage:
   non-interactive element outside the two `data-accent="brand"` elements carries the accent, and horizontal overflow
   is 0 at 320, 390, 768 and 1280
 - `e2e/home-oncue-hero.spec.ts` - the homepage's content, dialog, copy fallback, demo, link preview and no-JS view
+- `e2e/home-feature-sections.spec.ts` - each feature section is named by its own `h2`, each section's own styles
+  reach its elements, and axe reports zero WCAG 2.2 AA violations at 1280px and 375px in both themes
 - `tests/integration/design-tokens.test.ts` - `--card-background` and `--header-background` each keep at least one
   `var()` consumer in the compiled CSS, and the dark block sets at least one painted property rather than variables alone
 

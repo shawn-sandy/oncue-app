@@ -28,6 +28,18 @@ typography:
     fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif'
     fontWeight: 400
     letterSpacing: '-0.015em'
+  section-title:
+    fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif'
+    fontSize: 'clamp(2rem, 2.6vw + 1rem, 2.75rem)'
+    fontWeight: 400
+    lineHeight: 1.08
+    letterSpacing: '-0.015em'
+  card-title:
+    fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif'
+    fontSize: '1.375rem'
+    fontWeight: 400
+    lineHeight: 1.2
+    letterSpacing: '-0.015em'
   deck:
     fontFamily: 'DM Sans, ui-sans-serif, system-ui, -apple-system, sans-serif'
     fontSize: 'clamp(1.125rem, 0.9vw + 0.9rem, 1.5rem)'
@@ -51,6 +63,7 @@ rounded:
   none: '0'
   base: '4px'
   lg: '8px'
+  xl: '12px'
   2xl: '16px'
   full: '9999px'
 spacing:
@@ -95,7 +108,7 @@ components:
     rounded: '{rounded.none}'
     padding: '16px 20px'
   input:
-    backgroundColor: '{colors.paper}'
+    backgroundColor: '{colors.paper-sunk}'
     textColor: '{colors.ink}'
     rounded: '{rounded.base}'
     padding: '8px 12px'
@@ -108,6 +121,42 @@ components:
   eyebrow:
     textColor: '{colors.ink-soft}'
     typography: '{typography.label}'
+  command-block:
+    backgroundColor: '{colors.paper-sunk}'
+    textColor: '{colors.ink-soft}'
+    rounded: '{rounded.lg}'
+    padding: '8px 8px 8px 20px'
+  copy-button:
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink-soft}'
+    rounded: '{rounded.lg}'
+    height: '40px'
+    width: '40px'
+  copy-button-hover:
+    backgroundColor: '{colors.island-bg}'
+    textColor: '{colors.island}'
+  nav-logo:
+    height: '56px'
+    width: '56px'
+  feature-card:
+    backgroundColor: '{colors.paper-sunk}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.lg}'
+    padding: '24px'
+  feature-panel:
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.lg}'
+    padding: '24px'
+  chip:
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.lg}'
+    padding: '8px 12px'
+  feature-frame:
+    backgroundColor: '#111111'
+    textColor: '#f2f2f2'
+    rounded: '{rounded.xl}'
 ---
 
 # Design System: OnCue
@@ -150,8 +199,10 @@ neither.
 ## Colors
 
 A colourless black-on-white ground carrying exactly one chromatic voice, a warm rust red taken from
-the OnCue brand's primary button. The dark theme comes from the brand's dark film card: near-black
-paper and a salmon tint of the rust.
+the OnCue brand's primary button. The logo (`public/images/oncue-logo.svg`) is built from the same
+three values — a `#000000` disc, a `#c7342b` ring and a `#ffffff` play triangle — so Ink, OnCue Rust
+and Paper are the logo's own colours, not approximations of them. The dark theme comes from the
+brand's dark film card: near-black paper and a salmon tint of the rust.
 
 ### Primary
 
@@ -225,6 +276,11 @@ them.
   every viewport width instead of collapsing at desktop.
 - **Headline** (400, `h1` scale, `-0.02em`): Page-level `h1` on every other route. Capitalized.
 - **Title** (400, `h2`/`h3` scale, `-0.015em`): Section and card titles. Capitalized.
+- **Section Title** (400, `clamp(2rem, 2.6vw + 1rem, 2.75rem)`, 1.08, `-0.015em`): The `h2` of each
+  homepage feature section, in sentence case. Its deck stacks under it at `--header-deck-font-size`,
+  capped at 60ch.
+- **Card Title** (400, 1.375rem, 1.2, `-0.015em`): The `h3` of a feature card or panel, also in
+  sentence case.
 - **Deck** (400, `clamp(1.125rem, 0.9vw + 0.9rem, 1.5rem)`, 1.5): The paragraph under a page
   heading, in Soft Ink. Its clamp runs a shallower slope than the heading's, so the two separate as
   the viewport grows rather than converging.
@@ -253,7 +309,9 @@ face, so it costs no font request. Nothing else is italic in the display role.
 
 **The Labels Keep Their Case Rule.** `text-transform: capitalize` applies to `h1`–`h3`, which are
 titles. `h4`–`h6` are used as UI labels — the contact form renders its error summary as an `h6` —
-and capitalizing a sentence produces "Please Correct The Following Errors".
+and capitalizing a sentence produces "Please Correct The Following Errors". The homepage feature
+sections opt out as well: their `h2` and card `h3` set `text-transform: none`, because each title is
+a claim written as a sentence rather than a page title.
 
 ## Layout
 
@@ -273,6 +331,14 @@ call site rather than inside `WorkflowStrip`.
 The homepage hero is a two-column grid (`minmax(0, 1fr)` copy beside a `minmax(0, 1.15fr)` timing
 demo) with a 2rem gutter, collapsing to a single column at 47.5rem. Interactive controls hold a 44px minimum
 target (`--space-11`, WCAG 2.2 SC 2.5.8).
+
+Below the workflow strip, the eight feature sections share one rhythm: 64px of block padding
+(`--space-16`), a 48px gap between the header and the body, and a single Rule hairline under each
+section — never above it, since the strip already ends in one and two touching rules read as one
+heavy line. The header stacks eyebrow, title and deck in one column with a 1rem gap at every width,
+and the deck is capped at 60ch. Bodies lay out on `.feature-grid`, an `auto-fit` grid of columns at
+least 18rem wide (`--feature-min` raises that per section) with a 2rem row gap and a 3rem column
+gap. The page sets the sections' 1.25rem inline margin at the call site.
 
 ### Named Rules
 
@@ -313,8 +379,10 @@ Softly rounded, never pill-shaped, and never sharp except on purpose. The system
 (`--radius`, matching `--radius-lg`) and it covers buttons, cards, the specimen frame, and the
 navigation toggle. Smaller controls that sit inside a form — text inputs, selects — use 4px
 (`--radius-base`) so they read as fields rather than as buttons. Images take 16px
-(`--img-radius`, `--radius-2xl`), the one place the geometry is allowed to soften noticeably.
-Fully-round (`--radius-full`) is reserved for avatars and status dots.
+(`--img-radius`, `--radius-2xl`), the one place the geometry is allowed to soften noticeably, and the
+depicted video frames in the feature sections take 12px (`--radius-xl`), between a card and an
+image. Fully-round (`--radius-full`) is reserved for avatars, status dots and the requirements
+table's output dots.
 
 Borders are always exactly 1px in Rule; there is no 2px border anywhere in the resting system. The
 only 2px stroke in the language is the focus ring, which is a 2px OnCue Rust outline offset by
@@ -326,7 +394,8 @@ to find.
 **The Squared-Insert Rule.** An element that spans its container edge-to-edge drops its own radius
 to zero and separates with a hairline instead. The code block inside a specimen card is the
 canonical case: it runs the full card width, so a rounded corner inside a rounded corner would read
-as a mistake.
+as a mistake. `CommandBlock` is the counter-case: it stands alone in the install dialog and the
+requirements section with nothing framing it, so it carries its own 8px corners and Rule hairline.
 
 ## Components
 
@@ -339,6 +408,10 @@ as a mistake.
 - **Ghost / Secondary:** Transparent fill, label in OnCue Rust, border in neutral Rule. The
   neutral border is what creates the hierarchy — an accent border here made the two buttons read as
   two equal calls to action.
+- **Icon (copy):** The per-command button in `CommandBlock`. Transparent fill and border, a 16px
+  Soft Ink glyph, 40px square — the one control that sits under the 44px floor, so a command row
+  stays 40px tall. Hover paints Clay Wash behind a Rust glyph. A successful copy swaps the glyph for
+  a check in Rust for two seconds, and the shared status region announces it.
 - **Hover:** Fill mixes 12% toward ink in OKLCH (`color-mix(in oklch, …)`), and the label picks up
   an underline at 3px offset so the state never relies on hue alone. The ghost variant gains its
   Clay Wash tint and trades its neutral border for the accent — hover is where it earns the
@@ -360,7 +433,8 @@ as a mistake.
 
 ### Inputs / Fields
 
-- **Style:** 4px radius, 1px border, Paper fill.
+- **Style:** 4px radius, 1px border, Sunk Paper fill, so typed text stays readable when the dark theme
+  lightens it; a literal light fill would paint light text on a light field.
 - **Focus:** The system focus ring — 2px OnCue Rust outline, 2px offset.
 - **Validation:** Deferred until blur (`:user-invalid:not(:focus)`), so a field never turns red
   while it is still being typed into. Invalid fields take an Error outline and a `⚠` prefixed
@@ -370,7 +444,10 @@ as a mistake.
 ### Navigation
 
 - **Style:** A single horizontal bar at every width, packed to the start, with the brand and a 44px
-  hamburger toggle grouped left and the account slot pushed right by auto margin.
+  hamburger toggle grouped left and the account slot pushed right by auto margin. The logo is 56px
+  square inside a link that keeps the 44px target height; the bar adds 0.5rem of block padding
+  around it and sets `flex-shrink: 0`, because `body` is a flex column that would otherwise shrink
+  the bar back to the vendor's 4rem.
 - **Mechanism:** The panel is a native HTML `popover` — toggle, Escape, and outside-click come from
   the platform, with no JavaScript involved. There is no open-state class; the only CSS hook is
   `:has(> [popover]:popover-open)`.
@@ -398,9 +475,12 @@ JavaScript loads.
 
 - **`ExternalLink`** (atom): a link to another site with an `aria-hidden` ↗. Opens in the same tab, so
   there is no "opens in a new tab" text to add.
-- **`CommandBlock`**: commands in a `pre > code` styled from the `code-block` tokens, with a Copy button
-  that ships `hidden` and a `role="status"` region. When the clipboard refuses, it selects the commands
-  and says how to copy them.
+- **`CommandBlock`**: one row per command on a Sunk Paper panel with a Rule border and 8px corners
+  (`command-block`), each row a mono `code` at 0.8125rem beside its own icon copy button
+  (`copy-button`), named after its command and shipped `hidden`. One `role="status"` region serves
+  the block: a successful copy swaps the icon for a check and is announced; a blocked clipboard
+  selects that command and shows the Ctrl+C or Cmd+C hint visibly, since that path has no icon to
+  change.
 - **`InstallDialog`**: a native `dialog` (`showModal()`, `closedby="any"`, a `method="dialog"` close
   form) that upgrades links carrying `data-opens-dialog` and its `id`. Without a script those links open
   the README's install section.
@@ -410,11 +490,21 @@ JavaScript loads.
   its transport by script, and paints `frameAt()` from `src/utils/timing-demo.ts`.
 - **`WorkflowStrip`**: a hairline-ruled strip with the workflow as an `ol`; its arrows are generated
   content with empty alternative text.
-- **`FeatureSection`**: the frame the eight feature sections share (eyebrow, title, deck) and the parts
-  they draw with: cards, code samples, chips, tables and depicted video frames. Code wraps unless its
-  layout is the point; then it scrolls inside a focusable, labelled region, which is positioned so that
-  visually hidden text inside it cannot escape the clip and widen the page. Depicted frames keep
-  `FilmCard`'s fixed dark palette with a Rule border, so their edge shows on the dark theme's paper.
+- **`FeatureSection`**: the frame the eight feature sections share — eyebrow, sentence-case title and
+  deck stacked in one column at every width — and the parts they draw with, styled once as global
+  rules fenced by a zero-specificity `:where(.feature-section)`:
+  - **Card** (`feature-card`): Sunk Paper, 1px Rule border, 8px corners, 24px padding, 1rem gap.
+  - **Panel** (`feature-panel`): the card without the fill, for content that should read as outlined
+    rather than recessed.
+  - **Chip** (`chip`): a 1px Rule outline at 8px corners, `0.5rem 0.75rem` padding, 0.9375rem. A list
+    item, never a button.
+  - **Code sample** (`code-block`): Sunk Paper, Soft Ink mono at 0.75rem, squared corners. It wraps
+    unless its layout is the point; then it scrolls inside a focusable, labelled region, positioned so
+    that visually hidden text inside it cannot escape the clip and widen the page.
+  - **Table**: Rule hairlines between rows, no vertical lines, 0.9375rem. Header cells are 600 except
+    mono cells, which stay at 400 because DM Mono ships one weight.
+  - **Depicted frame** (`feature-frame`): `FilmCard`'s fixed dark palette at 12px corners with a Rule
+    border, so its edge shows on the dark theme's paper.
 - **Feature sections** (`FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`,
   `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`): one claim each from
   the plugin README, in that order below the workflow strip. Facts and timings come from the README and
