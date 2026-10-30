@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Design system record** (`DESIGN.md`, `src/content/docs/guide/design-direction.mdx`,
+  `project-docs/03-features/design-direction.md`): brought in step with the shipped homepage — the
+  `command-block`, `copy-button`, `nav-logo`, `feature-card`, `feature-panel`, `chip` and `feature-frame`
+  component tokens, the 12px `xl` radius, the sentence-case section and card title scales, the feature
+  sections' rhythm and stacked header, the 56px logo, and `FeatureSection` rows in both guides; the README
+  now links the published OnCue design system, built from `DESIGN.md` with the ten components
 - **Per-line copy buttons** (`src/components/astro/CommandBlock.astro`): each install command has its own icon
   copy button, named after its command, in place of one Copy button for the whole block
   - A successful copy swaps the icon for a check and is announced through one shared `role="status"` region; a

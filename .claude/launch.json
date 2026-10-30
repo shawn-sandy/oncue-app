@@ -4,14 +4,14 @@
     {
       "name": "start",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "npx run-p \"dev -- --port $PORT\" sass"],
+      "runtimeArgs": ["-c", "npx run-p \"dev -- --ignore-lock --port $PORT\" sass"],
       "port": 4330,
       "autoPort": true
     },
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "4331"],
+      "runtimeArgs": ["run", "dev", "--", "--ignore-lock", "--port", "4331"],
       "port": 4331
     }
   ]
