@@ -229,7 +229,7 @@ Three main collections defined in `src/content/config.ts`:
 - Component-specific styles in `src/styles/components/`
 - Uses @fpkit/acss for additional CSS utilities
 - Design system spec: [DESIGN.md](DESIGN.md). The
-  [Astro Kit design system](https://claude.ai/artifact/HKxyaqURmUX9WE4G8TiiW4) renders its tokens,
+  [OnCue design system](https://claude.ai/artifact/HZkvaPFwEVEbpuv6udpWiT) renders its tokens,
   type roles and components live in light and dark themes.
 
 ### Database Configuration
