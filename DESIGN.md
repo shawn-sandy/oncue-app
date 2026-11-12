@@ -508,8 +508,8 @@ JavaScript loads.
     mono cells, which stay at 400 because DM Mono ships one weight.
   - **Depicted frame** (`feature-frame`): `FilmCard`'s fixed dark palette at 12px corners with a Rule
     border, so its edge shows on the dark theme's paper.
-- **Feature sections** (`FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`,
-  `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`): one claim each from
+- **Feature sections** (`FeatureRequirements`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureBrand`,
+  `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureOneFile`, `FeatureSkills`): one claim each from
   the plugin README, in that order below the workflow strip. Facts and timings come from the README and
   the Gleaner example, not from invention.
 

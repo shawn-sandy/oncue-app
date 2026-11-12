@@ -270,7 +270,7 @@ The film's server markup is its finished frame: every step revealed and no curre
 | `WorkflowStrip`  | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                                                                                                 |
 | `HomeHero`       | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                                                                                                           |
 | `FeatureSection` | `id`, `eyebrow`, `title`, `deck` slot, default slot                | The frame the eight feature sections share: eyebrow, sentence-case `h2` and deck stacked in one column, then the body. Also styles the parts the sections draw with: cards, panels, chips, code samples, tables and depicted frames |
-| `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureOneFile`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureBrand`, `FeatureSkills`, `FeatureRequirements`               |
+| `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureRequirements`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureBrand`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureOneFile`, `FeatureSkills`               |
 
 All of them except `HomeHero` are exported from `src/components/index.ts`.
 
