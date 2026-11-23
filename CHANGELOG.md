@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **OnCue plugin 1.4.0 to 1.13.0** (`src/components/astro/FeatureSkills.astro`): the skills section lists ten
+  skills, up from eight, adding `storyboard-editor` (1.10.0) and `deck-to-video` (1.11.0), taken from the
+  upstream README skills table. The requirements section also shows the Codex install commands and the ChatGPT
+  workspace import, with upstream's note that ChatGPT is untested (1.8.0). Not carried over: the 1.9.0
+  default Astro theme
 - **`@clerk/astro` 3.0.23 to 4.1.19**: 4.0.0 is the first major whose peer range includes Astro 7.
   Clerk's half of the `.npmrc` `legacy-peer-deps` reason is gone; the flag stays for
   `astro-embed@0.13.0`
@@ -35,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **OnCue feature sections** (`src/components/astro/Feature*.astro`, `src/pages/index.astro`): eight sections
   below the workflow strip, one claim each from the plugin README (one spec drives every output, word-synced
-  animation, any frame size, the two check-ins, real facts and pictures, brand and theme, the eight skills, and
+  animation, any frame size, the two check-ins, real facts and pictures, brand and theme, the ten skills, and
   what each output needs), built on a shared `FeatureSection` frame and exported from `src/components/index.ts`
   - Every surface is a DESIGN.md token, so the sections follow the theme; depicted video frames keep a fixed
     dark palette, as `FilmCard` does, and the accent stays on links and the Copy button
