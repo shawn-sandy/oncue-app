@@ -243,11 +243,11 @@ test.describe('OnCue homepage edge cases', () => {
 
       await expect(page.locator('[data-demo-transport]'), 'no demo transport').toHaveCount(1)
       await expect(page.locator('[data-demo-transport]')).toBeHidden()
-      // The install dialog and the requirements section each carry one per
-      // command. The attribute itself is checked: the closed dialog would hide
+      // The install dialog carries one per command, and the requirements
+      // section carries two sets (Claude Code and Codex). The attribute itself is checked: the closed dialog would hide
       // its buttons anyway, but the section's are on the page.
       const copyButtons = page.locator('[data-command-copy]')
-      await expect(copyButtons, 'no copy button').toHaveCount(COMMANDS.length * 2)
+      await expect(copyButtons, 'no copy button').toHaveCount(COMMANDS.length * 3)
       for (const button of await copyButtons.all()) {
         await expect(button).toHaveAttribute('hidden', '')
       }
