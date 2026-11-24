@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Local preview for the docs/ tree before it ships to GitHub Pages.
+# Local preview for the docs/ tree.
 # Serves docs/ over http://127.0.0.1 on an auto-selected free port (or pass
-# a port as $1). Mirrors what the deploy-pages.yml workflow uploads, so what
-# you see here is what Pages will publish.
+# a port as $1).
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DOCS_DIR="$REPO_ROOT/docs"
