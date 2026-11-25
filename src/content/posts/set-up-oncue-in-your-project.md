@@ -125,7 +125,10 @@ Here is a small `short.json` with two beats. A beat is one voiceover line paired
 ```json
 {
   "title": "Quickstart in 20 seconds",
-  "format": { "width": 1080, "height": 1920 },
+  "format": {
+    "width": 1080,
+    "height": 1920
+  },
   "brand": {
     "name": "Quickstart",
     "logo": "logo.png",
@@ -144,23 +147,77 @@ Here is a small `short.json` with two beats. A beat is one voiceover line paired
       "panelMuted": "#5a6472",
       "panelRule": "#c9dfe6"
     },
-    "fonts": { "sans": "inter", "mono": "jetbrains-mono" },
-    "deckFonts": { "head": "Arial", "body": "Arial" }
+    "fonts": {
+      "sans": "inter",
+      "mono": "jetbrains-mono"
+    },
+    "deckFonts": {
+      "head": "Arial",
+      "body": "Arial"
+    }
+  },
+  "theme": {
+    "radius": "soft",
+    "background": "flat",
+    "density": "regular",
+    "type": "regular",
+    "stroke": "hairline",
+    "weight": "semibold"
   },
   "lines": [
     {
-      "vo": "Want a video that lands on every word? This is Quickstart.",
+      "vo": "Want a video that lands on every word? This is Quickstart, your first OnCue short.",
       "scene": {
         "kind": "hook",
         "headline": "Your first video, built from {one file.}",
-        "headlineCue": { "word": "want" }
+        "headlineCue": {
+          "word": "want"
+        },
+        "sub": "{Quickstart} · made with OnCue",
+        "subCue": {
+          "word": "this"
+        }
+      }
+    },
+    {
+      "vo": "One spec drives the deck, the script, and the video, so they always match.",
+      "scene": {
+        "kind": "list",
+        "kicker": "How it works",
+        "title": "One file. {Every output.}",
+        "items": [
+          {
+            "icon": "FiFileText",
+            "title": "The deck",
+            "desc": "Editable PowerPoint slides",
+            "cue": {
+              "word": "deck"
+            }
+          },
+          {
+            "icon": "FiMic",
+            "title": "The script",
+            "desc": "One voiceover line per beat",
+            "cue": {
+              "word": "script"
+            }
+          },
+          {
+            "icon": "FiVideo",
+            "title": "The video",
+            "desc": "Every element enters on its word",
+            "cue": {
+              "word": "video"
+            }
+          }
+        ]
       }
     }
   ]
 }
 ```
 
-(This example is the complete color block, all thirteen roles, which Step 5 explains. Leave one out and `check` stops with an error such as `brand.colors.card: is required`. This post covers the first beat only, so your `lines` list will be longer.)
+(This example is the complete color block, all thirteen roles, which Step 5 explains. Leave one out and `check` stops with an error such as `brand.colors.card: is required`. It matches the `short.json` in the `oncue-quickstart` folder.)
 
 Four ideas matter here.
 
