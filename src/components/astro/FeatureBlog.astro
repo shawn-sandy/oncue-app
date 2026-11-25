@@ -1,7 +1,8 @@
 ---
 /**
- * Homepage section: the latest blog posts, each a card with its title as the
- * one link, a date and a short excerpt. Built on `FeatureSection` and its
+ * Homepage section: the latest blog posts, each a card with a title, a date,
+ * a short excerpt and a "Read more" link. Cards in a row share one height and
+ * the link sits at the foot of each. Built on `FeatureSection` and its
  * `feature-grid` / `feature-card` parts.
  *
  * Posts come from `load`, which defaults to hardcoded placeholders until a real
@@ -10,9 +11,12 @@
  * The error is logged on the server and the page says only that posts could not
  * load, so no internal detail reaches a visitor.
  *
- * Each post has exactly one tab stop, its title link, so keyboard order follows
- * the reading order. The link takes the global focus ring (2px OnCue Rust,
- * 2px offset); the accent stays on the link, never on the card or heading.
+ * Each post has exactly one tab stop, its "Read more" link, so keyboard order
+ * follows the reading order. The link reads as "Read more about <title>": the
+ * title part is visually hidden text inside the link, so a screen reader's
+ * links list is not a row of identical "Read more" entries. The link takes the
+ * global focus ring (2px OnCue Rust, 2px offset); the accent stays on the
+ * link, never on the card or heading.
  *
  * @component FeatureBlog
  * @example
@@ -87,15 +91,14 @@ const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZon
           {posts.map(post => (
             <li>
               <article class="feature-card blog__post">
-                <h3 class="feature-title">
-                  <a href={post.href} class="blog__link">
-                    {post.title}
-                  </a>
-                </h3>
+                <h3 class="feature-title">{post.title}</h3>
                 <time class="blog__date" data-ui="label" datetime={post.date}>
                   {formatDate.format(new Date(post.date))}
                 </time>
                 <p class="feature-muted">{post.excerpt}</p>
+                <a href={post.href} class="blog__link">
+                  Read more<span class="blog__sr"> about {post.title}</span>
+                </a>
               </article>
             </li>
           ))}
@@ -108,7 +111,10 @@ const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZon
 </FeatureSection>
 
 <style>
-  .blog__list {
+  /* The vendor grid aligns items to the start, which left cards as tall as
+     their own text; stretch makes every card in a row the row's height. */
+  .feature-grid.blog__list {
+    align-items: stretch;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -119,7 +125,6 @@ const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZon
     margin: 0;
   }
 
-  /* Cards in a row match heights. */
   .feature-card.blog__post {
     flex: 1;
   }
@@ -131,19 +136,31 @@ const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZon
     order: -1;
   }
 
-  /* The vendor sizes every link at 1rem from `a[href]` (0,1,1); `[href]`
-     lifts this to (0,2,0) so the link takes the title's size. The vendor
-     also eases every property over 0.35s, which animated the focus ring;
-     DESIGN.md allows colour only, 150ms. */
+  /* Pins "Read more" to the foot of every card, so the links line up when
+     the excerpts differ in length. Takes the 44px target (DESIGN.md). */
   .blog__link[href] {
-    font-size: inherit;
+    align-items: center;
+    align-self: flex-start;
+    display: inline-flex;
+    font-size: 0.9375rem;
+    margin-block-start: auto;
+    min-height: 2.75rem;
     transition: color 150ms ease-out;
   }
 
+  /* Hidden from sight, read by screen readers inside the link's name. */
+  .blog__sr {
+    block-size: 1px;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+  }
+
   /* The system ring (DESIGN.md). The vendor's `a[href]:focus-visible` (0,2,1)
-     draws a 3px ring with no offset and bolds the label, which would
-     synthesize a weight the one-weight display serif does not ship; `[href]`
-     lifts this rule to (0,3,0) so it wins. */
+     draws a 3px ring with no offset and bolds the label; `[href]` lifts this
+     rule to (0,3,0) so it wins. */
   .blog__link[href]:focus-visible {
     font-weight: inherit;
     outline: 2px solid var(--island);

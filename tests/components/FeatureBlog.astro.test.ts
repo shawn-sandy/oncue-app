@@ -17,7 +17,7 @@ const state = (html: string) => /\sdata-blog-state="([^"]+)"/.exec(html)?.[1]
 const links = (html: string) => [...html.matchAll(/<a\b[^>]*\shref="([^"]+)"/g)].map(m => m[1])
 
 describe('FeatureBlog.astro', () => {
-  it('lists each post with its title link, date and excerpt, in order', async () => {
+  it('lists each post with its title, date, excerpt and one link, in order', async () => {
     const html = await render({ load: async () => POSTS })
 
     expect(state(html)).toBe('ready')
@@ -25,6 +25,18 @@ describe('FeatureBlog.astro', () => {
     expect(html).toMatch(/<time\b[^>]*\sdatetime="2026-11-02"[^>]*>\s*2 November 2026\s*<\/time>/)
     expect(html).toContain('Second excerpt.')
     expect(html.indexOf('First post')).toBeLessThan(html.indexOf('Second post'))
+  })
+
+  it('gives each Read more link a name that includes its post title', async () => {
+    const html = await render({ load: async () => POSTS })
+    const names = [...html.matchAll(/<a\b[^>]*\shref="[^"]+"[^>]*>([\s\S]*?)<\/a>/g)].map(m =>
+      m[1]
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+    )
+
+    expect(names).toEqual(['Read more about First post', 'Read more about Second post'])
   })
 
   // Midnight UTC is still the previous day west of Greenwich; the date must not shift.

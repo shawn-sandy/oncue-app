@@ -345,7 +345,7 @@ The section body carries `data-blog-state`:
 - `empty` - `load` returned no posts; the page says there are no posts yet
 - `error` - `load` threw; the error goes to the server log and the page says only that posts could not be loaded
 
-Each post has one tab stop, its title link, so focus follows reading order. The link takes the system focus ring (2px
+Each post has one tab stop, a "Read more" link whose name continues with the post title (visually hidden text, so a screen reader hears "Read more about <title>"), so focus follows reading order. Cards in a row share one height and the link sits at the foot of each. The link takes the system focus ring (2px
 OnCue Rust, 2px offset) and drops the vendor's bold-on-focus and its 0.35s all-property transition. The accent stays on
 the link; the heading, date and card are ink, Soft Ink and Sunk Paper. `tests/components/FeatureBlog.astro.test.ts`
 covers all three states and the UTC date.
