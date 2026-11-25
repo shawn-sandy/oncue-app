@@ -129,7 +129,21 @@ Here is a small `short.json` with two beats. A beat is one voiceover line paired
   "brand": {
     "name": "Quickstart",
     "logo": "logo.png",
-    "colors": { "ground": "#fcfcfd", "ink": "#101418", "accent": "#0b6070" },
+    "colors": {
+      "ground": "#fcfcfd",
+      "card": "#f1f3f5",
+      "chip": "#e6f2f6",
+      "rule": "#dde1e6",
+      "ink": "#101418",
+      "muted": "#5a6472",
+      "accent": "#0b6070",
+      "highlight": "#0b6070",
+      "you": "#0b6070",
+      "panel": "#e6f2f6",
+      "panelInk": "#101418",
+      "panelMuted": "#5a6472",
+      "panelRule": "#c9dfe6"
+    },
     "fonts": { "sans": "inter", "mono": "jetbrains-mono" },
     "deckFonts": { "head": "Arial", "body": "Arial" }
   },
@@ -146,11 +160,11 @@ Here is a small `short.json` with two beats. A beat is one voiceover line paired
 }
 ```
 
-(The colors above are shortened to fit this post. A real spec lists all thirteen, which Step 5 explains.)
+(This example is the complete color block, all thirteen roles, which Step 5 explains. Leave one out and `check` stops with an error such as `brand.colors.card: is required`. This post covers the first beat only, so your `lines` list will be longer.)
 
 Four ideas matter here.
 
-**Format.** `1080` by `1920` is tall, the shape for YouTube Shorts, Reels, and TikTok. For a normal YouTube video, use `1920` by `1080`. Any frame size works within limits. Each side must be an even whole number from 320 to 4096.
+**Format.** `1080` by `1920` is tall, the shape for YouTube Shorts, Reels, and TikTok. For a normal YouTube video, use `1920` by `1080`. Any frame size works within limits. Each side must be an even whole number from 320 to 4096, and the long side can be at most 2.4 times the short side. So `320` by `4096` is rejected even though each side is in range.
 
 **Lines.** Each entry in `lines` is one beat. The `vo` text is what the narrator says. The `scene` is what the viewer sees.
 
@@ -277,9 +291,10 @@ build/
 
 ## Step 7: Add a browser for stills and video
 
-Stills (single preview frames) and video are drawn in a real browser. OnCue uses Playwright for this. From the engine folder, install the browser:
+Stills (single preview frames) and video are drawn in a real browser. OnCue uses Playwright for this. From the engine folder, install the Playwright package, then the browser it drives:
 
 ```bash
+npm install --save-dev playwright
 npx playwright install chromium
 ```
 
