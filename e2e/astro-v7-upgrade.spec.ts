@@ -12,7 +12,7 @@ test('home page renders', async ({ page }) => {
 })
 
 test('published blog post renders', async ({ page }) => {
-  const response = await page.goto('/posts/post-2')
+  const response = await page.goto('/posts/set-up-oncue-in-your-project')
   expect(response?.status()).toBe(200)
   await expect(page.locator('h1').first()).toBeVisible()
 })
@@ -47,7 +47,20 @@ test('home to blog to post navigation has no console errors', async ({ page }) =
 
   await page.goto('/')
   await page.goto('/blog')
-  await page.goto('/posts/post-2')
+  // Follow the real link from the list, so a broken href (for example
+  // /posts/undefined) fails here instead of being skipped by a direct goto.
+  const hrefs = await page
+    .locator('a[href*="posts/"]')
+    .evaluateAll(links => links.map(link => link.getAttribute('href')))
+  expect(hrefs.filter(href => href?.includes('undefined'))).toEqual([])
+  await page
+    .getByRole('link', { name: /How to Set Up OnCue in Your Project/ })
+    .first()
+    .click()
+  await expect(page).toHaveURL(/\/posts\/set-up-oncue-in-your-project\/?$/)
+  const heading = page.locator('h1').first()
+  await expect(heading).toBeVisible()
+  await expect(heading).toContainText('Set Up OnCue')
   await page.goto('/guide/getting-started')
 
   expect(errors).toEqual([])

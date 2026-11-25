@@ -72,8 +72,8 @@ const collectionResults = (await getCollection(collection || 'posts'))
                 <BlogPostsDesc
                   title={post.data.title}
                   description={post.data?.summary || post.data.description}
-                  url={`/${to || 'posts'}/${post.slug}`}
-                  descId={`desc-${post.slug}`}
+                  url={`/${to || 'posts'}/${post.id}`}
+                  descId={`desc-${post.id}`}
                 >
                   <p>
                     {post.data.image &&
@@ -93,7 +93,7 @@ const collectionResults = (await getCollection(collection || 'posts'))
                 {showLinks && (
                   <div class="align-right">
                     <a
-                      href={`/${to || 'posts'}/${post.slug}`}
+                      href={`/${to || 'posts'}/${post.id}`}
                       aria-label={`Continue reading ${post.data.title}`}
                     >
                       <i aria-hidden="true">Continue reading</i>

@@ -1,0 +1,73 @@
+{
+  "title": "Quickstart in 20 seconds",
+  "format": { "width": 1080, "height": 1920 },
+  "brand": {
+    "name": "Quickstart",
+    "logo": "logo.png",
+    "colors": {
+      "ground": "#fcfcfd",
+      "card": "#f1f3f5",
+      "chip": "#e6f2f6",
+      "rule": "#dde1e6",
+      "ink": "#101418",
+      "muted": "#5a6472",
+      "accent": "#0b6070",
+      "highlight": "#0b6070",
+      "you": "#0b6070",
+      "panel": "#e6f2f6",
+      "panelInk": "#101418",
+      "panelMuted": "#5a6472",
+      "panelRule": "#c9dfe6"
+    },
+    "fonts": { "sans": "inter", "mono": "jetbrains-mono" },
+    "deckFonts": { "head": "Arial", "body": "Arial" }
+  },
+  "theme": {
+    "radius": "soft",
+    "background": "flat",
+    "density": "regular",
+    "type": "regular",
+    "stroke": "hairline",
+    "weight": "semibold"
+  },
+  "lines": [
+    {
+      "vo": "Want a video that lands on every word? This is Quickstart, your first OnCue short.",
+      "scene": {
+        "kind": "hook",
+        "headline": "Your first video, built from {one file.}",
+        "headlineCue": { "word": "want" },
+        "sub": "{Quickstart} · made with OnCue",
+        "subCue": { "word": "this" }
+      }
+    },
+    {
+      "vo": "One spec drives the deck, the script, and the video, so they always match.",
+      "scene": {
+        "kind": "list",
+        "kicker": "How it works",
+        "title": "One file. {Every output.}",
+        "items": [
+          {
+            "icon": "FiFileText",
+            "title": "The deck",
+            "desc": "Editable PowerPoint slides",
+            "cue": { "word": "deck" }
+          },
+          {
+            "icon": "FiMic",
+            "title": "The script",
+            "desc": "One voiceover line per beat",
+            "cue": { "word": "script" }
+          },
+          {
+            "icon": "FiVideo",
+            "title": "The video",
+            "desc": "Every element enters on its word",
+            "cue": { "word": "video" }
+          }
+        ]
+      }
+    }
+  ]
+}
