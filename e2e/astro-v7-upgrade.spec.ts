@@ -58,7 +58,9 @@ test('home to blog to post navigation has no console errors', async ({ page }) =
     .first()
     .click()
   await expect(page).toHaveURL(/\/posts\/set-up-oncue-in-your-project\/?$/)
-  await expect(page.locator('h1').first()).toContainText('Set Up OnCue')
+  const heading = page.locator('h1').first()
+  await expect(heading).toBeVisible()
+  await expect(heading).toContainText('Set Up OnCue')
   await page.goto('/guide/getting-started')
 
   expect(errors).toEqual([])
