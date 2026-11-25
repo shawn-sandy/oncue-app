@@ -18,8 +18,8 @@ const require = createRequire(import.meta.url)
 
 const SECTION = '[data-feature-section]'
 
-/** One per feature component on the page. */
-const SECTION_COUNT = 8
+/** One per feature component on the page, FeatureBlog included. */
+const SECTION_COUNT = 9
 
 type AxeResults = {
   violations: { id: string; impact: string | null; help: string; nodes: { target: string[] }[] }[]
