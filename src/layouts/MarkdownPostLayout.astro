@@ -6,6 +6,9 @@ import Toc from '#components/astro/Toc.astro'
 import PostHeader from '#components/astro/PostHeader.astro'
 import { sanitizeImageUrl } from '#utils/security'
 const frontmatter = Astro.props.frontmatter
+// Opt-in: only blog posts take the redesigned header. Docs and content pages
+// share this layout and keep the shared `Header`.
+const postHeader = Astro.props.postHeader === true
 
 const headings = Astro.props.headings
 const { slug } = Astro.params
@@ -52,13 +55,17 @@ const contentRoute: ContentRoute[] = [
     )
   }
 
-  <PostHeader
-    slot="header"
-    title={frontmatter.title}
-    description={frontmatter.description}
-    pubDate={frontmatter.pubDate}
-    author={frontmatter.author}
-  />
+  {
+    postHeader && (
+      <PostHeader
+        slot="header"
+        title={frontmatter.title}
+        description={frontmatter.description}
+        pubDate={frontmatter.pubDate}
+        author={frontmatter.author}
+      />
+    )
+  }
 
   <div slot="sidebar">
     <Toc headings={headings} />
