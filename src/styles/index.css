@@ -3715,3 +3715,121 @@ nav[data-site-nav]:has(> [popover]:popover-open) button[popovertarget] {
     min-width: auto;
   }
 } /*# sourceMappingURL=index.css.map */
+
+article :not(pre) > code {
+  background-color: var(--paper-sunk);
+  border-radius: var(--radius-base, 4px);
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+  padding: 0.1em 0.35em;
+}
+article table {
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  width: 100%;
+}
+article caption {
+  caption-side: bottom;
+  color: var(--ink-soft);
+  padding-block-start: var(--space-2);
+  text-align: start;
+}
+article th,
+article td {
+  border-block-end: 1px solid var(--rule);
+  overflow-wrap: anywhere;
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  vertical-align: top;
+}
+article thead th {
+  background-color: var(--paper-sunk);
+  border-block-end-color: var(--ink-soft);
+  color: var(--ink-soft);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+article tbody td:first-child,
+article tbody th {
+  font-weight: 600;
+}
+article td {
+  font-variant-numeric: tabular-nums;
+}
+article tbody tr:last-child > * {
+  border-block-end-color: var(--ink-soft);
+}
+article td code {
+  font-size: 0.9em;
+}
+
+article .expressive-code {
+  --ec-brdWd: 1px;
+  --ec-brdCol: var(--rule);
+  --ec-brdRad: var(--radius-base, 4px);
+  --ec-codeBg: var(--paper-sunk);
+  --ec-codeFg: var(--ink);
+  --ec-codeFontFml: var(--font-family-mono);
+  --ec-codeFontSize: 0.875rem;
+  --ec-codeFontWg: 400;
+  --ec-codeLineHt: 1.6;
+  --ec-codePadBlk: var(--space-4);
+  --ec-codePadInl: var(--space-5);
+  --ec-uiFontFml: var(--font-family-mono);
+  --ec-uiFontSize: var(--font-size-xs);
+  --ec-uiFontWg: 400;
+  --ec-uiLineHt: 1.5;
+  --ec-uiPadBlk: var(--space-2);
+  --ec-uiPadInl: var(--space-4);
+  --ec-focusBrd: var(--island);
+  --ec-sbThumbCol: var(--rule);
+  --ec-sbThumbHoverCol: var(--ink-soft);
+  --ec-gtrFg: var(--ink-soft);
+  --ec-gtrBrdCol: var(--rule);
+  --ec-gtrHlFg: var(--ink);
+  --ec-frm-frameBoxShdCssVal: none;
+  --ec-frm-edBg: var(--paper-sunk);
+  --ec-frm-edTabBrdRad: 0;
+  --ec-frm-trmBg: var(--paper-sunk);
+  --ec-frm-trmTtbBg: var(--paper-sunk);
+  --ec-frm-trmTtbFg: var(--ink-soft);
+  --ec-frm-trmTtbDotsFg: var(--ink-soft);
+  --ec-frm-trmTtbBrdBtmCol: var(--rule);
+  --ec-frm-inlBtnFg: var(--ink-soft);
+  --ec-frm-inlBtnBg: var(--ink);
+  --ec-frm-inlBtnBrd: transparent;
+  --ec-frm-tooltipSuccessBg: var(--ink);
+  --ec-frm-tooltipSuccessFg: var(--paper);
+  margin-block: var(--space-6);
+}
+article .expressive-code pre code {
+  font-size: var(--ec-codeFontSize);
+}
+article .expressive-code .copy button {
+  background-color: transparent;
+  block-size: 2.5rem;
+  border: 0;
+  border-radius: var(--radius-lg);
+  color: var(--ink-soft);
+  inline-size: 2.5rem;
+  opacity: 1;
+  padding: 0;
+}
+article .expressive-code .copy button:hover {
+  background-color: var(--island-bg);
+  color: var(--island);
+}
+article .expressive-code pre > code {
+  padding-inline-end: 3.5rem;
+}
+article .expressive-code .frame.is-terminal > .header {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+}

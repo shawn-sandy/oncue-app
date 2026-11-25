@@ -1,0 +1,160 @@
+// Article prose: tables, code blocks, inline code. Ink on paper with tonal
+// layering and one hairline (DESIGN.md), so none of this uses the accent: the
+// Hydration Rule reserves it for things a reader can operate.
+
+article {
+  // Inline code sits on Sunk Paper so it reads as a chip, not coloured text.
+  // Soft Ink on Sunk Paper is 5.51:1 light, 6.75:1 dark.
+  :not(pre) > code {
+    background-color: var(--paper-sunk);
+    border-radius: var(--radius-base, 4px);
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
+    padding: 0.1em 0.35em;
+  }
+
+  // Tables. The column heads speak in the mono label voice; rows separate by
+  // one hairline instead of a grid of borders.
+  table {
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    width: 100%;
+  }
+
+  caption {
+    caption-side: bottom;
+    color: var(--ink-soft);
+    padding-block-start: var(--space-2);
+    text-align: start;
+  }
+
+  th,
+  td {
+    border-block-end: 1px solid var(--rule);
+    overflow-wrap: anywhere;
+    padding: var(--space-3) var(--space-4);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  thead th {
+    background-color: var(--paper-sunk);
+    border-block-end-color: var(--ink-soft);
+    color: var(--ink-soft);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  // The first column names the row, so it carries the weight.
+  tbody td:first-child,
+  tbody th {
+    font-weight: 600;
+  }
+
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  tbody tr:last-child > * {
+    border-block-end-color: var(--ink-soft);
+  }
+
+  td code {
+    font-size: 0.9em;
+  }
+}
+
+// Code blocks. Expressive Code ships the frame, the copy button and the token
+// colours, but reads its chrome from `--ec-*` variables that only Starlight
+// defines. Off the guide those are undefined, so the block rendered with no
+// background, no border and a hairline-thin type size. Define them from the
+// design tokens: Sunk Paper ground, Rule border, DM Mono, 4px corners as
+// `code-block` in DESIGN.md.
+article .expressive-code {
+  --ec-brdWd: 1px;
+  --ec-brdCol: var(--rule);
+  --ec-brdRad: var(--radius-base, 4px);
+  --ec-codeBg: var(--paper-sunk);
+  --ec-codeFg: var(--ink);
+  --ec-codeFontFml: var(--font-family-mono);
+  --ec-codeFontSize: 0.875rem;
+  --ec-codeFontWg: 400;
+  --ec-codeLineHt: 1.6;
+  --ec-codePadBlk: var(--space-4);
+  --ec-codePadInl: var(--space-5);
+  --ec-uiFontFml: var(--font-family-mono);
+  --ec-uiFontSize: var(--font-size-xs);
+  --ec-uiFontWg: 400;
+  --ec-uiLineHt: 1.5;
+  --ec-uiPadBlk: var(--space-2);
+  --ec-uiPadInl: var(--space-4);
+  --ec-focusBrd: var(--island);
+  --ec-sbThumbCol: var(--rule);
+  --ec-sbThumbHoverCol: var(--ink-soft);
+  --ec-gtrFg: var(--ink-soft);
+  --ec-gtrBrdCol: var(--rule);
+  --ec-gtrHlFg: var(--ink);
+  --ec-frm-frameBoxShdCssVal: none;
+  --ec-frm-edBg: var(--paper-sunk);
+  --ec-frm-edTabBrdRad: 0;
+  --ec-frm-trmBg: var(--paper-sunk);
+  --ec-frm-trmTtbBg: var(--paper-sunk);
+  --ec-frm-trmTtbFg: var(--ink-soft);
+  --ec-frm-trmTtbDotsFg: var(--ink-soft);
+  --ec-frm-trmTtbBrdBtmCol: var(--rule);
+  --ec-frm-inlBtnFg: var(--ink-soft);
+  --ec-frm-inlBtnBg: var(--ink);
+  --ec-frm-inlBtnBrd: transparent;
+  --ec-frm-tooltipSuccessBg: var(--ink);
+  --ec-frm-tooltipSuccessFg: var(--paper);
+
+  margin-block: var(--space-6);
+
+  // `_base.scss` shrinks every `code` to `smaller`, which compounds on the
+  // size Expressive Code already set and left blocks at 10px. The block sets
+  // its own size, so let it keep it.
+  pre code {
+    font-size: var(--ec-codeFontSize);
+  }
+
+  // The component library's global `button` rule (blue fill, white text) wins
+  // over Expressive Code's own button styling and painted the copy control as
+  // a solid blue square. Match `copy-button` in DESIGN.md: transparent, Soft
+  // Ink, 40px, with the accent only on hover and focus because it is
+  // interactive. The extra end padding keeps a long first line from running
+  // under it.
+  .copy button {
+    background-color: transparent;
+    block-size: 2.5rem;
+    border: 0;
+    border-radius: var(--radius-lg);
+    color: var(--ink-soft);
+    inline-size: 2.5rem;
+    opacity: 1;
+    padding: 0;
+
+    &:hover {
+      background-color: var(--island-bg);
+      color: var(--island);
+    }
+  }
+
+  pre > code {
+    padding-inline-end: 3.5rem;
+  }
+
+  // An untitled terminal block gets an empty bar with three dots: chrome that
+  // reports nothing. Keep it for screen readers ("Terminal window"), drop it
+  // from sight so the command sits alone on its ground.
+  .frame.is-terminal > .header {
+    block-size: 1px;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    overflow: hidden;
+    position: absolute;
+  }
+}

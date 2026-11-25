@@ -3,6 +3,7 @@ import Layout from './Layout.astro'
 import Youtube from '#components/astro/Youtube.astro'
 import Img from '#components/astro/Img.astro'
 import Toc from '#components/astro/Toc.astro'
+import PostHeader from '#components/astro/PostHeader.astro'
 import { sanitizeImageUrl } from '#utils/security'
 const frontmatter = Astro.props.frontmatter
 
@@ -50,6 +51,14 @@ const contentRoute: ContentRoute[] = [
       </p>
     )
   }
+
+  <PostHeader
+    slot="header"
+    title={frontmatter.title}
+    description={frontmatter.description}
+    pubDate={frontmatter.pubDate}
+    author={frontmatter.author}
+  />
 
   <div slot="sidebar">
     <Toc headings={headings} />

@@ -15,12 +15,26 @@ import InstallDialog from '#components/astro/InstallDialog.astro'
 import MainSection from '#components/astro/MainSection.astro'
 import WorkflowStrip from '#components/astro/WorkflowStrip.astro'
 import { SITE_DESCRIPTION, SITE_TITLE } from '#utils/site-config'
+import { getCollection } from 'astro:content'
 
 // The OnCue plugin page. `Base` + `MainSection` rather than `Layout`, which
 // always renders the blog sidebar; `MainSection` keeps the skip-link target.
 const README = 'https://github.com/shawn-sandy/oncue'
 const INSTALL_HREF = `${README}#install`
 const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install oncue@oncue']
+
+// Real posts for the blog section, newest first; each "Read more" goes straight
+// to its post rather than the blog index.
+const loadPosts = async () =>
+  (await getCollection('posts', ({ data }) => data.publish))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+    .slice(0, 3)
+    .map(post => ({
+      title: post.data.title,
+      date: post.data.pubDate.toISOString().slice(0, 10),
+      excerpt: post.data.description ?? '',
+      href: `/posts/${post.id}`,
+    }))
 ---
 
 <Base pageTitle={SITE_TITLE} pageDescription={SITE_DESCRIPTION} hideHeader>
@@ -43,7 +57,7 @@ const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install 
       <span>Made for Shorts, Reels, TikTok and YouTube.</span>
       <ExternalLink href={`${README}#usage`}>You direct. Claude brings it together.</ExternalLink>
     </p>
-    <FeatureBlog />
+    <FeatureBlog load={loadPosts} />
     <InstallDialog id="install" commands={COMMANDS} fallbackHref={INSTALL_HREF} />
   </MainSection>
 </Base>
