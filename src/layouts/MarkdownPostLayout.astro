@@ -3,8 +3,12 @@ import Layout from './Layout.astro'
 import Youtube from '#components/astro/Youtube.astro'
 import Img from '#components/astro/Img.astro'
 import Toc from '#components/astro/Toc.astro'
+import PostHeader from '#components/astro/PostHeader.astro'
 import { sanitizeImageUrl } from '#utils/security'
 const frontmatter = Astro.props.frontmatter
+// Opt-in: only blog posts take the redesigned header. Docs and content pages
+// share this layout and keep the shared `Header`.
+const postHeader = Astro.props.postHeader === true
 
 const headings = Astro.props.headings
 const { slug } = Astro.params
@@ -48,6 +52,18 @@ const contentRoute: ContentRoute[] = [
       <p>
         <Youtube id={frontmatter.youtube.id} />
       </p>
+    )
+  }
+
+  {
+    postHeader && (
+      <PostHeader
+        slot="header"
+        title={frontmatter.title}
+        description={frontmatter.description}
+        pubDate={frontmatter.pubDate}
+        author={frontmatter.author}
+      />
     )
   }
 

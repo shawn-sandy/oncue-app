@@ -1,0 +1,137 @@
+---
+/**
+ * Header band for a blog post: the title and deck on the left, a small readout
+ * of the post's own facts (publish date, author) on the right. It replaces the
+ * shared `Header` on posts only, through the layout's `header` slot, so no
+ * other page changes.
+ *
+ * The title takes the Headline role (the `h1` scale, left-aligned on the page
+ * measure) rather than the homepage-only Display size. Colour stays out of it:
+ * the band is Sunk Paper, the readout's labels are Soft Ink mono capitals, and
+ * the one hairline per fact is Rule. Nothing here is interactive, so nothing
+ * here takes the accent.
+ *
+ * @component PostHeader
+ * @example
+ * ```astro
+ * <PostHeader title="A post" description="One sentence." pubDate={date} author="Name" />
+ * ```
+ */
+export type Props = {
+  title: string
+  description: string | undefined
+  pubDate: Date | undefined
+  author: string | undefined
+}
+
+const { title, description, pubDate, author } = Astro.props
+
+// UTC, so a midnight date never shifts a day in the server's timezone.
+const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZone: 'UTC' })
+const hasFacts = Boolean(pubDate || author)
+---
+
+<header class="post-header">
+  <div class="post-header__title">
+    <h1>{title}</h1>
+    {description && <p class="post-header__deck">{description}</p>}
+  </div>
+  {
+    hasFacts && (
+      <dl class="post-header__facts">
+        {pubDate && (
+          <div>
+            <dt data-ui="label">Published</dt>
+            <dd>
+              <time datetime={pubDate.toISOString().slice(0, 10)}>
+                {formatDate.format(pubDate)}
+              </time>
+            </dd>
+          </div>
+        )}
+        {author && (
+          <div>
+            <dt data-ui="label">Author</dt>
+            <dd>{author}</dd>
+          </div>
+        )}
+      </dl>
+    )
+  }
+</header>
+
+<style>
+  /* The shared `header` rule sets a 300px row floor and 3rem padding; this band
+     is as tall as its words. Padding-inline lines the text up with the article
+     column below (80rem measure plus the 2rem section inset). */
+  .post-header {
+    align-items: end;
+    display: grid;
+    gap: var(--space-8);
+    grid-template-areas: none;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    justify-items: stretch;
+    text-align: start;
+    padding-block: var(--space-12) var(--space-8);
+    padding-inline: max(2rem, calc((100% - var(--max-content-width)) / 2 + 2rem));
+  }
+
+  /* The vendor `header` rule stacks every child in one `overlay` grid area and
+     centres it; the band lays its own two columns out instead. */
+  .post-header__title,
+  .post-header__facts {
+    grid-area: auto;
+  }
+
+  /* ...and `header > div` caps the title wrapper at 80% with centred text and
+     pads it. */
+  .post-header__title {
+    max-inline-size: none;
+    padding: 0;
+    text-align: start;
+  }
+
+  .post-header__title h1 {
+    font-size: clamp(2.25rem, 1.1rem + 3.4vw, 3.75rem);
+    line-height: 1.06;
+    margin: 0;
+    max-inline-size: 20ch;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+
+  .post-header__deck {
+    color: var(--ink-soft);
+    font-size: var(--header-deck-font-size);
+    line-height: 1.5;
+    margin-block: var(--space-4) 0;
+    max-inline-size: 60ch;
+  }
+
+  .post-header__facts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+  }
+
+  .post-header__facts > div {
+    border-block-start: 1px solid var(--rule);
+    padding-block: var(--space-3);
+  }
+
+  .post-header__facts dt {
+    margin: 0 0 var(--space-1);
+  }
+
+  .post-header__facts dd {
+    font-family: var(--font-family-sans);
+    margin: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .post-header {
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+    }
+  }
+</style>
