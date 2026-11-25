@@ -12,7 +12,7 @@ test('home page renders', async ({ page }) => {
 })
 
 test('published blog post renders', async ({ page }) => {
-  const response = await page.goto('/posts/post-2')
+  const response = await page.goto('/posts/set-up-oncue-in-your-project')
   expect(response?.status()).toBe(200)
   await expect(page.locator('h1').first()).toBeVisible()
 })
@@ -47,7 +47,7 @@ test('home to blog to post navigation has no console errors', async ({ page }) =
 
   await page.goto('/')
   await page.goto('/blog')
-  await page.goto('/posts/post-2')
+  await page.goto('/posts/set-up-oncue-in-your-project')
   await page.goto('/guide/getting-started')
 
   expect(errors).toEqual([])

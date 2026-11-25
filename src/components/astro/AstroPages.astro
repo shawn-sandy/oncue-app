@@ -31,7 +31,7 @@ const pageSize = PAGINATION_COUNT || 5
   {
     page?.data.map((post: TODO) => (
       <article>
-        <BlogPosts url={post.slug} title={post.data.title} description={post.data.description} />
+        <BlogPosts url={post.id} title={post.data.title} description={post.data.description} />
       </article>
     ))
   }
