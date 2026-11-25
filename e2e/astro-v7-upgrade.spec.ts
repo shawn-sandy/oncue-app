@@ -47,7 +47,18 @@ test('home to blog to post navigation has no console errors', async ({ page }) =
 
   await page.goto('/')
   await page.goto('/blog')
-  await page.goto('/posts/set-up-oncue-in-your-project')
+  // Follow the real link from the list, so a broken href (for example
+  // /posts/undefined) fails here instead of being skipped by a direct goto.
+  const hrefs = await page
+    .locator('a[href*="posts/"]')
+    .evaluateAll(links => links.map(link => link.getAttribute('href')))
+  expect(hrefs.filter(href => href?.includes('undefined'))).toEqual([])
+  await page
+    .getByRole('link', { name: /How to Set Up OnCue in Your Project/ })
+    .first()
+    .click()
+  await expect(page).toHaveURL(/\/posts\/set-up-oncue-in-your-project\/?$/)
+  await expect(page.locator('h1').first()).toContainText('Set Up OnCue')
   await page.goto('/guide/getting-started')
 
   expect(errors).toEqual([])
