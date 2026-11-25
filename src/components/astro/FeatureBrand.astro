@@ -28,11 +28,11 @@ const SOURCES = [
 ]
 
 const TOKENS: [token: string, choices: string, note?: string][] = [
-  ['radius', 'sharp · soft · round'],
-  ['type', 'small · regular · large'],
-  ['density', 'compact · regular · airy'],
-  ['background', 'glow · subtle · flat', '(video only)'],
-  ['header', 'brand · logo · none'],
+  ['radius', 'sharp, soft, round'],
+  ['type', 'small, regular, large'],
+  ['density', 'compact, regular, airy'],
+  ['background', 'glow, subtle, flat', '(video only)'],
+  ['header', 'brand, logo, none'],
 ]
 
 const SCENE = {
@@ -41,8 +41,8 @@ const SCENE = {
   rows: ['Too many tabs', 'Dead bookmarks', 'Messy notes'],
 }
 const THEMES = [
-  { name: 'sharp · large · compact', modifier: 'brand__frame--sharp' },
-  { name: 'round · regular · airy', modifier: 'brand__frame--round' },
+  { name: 'sharp, large, compact', modifier: 'brand__frame--sharp' },
+  { name: 'round, regular, airy', modifier: 'brand__frame--round' },
 ]
 ---
 
@@ -67,7 +67,7 @@ const THEMES = [
     <figure class="feature-specimen">
       <figcaption class="feature-specimen__bar" data-ui="label">
         <span>The five theme tokens</span>
-        <span>Optional · in short.json</span>
+        <span>Optional, in short.json</span>
       </figcaption>
       <div class="brand__table">
         <table class="feature-table">

@@ -38,6 +38,7 @@ export { default as FeatureFactsPictures } from './astro/FeatureFactsPictures.as
 export { default as FeatureBrand } from './astro/FeatureBrand.astro'
 export { default as FeatureSkills } from './astro/FeatureSkills.astro'
 export { default as FeatureRequirements } from './astro/FeatureRequirements.astro'
+export { default as FeatureBlog } from './astro/FeatureBlog.astro'
 
 // Dashboard components
 export { default as DashboardCard } from './dashboard/DashboardCard.astro'

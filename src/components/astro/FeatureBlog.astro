@@ -1,0 +1,169 @@
+---
+/**
+ * Homepage section: the latest blog posts, each a card with a title, a date,
+ * a short excerpt and a "Read more" link. Cards in a row share one height and
+ * the link sits at the foot of each. Built on `FeatureSection` and its
+ * `feature-grid` / `feature-card` parts.
+ *
+ * Posts come from `load`, which defaults to hardcoded placeholders until a real
+ * source exists. The section has three states, marked by `data-blog-state` on
+ * its body: `ready` (the list), `empty` (no posts) and `error` (`load` threw).
+ * The error is logged on the server and the page says only that posts could not
+ * load, so no internal detail reaches a visitor.
+ *
+ * Each post has exactly one tab stop, its "Read more" link, so keyboard order
+ * follows the reading order. The link reads as "Read more about <title>": the
+ * title part is visually hidden text inside the link, so a screen reader's
+ * links list is not a row of identical "Read more" entries. The link takes the
+ * global focus ring (2px OnCue Rust, 2px offset); the accent stays on the
+ * link, never on the card or heading.
+ *
+ * @component FeatureBlog
+ * @example
+ * ```astro
+ * <FeatureBlog />
+ * <FeatureBlog load={async () => []} />
+ * ```
+ */
+import FeatureSection from '#components/astro/FeatureSection.astro'
+
+/** One post as the section lists it. */
+export type BlogPostSummary = {
+  title: string
+  /** ISO calendar date, `YYYY-MM-DD`. */
+  date: string
+  excerpt: string
+  href: string
+}
+
+export type Props = {
+  /** Returns the posts to list, newest first. Defaults to the placeholders. */
+  load?: () => Promise<readonly BlogPostSummary[]>
+}
+
+// ponytail: placeholder posts; swap `load` for a real source when posts exist.
+// Each links to the blog index, a real page, rather than a post that 404s.
+const PLACEHOLDER_POSTS: readonly BlogPostSummary[] = [
+  {
+    title: 'Storyboarding a Short in ten minutes',
+    date: '2026-11-18',
+    excerpt: 'From a bare topic to a beat list with cue words, and what to cut before recording.',
+    href: '/blog/',
+  },
+  {
+    title: 'Why every element enters on a word',
+    date: '2026-11-04',
+    excerpt: 'Word timestamps keep slides and voiceover in step, even after a retake.',
+    href: '/blog/',
+  },
+  {
+    title: 'One spec, four outputs',
+    date: '2026-10-21',
+    excerpt: 'How short.json drives the storyboard, the script, the deck and the video.',
+    href: '/blog/',
+  },
+]
+
+const { load = async () => PLACEHOLDER_POSTS } = Astro.props
+
+let posts: readonly BlogPostSummary[] = []
+let failed = false
+try {
+  posts = await load()
+} catch (error) {
+  failed = true
+  console.error('FeatureBlog: posts failed to load', error)
+}
+
+const state = failed ? 'error' : posts.length === 0 ? 'empty' : 'ready'
+
+// UTC, so a midnight ISO date never shifts a day in the server's timezone.
+const formatDate = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZone: 'UTC' })
+---
+
+<FeatureSection id="blog-title" eyebrow="From the blog" title="Notes on making explainers.">
+  <Fragment slot="deck">Short write-ups on how OnCue builds a video, and why.</Fragment>
+
+  <div class="blog" data-blog-state={state}>
+    {
+      state === 'ready' && (
+        <ul class="feature-grid blog__list" role="list">
+          {posts.map(post => (
+            <li>
+              <article class="feature-card blog__post">
+                <h3 class="feature-title">{post.title}</h3>
+                <time class="blog__date" data-ui="label" datetime={post.date}>
+                  {formatDate.format(new Date(post.date))}
+                </time>
+                <p class="feature-muted">{post.excerpt}</p>
+                <a href={post.href} class="blog__link">
+                  Read more<span class="blog__sr"> about {post.title}</span>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {state === 'empty' && <p class="feature-muted">No posts yet. Check back soon.</p>}
+    {state === 'error' && <p class="feature-muted">Posts could not be loaded. Try again later.</p>}
+  </div>
+</FeatureSection>
+
+<style>
+  /* The vendor grid aligns items to the start, which left cards as tall as
+     their own text; stretch makes every card in a row the row's height. */
+  .feature-grid.blog__list {
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .blog__list li {
+    display: flex;
+    margin: 0;
+  }
+
+  .feature-card.blog__post {
+    flex: 1;
+  }
+
+  /* The date shows above the title; the title stays first in source so a
+     screen reader starts each card with it. The date holds no tab stop, so
+     focus order is unchanged. */
+  .blog__date {
+    order: -1;
+  }
+
+  /* Pins "Read more" to the foot of every card, so the links line up when
+     the excerpts differ in length. Takes the 44px target (DESIGN.md). */
+  .blog__link[href] {
+    align-items: center;
+    align-self: flex-start;
+    display: inline-flex;
+    font-size: 0.9375rem;
+    margin-block-start: auto;
+    min-height: 2.75rem;
+    transition: color 150ms ease-out;
+  }
+
+  /* Hidden from sight, read by screen readers inside the link's name. */
+  .blog__sr {
+    block-size: 1px;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  /* The system ring (DESIGN.md). The vendor's `a[href]:focus-visible` (0,2,1)
+     draws a 3px ring with no offset and bolds the label; `[href]` lifts this
+     rule to (0,3,0) so it wins. */
+  .blog__link[href]:focus-visible {
+    font-weight: inherit;
+    outline: 2px solid var(--island);
+    outline-offset: 2px;
+  }
+</style>

@@ -315,19 +315,40 @@ The film's server markup is its finished frame: every step revealed and no curre
 
 ### Components
 
-| Component        | Props                                                              | What it does                                                                                                                                                                                                                        |
-| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ExternalLink`   | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                                                                                                                                                           |
-| `CommandBlock`   | `commands: string[]`                                               | One row per command, each a `code` with its own `hidden` icon copy button, and one `role="status"` region, shown only for the blocked-clipboard hint                                                                                |
-| `InstallDialog`  | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`                                                                                                                                        |
-| `FilmCard`       | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame                                                                                                                                             |
-| `TimingDemo`     | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`                                                                                                                                             |
-| `WorkflowStrip`  | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                                                                                                 |
-| `HomeHero`       | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                                                                                                           |
-| `FeatureSection` | `id`, `eyebrow`, `title`, `deck` slot, default slot                | The frame the eight feature sections share: eyebrow, sentence-case `h2` and deck stacked in one column, then the body. Also styles the parts the sections draw with: cards, panels, chips, code samples, tables and depicted frames |
-| `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureRequirements`, `FeatureSkills`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureBrand`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureOneFile`               |
+| Component        | Props                                                              | What it does                                                                                                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExternalLink`   | `href`, `class?`, default slot                                     | A link with an `aria-hidden` arrow. Opens in the same tab                                                                                                                                                                     |
+| `CommandBlock`   | `commands: string[]`                                               | One row per command, each a `code` with its own `hidden` icon copy button, and one `role="status"` region, shown only for the blocked-clipboard hint                                                                          |
+| `InstallDialog`  | `id`, `commands`, `fallbackHref`                                   | Native `dialog` with `closedby="any"`; upgrades every `a[data-opens-dialog]` naming its `id`                                                                                                                                  |
+| `FilmCard`       | none                                                               | The static phone frame. `data-state` on `[data-step]` and `[data-word]` sets each frame                                                                                                                                       |
+| `TimingDemo`     | `id?` (default `demo`)                                             | The stage, the player and its script. Upgrades `a[data-demo-start]` pointing at `#<id>`                                                                                                                                       |
+| `WorkflowStrip`  | `eyebrow`, `title`, `phases: string[]`                             | A hairline-ruled strip with the phases as an `ol`; the arrows are generated content                                                                                                                                           |
+| `HomeHero`       | `installHref`, `eyebrow?`, `headline?`, `headlineAccent?`, `deck?` | The hero `section`; composes `TimingDemo`                                                                                                                                                                                     |
+| `FeatureSection` | `id`, `eyebrow`, `title`, `deck` slot, default slot                | The frame the feature sections share: eyebrow, sentence-case `h2` and deck stacked in one column, then the body. Also styles the parts the sections draw with: cards, panels, chips, code samples, tables and depicted frames |
+| `Feature*`       | none, except `FeatureRequirements`: `commands`, `requirementsHref` | The eight sections, one README claim each, in page order: `FeatureRequirements`, `FeatureSkills`, `FeatureWordSync`, `FeatureFrameSizes`, `FeatureBrand`, `FeatureCheckIns`, `FeatureFactsPictures`, `FeatureOneFile`         |
+| `FeatureBlog`    | `load?: () => Promise<BlogPostSummary[]>`                          | Latest blog posts after the closing line, one card per post with its title as the only link. Placeholder posts until a real source is passed. States: `ready`, `empty`, `error` (see below)                                   |
 
 All of them except `HomeHero` are exported from `src/components/index.ts`.
+
+### Blog posts section
+
+`FeatureBlog` sits after the `home-closing` line and before `InstallDialog`, so it is the last thing above the footer.
+`InstallDialog` stays last because it is a closed `dialog` and takes no space in the flow.
+
+Each post is a `BlogPostSummary`: `title`, `date` (ISO `YYYY-MM-DD`), `excerpt` and `href`. The date renders in a `time`
+element, formatted `en-GB` in UTC so a midnight date never shifts a day on the server. The posts are hardcoded
+placeholders that link to `/blog/`; pass `load` to supply real ones.
+
+The section body carries `data-blog-state`:
+
+- `ready` - a `ul.feature-grid` of `article.feature-card` items
+- `empty` - `load` returned no posts; the page says there are no posts yet
+- `error` - `load` threw; the error goes to the server log and the page says only that posts could not be loaded
+
+Each post has one tab stop, a "Read more" link whose name continues with the post title (visually hidden text, so a screen reader hears "Read more about" followed by the post title), so focus follows reading order. Cards in a row share one height and the link sits at the foot of each. The link takes the system focus ring (2px
+OnCue Rust, 2px offset) and drops the vendor's bold-on-focus and its 0.35s all-property transition. The accent stays on
+the link; the heading, date and card are ink, Soft Ink and Sunk Paper. `tests/components/FeatureBlog.astro.test.ts`
+covers all three states and the UTC date.
 
 The demo's timing is `frameAt(positionMs, wordCount = 6)` in `src/utils/timing-demo.ts`, a pure function that returns
 `{ wordIndex, revealedSteps, elapsedLabel, progress, ended }`. Words land every 1050ms after a 600ms lead-in, step `i`
