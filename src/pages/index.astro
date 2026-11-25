@@ -47,6 +47,26 @@ const COMMANDS = ['/plugin marketplace add shawn-sandy/oncue', '/plugin install 
 </Base>
 
 <style>
+  /* `clip`, not `hidden`, so sticky children keep working; guards the 320 Rule. */
+  :global(:is(html, body):has([data-home-hero])),
+  :global(html:has([data-home-hero]) body) {
+    overflow-x: clip;
+  }
+
+  /* The vendor transitions every property on buttons and links; limit it to colour,
+     and let the skip link appear without sliding. */
+  :global(body:has([data-home-hero])),
+  :global(body:has([data-home-hero]) a[href]) {
+    --btn-transition:
+      background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+    --link-transition:
+      background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  :global(body:has([data-home-hero]) .skip-link) {
+    transition: none;
+  }
+
   /* The composition owns the spacing between its parts (DESIGN.md). */
   :global(main:has([data-home-hero])) {
     padding-block: 0;
