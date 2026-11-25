@@ -1,7 +1,7 @@
 ---
 /**
- * Feature section: OnCue's eight skills, each callable on its own in plain
- * words. The whole-pipeline skill leads in its own panel; the seven stages
+ * Feature section: OnCue's ten skills, each callable on its own in plain
+ * words. The whole-pipeline skill leads in its own panel; the nine others
  * follow as cards with the words that start them and what they produce.
  *
  * Skill names are code identifiers, so their headings keep their casing.
@@ -38,6 +38,11 @@ const STAGES: Skill[] = [
     get: 'A short.json, a beat list, and preview stills or a Design canvas.',
   },
   {
+    name: 'storyboard-editor',
+    ask: 'Let me edit my storyboard visually',
+    get: 'A browser editor for scene text, colors, theme, cue words and beat order, with short.json in and out.',
+  },
+  {
     name: 'visuals',
     ask: 'Add a diagram of how it works to beat 3',
     get: 'Image beats with alt text, a cue word and credits. Safe after the voiceover.',
@@ -57,12 +62,17 @@ const STAGES: Skill[] = [
     ask: 'Render it, and animate the slides',
     get: 'The final MP4, or a silent preview before any audio exists.',
   },
+  {
+    name: 'deck-to-video',
+    ask: 'Make a narrated video from my deck.pptx',
+    get: 'An MP4 of your own slides, narrated from the speaker notes. Your file is never changed.',
+  },
 ]
 ---
 
 <FeatureSection
   id="skills-title"
-  eyebrow="Eight skills"
+  eyebrow="Ten skills"
   title="Run the whole pipeline, or only the stage you need."
 >
   <Fragment slot="deck">

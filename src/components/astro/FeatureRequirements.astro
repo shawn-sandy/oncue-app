@@ -32,6 +32,11 @@ export type Props = {
 
 const { commands, requirementsHref } = Astro.props
 
+const CODEX_COMMANDS = [
+  'codex plugin marketplace add shawn-sandy/oncue',
+  'codex plugin add oncue@oncue',
+]
+
 const TOOLS = ['Node.js 22+', 'Playwright + Chromium', 'ffmpeg + ffprobe', 'Voiceover files']
 
 /** `true` needed, `false` not needed, a string for a partial need. */
@@ -134,13 +139,19 @@ const OUTPUTS: { output: string; detail: string; needs: Need[] }[] = [
     <div class="feature-stack" style="gap: 0.75rem">
       <p data-ui="label">Install in Claude Code</p>
       <CommandBlock commands={commands} />
+      <p data-ui="label">Install in Codex</p>
+      <CommandBlock commands={CODEX_COMMANDS} />
+      <p class="feature-muted">
+        In a ChatGPT workspace, an administrator imports <code>github.com/shawn-sandy/oncue</code> under
+        Admin, Plugins. ChatGPT import and rendering are untested.
+      </p>
     </div>
     <div class="feature-stack" style="gap: 1.25rem; max-width: 60ch">
       <div class="feature-stack" style="gap: 0.5rem">
         <p data-ui="label">Then</p>
         <p>
-          Ask Claude to “set up OnCue”. It checks each tool, installs what it can, and tells you
-          which outputs are ready.
+          Ask Claude or Codex to “set up OnCue”. It checks each tool, installs what it can, and
+          tells you which outputs are ready.
         </p>
       </div>
       <div class="feature-stack" style="gap: 0.5rem">
